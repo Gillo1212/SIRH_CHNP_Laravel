@@ -22,3 +22,8 @@
 Homestead.json
 Homestead.yaml
 Thumbs.db
+
+# Archives et projets de référence (ne pas versionner)
+SIRH_0.zip
+SIRH_1.zip
+/Laravel-12-HR-System-Management

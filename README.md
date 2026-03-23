@@ -1,59 +1,285 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# SIRH CHNP - Système d'Information de Ressources Humaines
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+##  À Propos du Projet
 
-## About Laravel
+Système d'Information de Ressources Humaines (SIRH) développé pour le Centre Hospitalier National de Pikine (CHNP) au Sénégal dans le cadre d'un mémoire de Master 2 en Informatique.
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+### Objectifs
+- Digitaliser la gestion des ressources humaines du CHNP
+- Automatiser les workflows de validation (congés, plannings)
+- Centraliser les informations du personnel
+- Faciliter le reporting et le pilotage RH
+- Garantir la traçabilité et la sécurité des données
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+##  Fonctionnalités Principales
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+### 1. Gestion Administrative du Personnel
+- Dossier personnel complet
+- Structure organisationnelle (divisions, services)
+- Mouvements (affectations, mutations)
+- Recherche multicritère
 
-## Learning Laravel
+### 2. Gestion des Contrats
+- CRUD contrats
+- Alertes d'expiration
+- Renouvellement
+- Historique
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework. You can also check out [Laravel Learn](https://laravel.com/learn), where you will be guided through building a modern Laravel application.
+### 3. Gestion des Congés
+- Workflow à 3 niveaux (Agent → Manager → RH)
+- Gestion des soldes
+- Calcul automatique des jours ouvrables
+- Notifications automatiques
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+### 4. Gestion des Absences
+- Types d'absence (maladie, personnelle, professionnelle, injustifiée)
+- Upload de justificatifs
+- Validation multi-niveaux
+- Statistiques d'absentéisme
 
-## Laravel Sponsors
+### 5. Gestion des Plannings
+- Création par les managers
+- Validation par la RH
+- Types: jour, nuit, garde, repos
+- Consultation par les agents
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+### 6. GED (Gestion Électronique de Documents)
+- Upload et catégorisation
+- Indexation et recherche
+- Contrôle d'accès
+- Archivage automatique
 
-### Premium Partners
+### 7. Reporting & Tableaux de Bord
+- Dashboard RH global
+- Dashboard Manager par service
+- Rapports PDF/Excel
+- Indicateurs clés (KPIs)
 
-- **[Vehikl](https://vehikl.com)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Redberry](https://redberry.international/laravel-development)**
-- **[Active Logic](https://activelogic.com)**
+### 8. Administration Système
+- Gestion des utilisateurs
+- RBAC (Rôles et Permissions)
+- Audit trail complet
+- Configuration système
 
-## Contributing
+##  Rôles Utilisateurs
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+### Agent (Personnel)
+- Consulter son dossier
+- Demander des congés
+- Justifier absences
+- Consulter son planning
 
-## Code of Conduct
+### Manager de Service
+- Gérer son équipe
+- Valider les congés
+- Enregistrer les absences
+- Créer les plannings
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+### Agent RH
+- Gestion complète du personnel
+- Validation finale des congés
+- Gestion des contrats
+- Génération de rapports
 
-## Security Vulnerabilities
+### Administrateur Système
+- Gestion des comptes
+- Configuration RBAC
+- Audit trail
+- Paramètres système
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+##  Stack Technique
 
-## License
+### Backend
+- **Framework**: Laravel 12.x
+- **PHP**: 8.2+
+- **Base de données**: MySQL 8.0+ / PostgreSQL 14+
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+### Frontend
+- **Template Engine**: Blade
+- **CSS Framework**: Bootstrap 5.3
+- **JavaScript**: Alpine.js / Vanilla JS
+- **Icons**: Font Awesome 6
+- **Charts**: Chart.js
+
+### Packages Principaux
+```json
+{
+  "spatie/laravel-permission": "^6.0",
+  "spatie/laravel-activitylog": "^4.8",
+  "barryvdh/laravel-dompdf": "^3.0",
+  "maatwebsite/excel": "^3.1",
+  "intervention/image": "^3.0"
+}
+```
+
+##  Structure du Projet
+
+```
+sirh-chnp/
+├── app/
+│   ├── Http/
+│   │   ├── Controllers/
+│   │   │   ├── Auth/
+│   │   │   ├── Admin/
+│   │   │   ├── RH/
+│   │   │   ├── Manager/
+│   │   │   └── Agent/
+│   │   ├── Middleware/
+│   │   └── Requests/
+│   ├── Models/
+│   ├── Repositories/
+│   ├── Services/
+│   ├── Policies/
+│   └── Traits/
+├── database/
+│   ├── migrations/
+│   ├── seeders/
+│   └── factories/
+├── resources/
+│   └── views/
+│       ├── admin/
+│       ├── rh/
+│       ├── manager/
+│       ├── agent/
+│       └── layouts/
+└── tests/
+    ├── Feature/
+    └── Unit/
+```
+
+##  Installation
+
+### Prérequis
+- PHP 8.2+
+- Composer 2.x
+- Node.js 18+ & NPM
+- MySQL 8.0+ ou PostgreSQL 14+
+
+### Étapes
+
+```bash
+# Cloner le repository
+git clone https://github.com/votre-username/sirh-chnp.git
+cd sirh-chnp
+
+# Installer les dépendances
+composer install
+npm install
+
+# Configurer l'environnement
+cp .env.example .env
+php artisan key:generate
+
+# Créer la base de données puis configurer .env
+
+# Exécuter les migrations et seeders
+php artisan migrate --seed
+
+# Compiler les assets
+npm run build
+
+# Créer le lien symbolique storage
+php artisan storage:link
+
+# Démarrer le serveur
+php artisan serve
+```
+
+### Comptes par Défaut
+
+Après seeding:
+
+- **Admin**: admin@chnp.sn / password
+- **Agent RH**: rh@chnp.sn / password
+- **Manager**: manager@chnp.sn / password
+- **Agent**: agent@chnp.sn / password
+
+##  Tests
+
+```bash
+# Exécuter tous les tests
+php artisan test
+
+# Avec couverture
+php artisan test --coverage
+
+# Tests spécifiques
+php artisan test --filter UserTest
+```
+
+##  Documentation
+
+- [Guide d'Installation](docs/installation.md)
+- [Documentation Technique](docs/technique.md)
+- [Guide Utilisateur](docs/user-guide.md)
+- [API Documentation](docs/api.md)
+
+##  Sécurité
+
+### Fonctionnalités de Sécurité
+-  Authentification sécurisée (bcrypt)
+-  RBAC granulaire
+-  CSRF Protection
+-  XSS Protection
+-  SQL Injection Prevention (Eloquent)
+-  Validation des entrées
+-  Audit trail complet
+-  Rate limiting
+-  Verrouillage de compte (5 tentatives)
+-  Politique de mot de passe complexe
+
+### Rapporter une Vulnérabilité
+Si vous découvrez une vulnérabilité, envoyez un email à security@chnp.sn
+
+## Contribution
+
+Ce projet est développé dans le cadre d'un mémoire de Master 2. Les contributions externes ne sont pas acceptées pour le moment.
+
+##  Licence
+
+Ce projet est sous licence MIT. Voir le fichier [LICENSE] pour plus de détails.
+
+##  Auteur
+
+**Votre Nom**
+- Email: nadielinegilbert@gmail.com
+- GitHub: https://github.com/Gillo1212
+
+##  Remerciements
+
+- Centre Hospitalier National de Pikine (CHNP)
+- Encadrant académique: Pr. Deme
+- Encadrant professionnel: M. Leplan
+
+##  Roadmap
+
+### Phase 1 - Fondations 
+- [x] Installation Laravel
+- [x] Configuration RBAC
+- [x] Authentification
+
+### Phase 2 - Core Modules 
+- [x] Gestion Personnel
+- [x] Gestion Contrats
+- [ ] Gestion Congés
+- [ ] Gestion Absences
+
+### Phase 3 - Features 
+- [ ] Gestion Plannings
+- [ ] GED
+- [ ] Reporting
+
+### Phase 4 - Finalisation 
+- [ ] Tests complets
+- [ ] Documentation
+- [ ] Déploiement
+
+##  Support
+
+Pour toute question ou problème:
+- Email: team_supportchnp@gmail.com
+- Issues: https://github.com/Gillo1212/SIRH_CHNP_Laravel/issues
+
+---
+
+**Développé avec  pour le CHNP** | Mémoire de Master 2 

@@ -16,29 +16,47 @@ class ProfileController extends Controller
      */
     public function edit(Request $request): View
     {
-        return view('profile.edit', [
-            'user' => $request->user(),
-        ]);
+        $user = $request->user();
+
+        // Charger les données RH si l'utilisateur a un agent associé
+        if ($user->agent) {
+            $user->agent->load(['service', 'division', 'enfants', 'conjoints', 'contratActif', 'contrats']);
+        }
+
+        return view('profile.edit', compact('user'));
     }
 
     /**
-     * Update the user's profile information.
+     * Update the user's email address (seule donnée modifiable par l'utilisateur).
      */
     public function update(ProfileUpdateRequest $request): RedirectResponse
     {
-        $request->user()->fill($request->validated());
+        $validated = $request->validated();
 
-        if ($request->user()->isDirty('email')) {
-            $request->user()->email_verified_at = null;
-        }
+        $user = $request->user();
+        $user->email = $validated['email'] ?: null;
+        $user->save();
 
-        $request->user()->save();
+        activity()
+            ->causedBy($user)
+            ->performedOn($user)
+            ->log('Profil mis à jour (email)');
 
-        return Redirect::route('profile.edit')->with('status', 'profile-updated');
+        return Redirect::route('profile.edit')
+            ->with('status', 'profile-updated')
+            ->with('tab', 'compte');
     }
 
     /**
-     * Delete the user's account.
+     * Redirect to preferences page.
+     */
+    public function settings(): RedirectResponse
+    {
+        return Redirect::route('preferences.index');
+    }
+
+    /**
+     * Delete the user's account (Admin only / non utilisé en production CHNP).
      */
     public function destroy(Request $request): RedirectResponse
     {
