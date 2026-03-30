@@ -25,15 +25,13 @@ class ServiceController extends Controller
         $this->authorize('viewAny', Service::class);
 
         $services = Service::with([
-            'division',
             'manager.agent',
+            'major.agent',
             'agents' => fn($q) => $q->orderBy('nom')->select('id_agent', 'id_service', 'nom', 'prenom', 'matricule', 'fontion', 'statut_agent'),
         ])
-            ->withCount('agents')
+            ->withCount(['agents', 'divisions'])
             ->orderBy('nom_service')
             ->get();
-
-        $divisions = Division::orderBy('nom_division')->get();
 
         $totaux = [
             'services'     => $services->count(),
@@ -43,11 +41,12 @@ class ServiceController extends Controller
         ];
 
         $managers  = User::role('Manager')->with('agent')->get();
+        $majors    = User::role('Major')->with('agent')->get();
         $allAgents = Agent::orderBy('nom')
             ->select('id_agent', 'id_service', 'nom', 'prenom', 'matricule', 'fontion')
             ->get();
 
-        return view('rh.services.index', compact('services', 'divisions', 'totaux', 'managers', 'allAgents'));
+        return view('rh.services.index', compact('services', 'totaux', 'managers', 'majors', 'allAgents'));
     }
 
     /**
@@ -84,7 +83,7 @@ class ServiceController extends Controller
      */
     public function show(int $id)
     {
-        $service = Service::with(['division', 'manager.agent', 'agents' => function ($q) {
+        $service = Service::with(['divisions', 'manager.agent', 'agents' => function ($q) {
             $q->with('user')->orderBy('nom');
         }])->findOrFail($id);
 
@@ -93,9 +92,9 @@ class ServiceController extends Controller
         $stats           = $this->statsService->getServiceStats($service->id_service);
         $absencesByMonth = $this->statsService->getAbsencesByMonth($service->id_service);
         $managers        = User::role('Manager')->with('agent')->get();
-        $divisions       = Division::orderBy('nom_division')->get();
+        $majors          = User::role('Major')->with('agent')->get();
 
-        return view('rh.services.show', compact('service', 'stats', 'absencesByMonth', 'managers', 'divisions'));
+        return view('rh.services.show', compact('service', 'stats', 'absencesByMonth', 'managers', 'majors'));
     }
 
     /**
@@ -182,6 +181,42 @@ class ServiceController extends Controller
         $msg = $request->id_agent_manager
             ? "Manager assigné au service \"{$service->nom_service}\" avec succès."
             : "Manager retiré du service \"{$service->nom_service}\".";
+
+        return back()->with('success', $msg);
+    }
+
+    /**
+     * Assigner un major à un service
+     */
+    public function assignerMajor(Request $request, int $id)
+    {
+        $service = Service::findOrFail($id);
+        $this->authorize('assignerManager', $service);
+
+        $request->validate([
+            'id_agent_major' => 'nullable|exists:users,id',
+        ], [
+            'id_agent_major.exists' => 'L\'utilisateur sélectionné n\'existe pas.',
+        ]);
+
+        DB::transaction(function () use ($request, $service) {
+            $ancienMajor  = $service->id_agent_major;
+            $nouveauMajor = $request->id_agent_major ?: null;
+            $service->update(['id_agent_major' => $nouveauMajor]);
+
+            activity()
+                ->causedBy(auth()->user())
+                ->performedOn($service)
+                ->withProperties([
+                    'ancien_major'  => $ancienMajor,
+                    'nouveau_major' => $nouveauMajor,
+                ])
+                ->log('Major du service modifié');
+        });
+
+        $msg = $request->id_agent_major
+            ? "Major assigné au service \"{$service->nom_service}\" avec succès."
+            : "Major retiré du service \"{$service->nom_service}\".";
 
         return back()->with('success', $msg);
     }

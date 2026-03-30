@@ -219,6 +219,7 @@ class PermissionSeeder extends Seeder
         'dashboard.view-global',
         'dashboard.view-service',
         'dashboard.view-personal',
+        'dashboard.view-major',
         'reports.view',
         'reports.generate',
         'reports.export-pdf',
@@ -282,6 +283,6 @@ class PermissionSeeder extends Seeder
             );
         }
 
-        $this->command->info('✅ ' . count(self::ALL_PERMISSIONS) . ' permissions créées/vérifiées.');
+        $this->command->info(' ' . count(self::ALL_PERMISSIONS) . ' permissions créées/vérifiées.');
     }
 }

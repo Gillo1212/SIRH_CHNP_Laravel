@@ -5,26 +5,27 @@ namespace App\Http\Controllers\RH;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\RH\StoreDivisionRequest;
 use App\Models\Division;
+use App\Models\Service;
 use Illuminate\Support\Facades\DB;
 
 class DivisionController extends Controller
 {
     /**
-     * Liste des divisions avec services et agents
+     * Liste des services avec leurs divisions (hiérarchie correcte)
      */
     public function index()
     {
-        $divisions = Division::with(['services' => function ($q) {
-            $q->withCount('agents')->orderBy('nom_service');
-        }])->orderBy('nom_division')->get();
+        $services = Service::with(['divisions' => function ($q) {
+            $q->withCount('agents')->orderBy('nom_division');
+        }])->orderBy('nom_service')->get();
 
         $totaux = [
-            'divisions' => $divisions->count(),
-            'services'  => $divisions->sum(fn($d) => $d->services->count()),
-            'agents'    => $divisions->sum(fn($d) => $d->services->sum('agents_count')),
+            'services'   => $services->count(),
+            'divisions'  => $services->sum(fn($s) => $s->divisions->count()),
+            'agents'     => $services->sum(fn($s) => $s->divisions->sum('agents_count')),
         ];
 
-        return view('rh.divisions.index', compact('divisions', 'totaux'));
+        return view('rh.divisions.index', compact('services', 'totaux'));
     }
 
     /**
@@ -32,7 +33,8 @@ class DivisionController extends Controller
      */
     public function create()
     {
-        return view('rh.divisions.create');
+        $services = Service::orderBy('nom_service')->get(['id_service', 'nom_service']);
+        return view('rh.divisions.create', compact('services'));
     }
 
     /**
@@ -59,8 +61,9 @@ class DivisionController extends Controller
      */
     public function edit(int $id)
     {
-        $division = Division::with('services')->findOrFail($id);
-        return view('rh.divisions.edit', compact('division'));
+        $division = Division::with('service')->findOrFail($id);
+        $services = Service::orderBy('nom_service')->get(['id_service', 'nom_service']);
+        return view('rh.divisions.edit', compact('division', 'services'));
     }
 
     /**
@@ -85,14 +88,14 @@ class DivisionController extends Controller
     }
 
     /**
-     * Supprimer une division (seulement si vide)
+     * Supprimer une division (seulement si aucun agent affecté)
      */
     public function destroy(int $id)
     {
-        $division = Division::withCount('services')->findOrFail($id);
+        $division = Division::withCount('agents')->findOrFail($id);
 
-        if ($division->services_count > 0) {
-            return back()->with('error', "Impossible de supprimer : {$division->services_count} service(s) appartiennent à cette division.");
+        if ($division->agents_count > 0) {
+            return back()->with('error', "Impossible de supprimer : {$division->agents_count} agent(s) sont affectés à cette division.");
         }
 
         DB::transaction(function () use ($division) {

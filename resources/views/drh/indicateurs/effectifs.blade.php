@@ -119,7 +119,7 @@
                     @foreach($parService as $svc)
                     <tr>
                         <td class="py-2 px-3 border-0 fw-600">{{ $svc->nom_service }}</td>
-                        <td class="py-2 px-3 border-0 text-muted">{{ $svc->division->nom_division ?? '—' }}</td>
+                        <td class="py-2 px-3 border-0 text-muted">{{ $svc->divisions_count ?? '—' }}</td>
                         <td class="py-2 px-3 border-0 text-center">
                             <span style="font-weight:700;color:#0A4D8C;">{{ $svc->actifs_count }}</span>
                         </td>

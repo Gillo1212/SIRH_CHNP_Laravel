@@ -11,7 +11,7 @@ class EquipeController extends Controller
     private function getService(): ?Service
     {
         return Service::where('id_agent_manager', auth()->id())
-            ->with('division')
+            ->with('divisions')
             ->first();
     }
 

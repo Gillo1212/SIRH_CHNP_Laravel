@@ -17,13 +17,30 @@
 <div class="card border-0 shadow-sm" style="border-radius:14px;">
     <div class="card-header border-0 px-4 pt-4 pb-2">
         <h5 class="fw-bold mb-0"><i class="fas fa-edit me-2 text-warning"></i>Modifier : {{ $division->nom_division }}</h5>
-        <p class="text-muted small mb-0">{{ $division->services->count() }} service(s) dans cette division</p>
+        @if($division->service)
+            <p class="text-muted small mb-0">Dans le service : <strong>{{ $division->service->nom_service }}</strong></p>
+        @else
+            <p class="text-muted small mb-0">Aucun service parent assigné</p>
+        @endif
     </div>
     <div class="card-body p-4">
         <form action="{{ route('rh.divisions.update', $division->id_division) }}" method="POST">
             @csrf @method('PUT')
             <div class="mb-3">
-                <label class="form-label fw-600 small">Nom de la division <span class="text-danger">*</span></label>
+                <label class="form-label fw-bold small">Service parent</label>
+                <select name="id_service" class="form-select @error('id_service') is-invalid @enderror" style="border-radius:8px;">
+                    <option value="">— Aucun service —</option>
+                    @foreach($services as $svc)
+                        <option value="{{ $svc->id_service }}"
+                            {{ old('id_service', $division->id_service) == $svc->id_service ? 'selected' : '' }}>
+                            {{ $svc->nom_service }}
+                        </option>
+                    @endforeach
+                </select>
+                @error('id_service')<div class="invalid-feedback">{{ $message }}</div>@enderror
+            </div>
+            <div class="mb-3">
+                <label class="form-label fw-bold small">Nom de la division <span class="text-danger">*</span></label>
                 <input type="text" name="nom_division" value="{{ old('nom_division', $division->nom_division) }}"
                        class="form-control @error('nom_division') is-invalid @enderror" style="border-radius:8px;">
                 @error('nom_division')<div class="invalid-feedback">{{ $message }}</div>@enderror

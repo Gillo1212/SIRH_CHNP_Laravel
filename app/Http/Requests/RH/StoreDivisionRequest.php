@@ -23,7 +23,7 @@ class StoreDivisionRequest extends FormRequest
                     ? Rule::unique('divisions', 'nom_division')->ignore($divisionId, 'id_division')
                     : 'unique:divisions,nom_division',
             ],
-            'description' => 'nullable|string|max:500',
+            'id_service' => 'nullable|exists:services,id_service',
         ];
     }
 
@@ -32,6 +32,7 @@ class StoreDivisionRequest extends FormRequest
         return [
             'nom_division.required' => 'Le nom de la division est obligatoire.',
             'nom_division.unique'   => 'Une division avec ce nom existe déjà.',
+            'id_service.exists'     => 'Le service sélectionné n\'existe pas.',
         ];
     }
 }

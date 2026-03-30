@@ -27,9 +27,14 @@ use App\Http\Controllers\RH\DivisionController;
 use App\Http\Controllers\RH\DemandeDocController;
 use App\Http\Controllers\RH\RapportRHController;
 use App\Http\Controllers\DRH\DRHDashboardController;
+use App\Http\Controllers\DRH\OrganigrammeController;
 use App\Http\Controllers\DRH\RapportDRHController;
 use App\Http\Controllers\DRH\IndicateurController;
 use App\Http\Controllers\DRH\ValidationDRHController;
+use App\Http\Controllers\Major\MajorDashboardController;
+use App\Http\Controllers\Major\EquipeMajorController;
+use App\Http\Controllers\Major\AbsenceMajorController;
+use App\Http\Controllers\Major\PlanningMajorController;
 use App\Http\Controllers\Manager\ManagerDashboardController;
 use App\Http\Controllers\Manager\EquipeController;
 use App\Http\Controllers\Manager\CongeManagerController;
@@ -161,7 +166,9 @@ Route::middleware(['auth', 'check.account.locked'])->group(function () {
         Route::get('/dashboard', [DRHDashboardController::class, 'index'])->name('dashboard');
         Route::get('/kpis', [DRHDashboardController::class, 'kpis'])->name('kpis');
         Route::get('/budget', [DRHDashboardController::class, 'budget'])->name('budget');
-        Route::get('/organigramme', [DRHDashboardController::class, 'organigramme'])->name('organigramme');
+        Route::get('/organigramme', [OrganigrammeController::class, 'index'])->name('organigramme');
+        Route::post('/organigramme/sauvegarder', [OrganigrammeController::class, 'sauvegarder'])->name('organigramme.sauvegarder');
+        Route::get('/organigramme/reinitialiser', [OrganigrammeController::class, 'reinitialiser'])->name('organigramme.reinitialiser');
 
         // Indicateurs RH
         Route::prefix('indicateurs')->name('indicateurs.')->group(function () {
@@ -353,6 +360,7 @@ Route::middleware(['auth', 'check.account.locked'])->group(function () {
             Route::put('/{id}', [ServiceController::class, 'update'])->name('update');
             Route::delete('/{id}', [ServiceController::class, 'destroy'])->name('destroy');
             Route::post('/{id}/assigner-manager', [ServiceController::class, 'assignerManager'])->name('assigner-manager');
+            Route::post('/{id}/assigner-major', [ServiceController::class, 'assignerMajor'])->name('assigner-major');
             Route::post('/{id}/attach-agent', [ServiceController::class, 'attachAgent'])->name('attach-agent');
             Route::delete('/{id}/agents/{agentId}', [ServiceController::class, 'detachAgent'])->name('detach-agent');
         });
@@ -395,6 +403,40 @@ Route::middleware(['auth', 'check.account.locked'])->group(function () {
         Route::get('/historique', [PriseEnChargeController::class, 'historique'])->name('historique');
         Route::get('/{id}', [PriseEnChargeController::class, 'show'])->name('show');
         Route::patch('/{id}', [PriseEnChargeController::class, 'update'])->name('update');
+    });
+
+    /*
+    |--------------------------------------------------------------------------
+    | Routes MAJOR
+    |--------------------------------------------------------------------------
+    */
+    Route::middleware(['role:Major'])->prefix('major')->name('major.')->group(function () {
+
+        Route::get('/dashboard', [MajorDashboardController::class, 'index'])->name('dashboard');
+
+        // Équipe (lecture seule)
+        Route::get('/equipe', [EquipeMajorController::class, 'index'])->name('equipe');
+
+        // Absences
+        Route::prefix('absences')->name('absences.')->middleware('major.service')->group(function () {
+            Route::get('/',       [AbsenceMajorController::class, 'index'])->name('index');
+            Route::get('/create', [AbsenceMajorController::class, 'create'])->name('create');
+            Route::post('/',      [AbsenceMajorController::class, 'store'])->name('store');
+            Route::get('/{id}',   [AbsenceMajorController::class, 'show'])->name('show');
+        });
+
+        // Plannings
+        Route::prefix('planning')->name('planning.')->middleware('major.service')->group(function () {
+            Route::get('/',                         [PlanningMajorController::class, 'index'])->name('index');
+            Route::get('/create',                   [PlanningMajorController::class, 'create'])->name('create');
+            Route::post('/',                        [PlanningMajorController::class, 'store'])->name('store');
+            Route::get('/{id}',                     [PlanningMajorController::class, 'show'])->name('show');
+            Route::put('/{id}',                     [PlanningMajorController::class, 'update'])->name('update');
+            Route::delete('/{id}',                  [PlanningMajorController::class, 'destroy'])->name('destroy');
+            Route::post('/{id}/transmettre',        [PlanningMajorController::class, 'transmettre'])->name('transmettre');
+            Route::post('/{id}/lignes',             [PlanningMajorController::class, 'addLigne'])->name('lignes.store');
+            Route::delete('/{id}/lignes/{ligneId}', [PlanningMajorController::class, 'removeLigne'])->name('lignes.destroy');
+        });
     });
 
     /*

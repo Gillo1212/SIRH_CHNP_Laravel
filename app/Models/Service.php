@@ -13,8 +13,8 @@ class Service extends Model
     protected $primaryKey = 'id_service';
 
     protected $fillable = [
-        'id_division',
         'id_agent_manager',
+        'id_agent_major',
         'nom_service',
         'type_service',
         'tel_service',
@@ -26,11 +26,11 @@ class Service extends Model
     // =====================================================
 
     /**
-     * Division parente
+     * Divisions du service (agrégation)
      */
-    public function division()
+    public function divisions()
     {
-        return $this->belongsTo(Division::class, 'id_division', 'id_division');
+        return $this->hasMany(Division::class, 'id_service', 'id_service');
     }
 
     /**
@@ -39,6 +39,14 @@ class Service extends Model
     public function manager()
     {
         return $this->belongsTo(User::class, 'id_agent_manager', 'id');
+    }
+
+    /**
+     * Major du service (responsable paramédical)
+     */
+    public function major()
+    {
+        return $this->belongsTo(User::class, 'id_agent_major', 'id');
     }
 
     /**
@@ -93,6 +101,14 @@ class Service extends Model
     public function scopeForManager($query, int $userId)
     {
         return $query->where('id_agent_manager', $userId);
+    }
+
+    /**
+     * Service(s) gérés par cet utilisateur (major)
+     */
+    public function scopeForMajor($query, int $userId)
+    {
+        return $query->where('id_agent_major', $userId);
     }
 
     // =====================================================

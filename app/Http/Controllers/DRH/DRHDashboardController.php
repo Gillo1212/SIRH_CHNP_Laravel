@@ -115,15 +115,4 @@ class DRHDashboardController extends Controller
         return view('drh.budget');
     }
 
-    public function organigramme()
-    {
-        $divisions = \App\Models\Division::with([
-            'services' => fn($q) => $q->withCount(['agents as agents_actifs_count' => fn($q) => $q->where('statut_agent', 'Actif')])
-                ->with('manager'),
-        ])->get();
-
-        $totalAgents = Agent::where('statut_agent', 'Actif')->count();
-
-        return view('drh.organigramme', compact('divisions', 'totalAgents'));
-    }
 }

@@ -35,18 +35,24 @@
 /* ── SECTION TITLE ──────────────────────────────────────────── */
 .section-title { font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;margin-bottom:12px;padding-bottom:6px;color:var(--theme-text-muted); }
 
-/* ── DIVISION PANEL ─────────────────────────────────────────── */
-.division-panel { border-radius:12px;background:var(--theme-panel-bg);border:1px solid var(--theme-border);padding:20px 24px;transition:box-shadow 200ms; }
-.division-panel:hover { box-shadow:0 4px 16px rgba(10,77,140,.08); }
+/* ── SERVICE PANEL ──────────────────────────────────────────── */
+.service-panel { border-radius:12px;background:var(--theme-panel-bg);border:1px solid var(--theme-border);padding:20px 24px;transition:box-shadow 200ms; }
+.service-panel:hover { box-shadow:0 4px 16px rgba(10,77,140,.08); }
 
-.service-chip {
+.division-chip {
     display:inline-flex;align-items:center;gap:6px;
     background:var(--theme-bg-secondary);border:1px solid var(--theme-border);
     border-radius:8px;padding:6px 12px;font-size:12px;
-    text-decoration:none;color:var(--theme-text);
+    color:var(--theme-text);
     transition:all 180ms;
 }
-.service-chip:hover { background:#EFF6FF;border-color:#BFDBFE;color:#0A4D8C; }
+.division-chip .btn-edit-div, .division-chip .btn-del-div {
+    background:none;border:none;padding:0 2px;cursor:pointer;font-size:11px;transition:color 150ms;
+}
+.division-chip .btn-edit-div { color:#D97706; }
+.division-chip .btn-edit-div:hover { color:#B45309; }
+.division-chip .btn-del-div  { color:#DC2626; }
+.division-chip .btn-del-div:hover  { color:#991B1B; }
 
 /* ── MODAL LABELS ───────────────────────────────────────────── */
 .modal-label { font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;margin-bottom:5px;color:var(--theme-text-muted); }
@@ -63,9 +69,9 @@
 {{-- ── EN-TÊTE ─────────────────────────────────────────────────────────── --}}
 <div class="d-flex align-items-center justify-content-between mb-4 flex-wrap gap-3">
     <div>
-        <h4 class="mb-0 fw-bold" style="color:#111827;">Divisions Organisationnelles</h4>
+        <h4 class="mb-0 fw-bold" style="color:#111827;">Divisions des Services</h4>
         <p class="mb-0 text-muted" style="font-size:13.5px;">
-            {{ $totaux['divisions'] }} division(s) · {{ $totaux['services'] }} service(s) · {{ $totaux['agents'] }} agent(s)
+            {{ $totaux['services'] }} service(s) · {{ $totaux['divisions'] }} division(s) · {{ $totaux['agents'] }} agent(s)
         </p>
     </div>
     <div class="d-flex gap-2 flex-wrap">
@@ -83,16 +89,16 @@
 <div class="row g-3 mb-4">
     <div class="col-12 col-sm-4">
         <div class="kpi-card blue" style="background:var(--theme-panel-bg);border:1px solid var(--theme-border);">
-            <div class="kpi-icon" style="background:#EFF6FF;"><i class="fas fa-sitemap" style="color:#0A4D8C;"></i></div>
-            <div class="kpi-value" style="color:#0A4D8C;">{{ $totaux['divisions'] }}</div>
-            <div class="kpi-label">Divisions</div>
+            <div class="kpi-icon" style="background:#EFF6FF;"><i class="fas fa-hospital-alt" style="color:#0A4D8C;"></i></div>
+            <div class="kpi-value" style="color:#0A4D8C;">{{ $totaux['services'] }}</div>
+            <div class="kpi-label">Services</div>
         </div>
     </div>
     <div class="col-12 col-sm-4">
         <div class="kpi-card green" style="background:var(--theme-panel-bg);border:1px solid var(--theme-border);">
-            <div class="kpi-icon" style="background:#ECFDF5;"><i class="fas fa-hospital-alt" style="color:#059669;"></i></div>
-            <div class="kpi-value" style="color:#059669;">{{ $totaux['services'] }}</div>
-            <div class="kpi-label">Services</div>
+            <div class="kpi-icon" style="background:#ECFDF5;"><i class="fas fa-sitemap" style="color:#059669;"></i></div>
+            <div class="kpi-value" style="color:#059669;">{{ $totaux['divisions'] }}</div>
+            <div class="kpi-label">Divisions</div>
         </div>
     </div>
     <div class="col-12 col-sm-4">
@@ -104,65 +110,68 @@
     </div>
 </div>
 
-{{-- ── LISTE DES DIVISIONS ─────────────────────────────────────────────── --}}
-<div class="section-title">Liste des divisions</div>
+{{-- ── LISTE DES SERVICES AVEC LEURS DIVISIONS ─────────────────────────── --}}
+<div class="section-title">Hiérarchie : Services → Divisions</div>
 <div class="d-flex flex-column gap-3">
-    @forelse($divisions as $division)
-        <div class="division-panel">
+    @forelse($services as $service)
+        <div class="service-panel">
             <div class="d-flex align-items-start justify-content-between mb-3">
                 <div class="d-flex align-items-center gap-3">
                     <div style="width:44px;height:44px;border-radius:10px;background:linear-gradient(135deg,#0A4D8C,#1565C0);display:flex;align-items:center;justify-content:center;color:white;font-size:18px;flex-shrink:0;">
-                        <i class="fas fa-sitemap"></i>
+                        <i class="fas fa-hospital-alt"></i>
                     </div>
                     <div>
-                        <h6 class="fw-bold mb-0" style="color:var(--theme-text);">{{ $division->nom_division }}</h6>
+                        <h6 class="fw-bold mb-0" style="color:var(--theme-text);">
+                            <a href="{{ route('rh.services.show', $service->id_service) }}" style="color:inherit;text-decoration:none;">
+                                {{ $service->nom_service }}
+                            </a>
+                        </h6>
                         <span style="font-size:12px;color:var(--theme-text-muted);">
-                            {{ $division->services->count() }} service(s) ·
-                            {{ $division->services->sum('agents_count') }} agent(s)
+                            {{ $service->divisions->count() }} division(s) ·
+                            {{ $service->divisions->sum('agents_count') }} agent(s) dans les divisions
                         </span>
                     </div>
                 </div>
-                <div class="d-flex gap-2">
-                    <button class="action-btn action-btn-outline" style="padding:6px 12px;font-size:12px;"
-                        onclick="openEditDiv({{ $division->id_division }}, @json($division->nom_division))">
-                        <i class="fas fa-edit"></i>
-                    </button>
-                    <button class="btn d-flex align-items-center gap-1" style="padding:6px 12px;font-size:12px;border-radius:8px;background:var(--theme-panel-bg);border:1px solid var(--theme-border);color:#DC2626;transition:all 180ms;"
-                        onmouseover="this.style.background='#FEF2F2'"
-                        onmouseout="this.style.background='var(--theme-panel-bg)'"
-                        onclick="openDeleteDiv({{ $division->id_division }}, @json($division->nom_division))">
-                        <i class="fas fa-trash"></i>
-                    </button>
-                </div>
+                <button type="button" class="action-btn action-btn-primary" style="padding:6px 12px;font-size:12px;"
+                    onclick="openCreateForService({{ $service->id_service }}, @json($service->nom_service))">
+                    <i class="fas fa-plus"></i> Ajouter division
+                </button>
             </div>
 
-            @if($division->services->count() > 0)
+            @if($service->divisions->count() > 0)
                 <div class="d-flex flex-wrap gap-2">
-                    @foreach($division->services as $service)
-                        <a href="{{ route('rh.services.show', $service->id_service) }}" class="service-chip">
-                            <i class="fas fa-hospital-alt" style="color:#0A4D8C;font-size:10px;"></i>
-                            <span>{{ $service->nom_service }}</span>
-                            <span style="background:#EFF6FF;color:#1E40AF;border-radius:20px;padding:1px 7px;font-size:10px;font-weight:700;">
-                                {{ $service->agents_count }}
+                    @foreach($service->divisions as $division)
+                        <div class="division-chip">
+                            <i class="fas fa-sitemap" style="color:#059669;font-size:10px;"></i>
+                            <span>{{ $division->nom_division }}</span>
+                            <span style="background:#ECFDF5;color:#065F46;border-radius:20px;padding:1px 7px;font-size:10px;font-weight:700;">
+                                {{ $division->agents_count }}
                             </span>
-                        </a>
+                            <button class="btn-edit-div" title="Modifier"
+                                onclick="openEditDiv({{ $division->id_division }}, @json($division->nom_division), {{ $division->id_service ?? 'null' }})">
+                                <i class="fas fa-pen"></i>
+                            </button>
+                            <button class="btn-del-div" title="Supprimer"
+                                onclick="openDeleteDiv({{ $division->id_division }}, @json($division->nom_division))">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </div>
                     @endforeach
                 </div>
             @else
                 <p class="mb-0" style="font-size:12px;color:var(--theme-text-muted);">
-                    <i class="fas fa-info-circle me-1"></i>Aucun service dans cette division
+                    <i class="fas fa-info-circle me-1"></i>Aucune division dans ce service
                 </p>
             @endif
         </div>
     @empty
         <div class="card border-0 shadow-sm text-center py-5" style="border-radius:12px;background:var(--theme-panel-bg);">
-            <i class="fas fa-sitemap fa-3x mb-3 d-block" style="color:#D1D5DB;"></i>
-            <h6 class="fw-bold">Aucune division</h6>
-            <p class="text-muted small">Créez la première division organisationnelle.</p>
-            <button type="button" class="btn btn-primary btn-sm mx-auto" style="border-radius:8px;width:fit-content;padding:8px 20px;"
-                    data-bs-toggle="modal" data-bs-target="#modalCreateDivision">
-                <i class="fas fa-plus me-1"></i>Créer une division
-            </button>
+            <i class="fas fa-hospital fa-3x mb-3 d-block" style="color:#D1D5DB;"></i>
+            <h6 class="fw-bold">Aucun service</h6>
+            <p class="text-muted small">Créez d'abord des services, puis ajoutez-leur des divisions.</p>
+            <a href="{{ route('rh.services.index') }}" class="btn btn-primary btn-sm mx-auto" style="border-radius:8px;width:fit-content;padding:8px 20px;">
+                <i class="fas fa-hospital-alt me-1"></i>Gérer les services
+            </a>
         </div>
     @endforelse
 </div>
@@ -183,9 +192,16 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body px-4 py-3">
+                    <label class="modal-label">Service parent <span class="text-danger">*</span></label>
+                    <select id="createServiceId" name="id_service" class="form-control modal-input mb-3" required>
+                        <option value="">— Choisir un service —</option>
+                        @foreach($services as $svc)
+                            <option value="{{ $svc->id_service }}">{{ $svc->nom_service }}</option>
+                        @endforeach
+                    </select>
                     <label class="modal-label">Nom de la division <span class="text-danger">*</span></label>
                     <input type="text" name="nom_division" class="form-control modal-input" required
-                           placeholder="ex: Division Médicale">
+                           placeholder="ex: Division A">
                 </div>
                 <div class="modal-footer border-0 px-4 pb-4 pt-2">
                     <button type="button" class="action-btn action-btn-outline" data-bs-dismiss="modal">Annuler</button>
@@ -213,6 +229,13 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body px-4 py-3">
+                    <label class="modal-label">Service parent</label>
+                    <select id="editDivServiceId" name="id_service" class="form-control modal-input mb-3">
+                        <option value="">— Aucun —</option>
+                        @foreach($services as $svc)
+                            <option value="{{ $svc->id_service }}">{{ $svc->nom_service }}</option>
+                        @endforeach
+                    </select>
                     <label class="modal-label">Nom de la division <span class="text-danger">*</span></label>
                     <input type="text" id="editDivNom" name="nom_division" class="form-control modal-input" required>
                 </div>
@@ -294,10 +317,17 @@ function showToast(message, type) {
     document.addEventListener('DOMContentLoaded', () => showToast(@json(session('error')), 'error'));
 @endif
 
+/* ── OUVRIR MODAL CRÉATION DEPUIS UN SERVICE ────────────────────────── */
+function openCreateForService(serviceId, serviceNom) {
+    document.getElementById('createServiceId').value = serviceId;
+    new bootstrap.Modal(document.getElementById('modalCreateDivision')).show();
+}
+
 /* ── MODAL ÉDITION DIVISION ─────────────────────────────────────────── */
-function openEditDiv(id, nom) {
+function openEditDiv(id, nom, serviceId) {
     document.getElementById('formEditDiv').action = '/rh/divisions/' + id;
     document.getElementById('editDivNom').value = nom || '';
+    document.getElementById('editDivServiceId').value = serviceId || '';
     new bootstrap.Modal(document.getElementById('modalEditDivision')).show();
 }
 

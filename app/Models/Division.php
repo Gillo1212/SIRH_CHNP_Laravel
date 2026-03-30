@@ -16,6 +16,7 @@ class Division extends Model
 
     protected $fillable = [
         'nom_division',
+        'id_service',
     ];
 
     // =====================================================
@@ -23,35 +24,23 @@ class Division extends Model
     // =====================================================
 
     /**
-     * Services de la division (agrégation)
+     * Service parent de la division
      */
-    public function services()
+    public function service()
     {
-        return $this->hasMany(Service::class, 'id_division', 'id_division');
+        return $this->belongsTo(Service::class, 'id_service', 'id_service');
     }
 
     /**
-     * Agents affectés à cette division (via services)
+     * Agents directement affectés à cette division
      */
     public function agents()
     {
-        return $this->hasManyThrough(
-            Agent::class,
-            Service::class,
-            'id_division',  // FK sur services → divisions
-            'id_service',   // FK sur agents → services
-            'id_division',  // PK locale sur divisions
-            'id_service'    // PK locale sur services
-        );
+        return $this->hasMany(Agent::class, 'id_division', 'id_division');
     }
 
     public function getTotalAgentsCountAttribute(): int
     {
         return $this->agents()->count();
-    }
-
-    public function getServicesCountAttribute(): int
-    {
-        return $this->services()->count();
     }
 }

@@ -43,9 +43,9 @@
                         <span style="background:rgba(255,255,255,0.2);color:white;font-size:11px;font-weight:600;padding:3px 10px;border-radius:20px;">
                             {{ $service->type_service }}
                         </span>
-                        @if($service->division)
+                        @if($service->divisions && $service->divisions->count() > 0)
                             <span style="background:rgba(255,255,255,0.1);color:rgba(255,255,255,0.8);font-size:11px;padding:3px 10px;border-radius:20px;">
-                                <i class="fas fa-sitemap me-1"></i>{{ $service->division->nom_division }}
+                                <i class="fas fa-sitemap me-1"></i>{{ $service->divisions->count() }} division(s)
                             </span>
                         @endif
                     </div>

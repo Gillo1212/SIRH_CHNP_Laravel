@@ -1071,6 +1071,54 @@
         @endhasrole
 
         {{-- ══════════════════════════════════════
+             MENU MAJOR (Responsable Paramédical)
+             ══════════════════════════════════════ --}}
+        @hasrole('Major')
+
+            <div class="sb-section-title">Mon Service</div>
+
+            <a href="{{ route('major.dashboard') }}" class="sb-item {{ request()->routeIs('major.dashboard') ? 'active' : '' }}">
+                <span class="sb-icon"><i class="fas fa-home"></i></span>
+                <span class="sb-label">Tableau de bord</span>
+                <span class="sb-tooltip">Tableau de bord</span>
+            </a>
+
+            <a href="{{ route('major.equipe') }}" class="sb-item {{ request()->routeIs('major.equipe') ? 'active' : '' }}">
+                <span class="sb-icon"><i class="fas fa-users"></i></span>
+                <span class="sb-label">Mon équipe</span>
+                <span class="sb-tooltip">Mon équipe</span>
+            </a>
+
+            <div class="sb-section-title">Gestion</div>
+
+            <div x-data="{ open: {{ request()->routeIs('major.absences.*') ? 'true' : 'false' }} }">
+                <button @click="open = !open" class="sb-item w-100 border-0 text-start {{ request()->routeIs('major.absences.*') ? 'active' : '' }}" style="background: transparent;">
+                    <span class="sb-icon"><i class="fas fa-calendar-times"></i></span>
+                    <span class="sb-label">Absences</span>
+                    <i class="fas fa-chevron-right sb-chevron" :class="{ 'sb-open': open }"></i>
+                    <span class="sb-tooltip">Absences</span>
+                </button>
+                <div class="sb-submenu" x-show="open" x-transition:enter="transition ease-out duration-150" x-transition:enter-start="opacity-0" x-transition:enter-end="opacity-100" x-transition:leave="transition ease-in duration-100" x-transition:leave-start="opacity-100" x-transition:leave-end="opacity-0">
+                    <a href="{{ route('major.absences.index') }}" class="sb-subitem {{ request()->routeIs('major.absences.index') ? 'active' : '' }}">Liste des absences</a>
+                    <a href="{{ route('major.absences.create') }}" class="sb-subitem {{ request()->routeIs('major.absences.create') ? 'active' : '' }}">Enregistrer absence</a>
+                </div>
+            </div>
+
+            <div x-data="{ open: {{ request()->routeIs('major.planning.*') ? 'true' : 'false' }} }">
+                <button @click="open = !open" class="sb-item w-100 border-0 text-start {{ request()->routeIs('major.planning.*') ? 'active' : '' }}" style="background: transparent;">
+                    <span class="sb-icon"><i class="fas fa-calendar-week"></i></span>
+                    <span class="sb-label">Plannings</span>
+                    <i class="fas fa-chevron-right sb-chevron" :class="{ 'sb-open': open }"></i>
+                    <span class="sb-tooltip">Plannings</span>
+                </button>
+                <div class="sb-submenu" x-show="open" x-transition:enter="transition ease-out duration-150" x-transition:enter-start="opacity-0" x-transition:enter-end="opacity-100" x-transition:leave="transition ease-in duration-100" x-transition:leave-start="opacity-100" x-transition:leave-end="opacity-0">
+                    <a href="{{ route('major.planning.index') }}" class="sb-subitem {{ request()->routeIs('major.planning.*') ? 'active' : '' }}">Mes plannings</a>
+                </div>
+            </div>
+
+        @endhasrole
+
+        {{-- ══════════════════════════════════════
              MENU AGENT (Employé)
              ══════════════════════════════════════ --}}
         @hasrole('Agent')

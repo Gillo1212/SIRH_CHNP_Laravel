@@ -17,6 +17,7 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->alias([
             'check.account.locked'  => \App\Http\Middleware\CheckAccountLocked::class,
             'manager.service'       => \App\Http\Middleware\EnsureManagerService::class,
+            'major.service'         => \App\Http\Middleware\EnsureMajorService::class,
             'agent.profile'         => \App\Http\Middleware\EnsureHasAgentProfile::class,
             'role'                  => \Spatie\Permission\Middleware\RoleMiddleware::class,
             'permission'            => \Spatie\Permission\Middleware\PermissionMiddleware::class,

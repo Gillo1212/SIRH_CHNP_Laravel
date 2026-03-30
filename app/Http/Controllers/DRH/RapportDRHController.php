@@ -47,7 +47,7 @@ class RapportDRHController extends Controller
     public function effectifs()
     {
         $parService = Service::withCount(['agents as actifs' => fn($q) => $q->where('statut_agent', 'Actif')])
-            ->with('division')
+            ->withCount('divisions')
             ->orderByDesc('actifs')
             ->get();
 

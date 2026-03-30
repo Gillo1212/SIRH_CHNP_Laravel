@@ -31,7 +31,7 @@
             </h4>
             <p class="mb-0 text-muted" style="font-size:13.5px;">
                 Service : <strong>{{ $service->nom_service }}</strong>
-                @if($service->division) · {{ $service->division->nom_division }} @endif
+                @if($service->divisions && $service->divisions->count() > 0) · {{ $service->divisions->count() }} division(s) @endif
             </p>
         </div>
         <a href="{{ route('manager.equipe.dossiers') }}" class="btn btn-outline-primary btn-sm">

@@ -9,14 +9,12 @@ class DivisionSeeder extends Seeder
 {
     public function run(): void
     {
+        // Les divisions sont des sous-unités des services.
+        // Elles sont créées sans service parent par défaut (id_service nullable).
+        // Les associer à un service se fait via l'interface ou en ajoutant id_service ici.
         $divisions = [
-            ['nom_division' => 'Direction Générale', 'created_at' => now(), 'updated_at' => now()],
-            ['nom_division' => 'Direction des Ressources Humaines', 'created_at' => now(), 'updated_at' => now()],
-            ['nom_division' => 'Direction des Soins Infirmiers', 'created_at' => now(), 'updated_at' => now()],
-            ['nom_division' => 'Direction Médicale', 'created_at' => now(), 'updated_at' => now()],
-            ['nom_division' => 'Division Administrative et Financière', 'created_at' => now(), 'updated_at' => now()],
-            ['nom_division' => 'Division Hygiène et Sécurité', 'created_at' => now(), 'updated_at' => now()],
-            ['nom_division' => 'Division Formation', 'created_at' => now(), 'updated_at' => now()],
+            ['nom_division' => 'Division A', 'id_service' => null, 'created_at' => now(), 'updated_at' => now()],
+            ['nom_division' => 'Division B', 'id_service' => null, 'created_at' => now(), 'updated_at' => now()],
         ];
 
         DB::table('divisions')->insert($divisions);

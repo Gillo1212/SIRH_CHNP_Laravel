@@ -51,9 +51,9 @@
                         <span style="background:rgba(255,255,255,0.2);color:white;font-size:11px;font-weight:600;padding:3px 10px;border-radius:20px;">
                             {{ $service->type_service }}
                         </span>
-                        @if($service->division)
+                        @if($service->divisions->count() > 0)
                             <span style="background:rgba(255,255,255,0.1);color:rgba(255,255,255,0.8);font-size:11px;padding:3px 10px;border-radius:20px;">
-                                <i class="fas fa-sitemap me-1"></i>{{ $service->division->nom_division }}
+                                <i class="fas fa-sitemap me-1"></i>{{ $service->divisions->count() }} division(s)
                             </span>
                         @endif
                         @if($service->tel_service)
@@ -74,6 +74,10 @@
                     <button type="button" class="action-btn action-btn-light"
                             data-bs-toggle="modal" data-bs-target="#modalAssignManager">
                         <i class="fas fa-user-tie"></i>Manager
+                    </button>
+                    <button type="button" class="action-btn action-btn-light"
+                            data-bs-toggle="modal" data-bs-target="#modalAssignMajor">
+                        <i class="fas fa-user-nurse"></i>Major
                     </button>
                     @endcan
                     @can('delete', $service)
@@ -155,8 +159,43 @@
             </div>
         </div>
 
+        {{-- ── MAJOR ────────────────────────────────────────────────────── --}}
+        <div class="col-12 col-md-4">
+            <div class="card border-0 shadow-sm h-100" style="border-radius:14px;background:var(--theme-panel-bg);">
+                <div class="card-header border-0 px-4 pt-4 pb-2">
+                    <h6 class="fw-bold mb-0"><i class="fas fa-user-nurse me-2" style="color:#7C3AED;"></i>Major Paramédical</h6>
+                </div>
+                <div class="card-body px-4 pb-4">
+                    @if($service->major && $service->major->agent)
+                        <div class="d-flex align-items-center gap-3 mb-3">
+                            <div style="width:52px;height:52px;border-radius:50%;background:linear-gradient(135deg,#7C3AED,#9333EA);display:flex;align-items:center;justify-content:center;color:white;font-size:18px;font-weight:700;flex-shrink:0;">
+                                {{ strtoupper(substr($service->major->agent->prenom, 0, 1)) }}
+                            </div>
+                            <div>
+                                <div class="fw-bold">{{ $service->major->agent->nom_complet }}</div>
+                                <div class="text-muted small">{{ $service->major->agent->fonction ?? 'Major' }}</div>
+                                <div class="text-muted small">{{ $service->major->login }}</div>
+                            </div>
+                        </div>
+                    @else
+                        <div class="text-center py-3 text-muted">
+                            <i class="fas fa-user-slash fa-2x mb-2 d-block" style="color:#D1D5DB;"></i>
+                            <small>Aucun major assigné</small>
+                        </div>
+                    @endif
+
+                    @can('assignerManager', $service)
+                    <button type="button" class="btn btn-sm w-100 mt-2" style="border-radius:8px;border:1px solid #7C3AED;color:#7C3AED;"
+                            data-bs-toggle="modal" data-bs-target="#modalAssignMajor">
+                        <i class="fas fa-user-edit me-1"></i>Changer de major
+                    </button>
+                    @endcan
+                </div>
+            </div>
+        </div>
+
         {{-- ── GRAPHIQUE ABSENCES ───────────────────────────────────────── --}}
-        <div class="col-12 col-md-8">
+        <div class="col-12 col-md-4">
             <div class="card border-0 shadow-sm" style="border-radius:14px;background:var(--theme-panel-bg);">
                 <div class="card-header border-0 px-4 pt-4 pb-2">
                     <h6 class="fw-bold mb-0"><i class="fas fa-chart-bar me-2 text-primary"></i>Absences — 6 derniers mois</h6>
@@ -165,6 +204,38 @@
                     <canvas id="chartAbsences" style="max-height:180px;"></canvas>
                 </div>
             </div>
+        </div>
+    </div>
+
+    {{-- ── DIVISIONS DU SERVICE ───────────────────────────────────────────── --}}
+    <div class="card border-0 shadow-sm mt-4" style="border-radius:14px;background:var(--theme-panel-bg);">
+        <div class="card-header border-0 px-4 pt-4 pb-2 d-flex align-items-center justify-content-between">
+            <h6 class="fw-bold mb-0"><i class="fas fa-sitemap me-2 text-success"></i>Divisions du service ({{ $service->divisions->count() }})</h6>
+            <a href="{{ route('rh.divisions.index') }}" class="btn btn-sm btn-outline-success" style="border-radius:6px;font-size:12px;">
+                <i class="fas fa-cog me-1"></i>Gérer
+            </a>
+        </div>
+        <div class="card-body px-4 pb-4">
+            @if($service->divisions->count() > 0)
+                <div class="d-flex flex-wrap gap-2">
+                    @foreach($service->divisions as $division)
+                        <span style="display:inline-flex;align-items:center;gap:6px;background:#ECFDF5;border:1px solid #A7F3D0;border-radius:8px;padding:7px 14px;font-size:13px;">
+                            <i class="fas fa-sitemap" style="color:#059669;font-size:10px;"></i>
+                            <span class="fw-500">{{ $division->nom_division }}</span>
+                        </span>
+                    @endforeach
+                </div>
+            @else
+                <div class="text-center py-3 text-muted">
+                    <i class="fas fa-sitemap fa-2x mb-2 d-block" style="color:#D1D5DB;"></i>
+                    <small>Aucune division dans ce service.</small>
+                    <div class="mt-2">
+                        <a href="{{ route('rh.divisions.index') }}" class="btn btn-sm btn-outline-success" style="border-radius:6px;font-size:12px;">
+                            <i class="fas fa-plus me-1"></i>Ajouter une division
+                        </a>
+                    </div>
+                </div>
+            @endif
         </div>
     </div>
 
@@ -234,30 +305,16 @@
                                required>
                         @error('nom_service')<div class="invalid-feedback">{{ $message }}</div>@enderror
                     </div>
-                    <div class="row g-3 mb-3">
-                        <div class="col-6">
-                            <label class="modal-label">Type <span class="text-danger">*</span></label>
-                            <select name="type_service" class="form-select modal-input @error('type_service') is-invalid @enderror" required>
-                                @foreach(['Clinique', 'Administratif', 'Aide_diagnostic', 'Support'] as $type)
-                                    <option value="{{ $type }}" {{ old('type_service', $service->type_service) == $type ? 'selected' : '' }}>
-                                        {{ $type === 'Aide_diagnostic' ? 'Aide diagnostic' : $type }}
-                                    </option>
-                                @endforeach
-                            </select>
-                            @error('type_service')<div class="invalid-feedback">{{ $message }}</div>@enderror
-                        </div>
-                        <div class="col-6">
-                            <label class="modal-label">Division</label>
-                            <select name="id_division" class="form-select modal-input">
-                                <option value="">— Aucune —</option>
-                                @foreach($divisions as $div)
-                                    <option value="{{ $div->id_division }}"
-                                        {{ old('id_division', $service->id_division) == $div->id_division ? 'selected' : '' }}>
-                                        {{ $div->nom_division }}
-                                    </option>
-                                @endforeach
-                            </select>
-                        </div>
+                    <div class="mb-3">
+                        <label class="modal-label">Type <span class="text-danger">*</span></label>
+                        <select name="type_service" class="form-select modal-input @error('type_service') is-invalid @enderror" required>
+                            @foreach(['Clinique', 'Administratif', 'Aide_diagnostic', 'Support'] as $type)
+                                <option value="{{ $type }}" {{ old('type_service', $service->type_service) == $type ? 'selected' : '' }}>
+                                    {{ $type === 'Aide_diagnostic' ? 'Aide diagnostic' : $type }}
+                                </option>
+                            @endforeach
+                        </select>
+                        @error('type_service')<div class="invalid-feedback">{{ $message }}</div>@enderror
                     </div>
                     <div class="row g-3 mb-3">
                         <div class="col-6">
@@ -325,6 +382,47 @@
                 <div class="modal-footer border-0 px-4 pb-4 pt-2">
                     <button type="button" class="btn btn-outline-secondary" style="border-radius:8px;font-size:13px;" data-bs-dismiss="modal">Annuler</button>
                     <button type="submit" class="btn btn-primary d-flex align-items-center gap-2" style="border-radius:8px;font-size:13px;font-weight:500;">
+                        <i class="fas fa-check"></i>Confirmer
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+@endcan
+
+
+{{-- ═══════════════════════════════════════════════════════════════════════
+     MODAL — ASSIGNER / CHANGER DE MAJOR
+     ═══════════════════════════════════════════════════════════════════════ --}}
+@can('assignerManager', $service)
+<div class="modal fade" id="modalAssignMajor" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered modal-sm">
+        <div class="modal-content" style="border-radius:14px;border:1px solid var(--theme-border);background:var(--theme-panel-bg);">
+            <form action="{{ route('rh.services.assigner-major', $service->id_service) }}" method="POST">
+                @csrf
+                <div class="modal-header border-0 pb-0 px-4 pt-4">
+                    <h5 class="modal-title fw-bold" style="color:var(--theme-text);">
+                        <i class="fas fa-user-nurse me-2" style="color:#7C3AED;"></i>Assigner major
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body px-4 py-3">
+                    <p class="text-muted small mb-3">Service : <strong>{{ $service->nom_service }}</strong></p>
+                    <label class="modal-label">Major paramédical</label>
+                    <select name="id_agent_major" class="form-select modal-input">
+                        <option value="">— Retirer le major —</option>
+                        @foreach($majors as $maj)
+                            <option value="{{ $maj->id }}"
+                                {{ $service->id_agent_major == $maj->id ? 'selected' : '' }}>
+                                {{ $maj->agent?->nom_complet ?? $maj->login }}
+                            </option>
+                        @endforeach
+                    </select>
+                </div>
+                <div class="modal-footer border-0 px-4 pb-4 pt-2">
+                    <button type="button" class="btn btn-outline-secondary" style="border-radius:8px;font-size:13px;" data-bs-dismiss="modal">Annuler</button>
+                    <button type="submit" class="btn d-flex align-items-center gap-2" style="border-radius:8px;font-size:13px;font-weight:500;background:#7C3AED;color:#fff;">
                         <i class="fas fa-check"></i>Confirmer
                     </button>
                 </div>

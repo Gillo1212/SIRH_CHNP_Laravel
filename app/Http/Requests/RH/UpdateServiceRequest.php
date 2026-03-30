@@ -21,7 +21,6 @@ class UpdateServiceRequest extends FormRequest
                 Rule::unique('services', 'nom_service')->ignore($serviceId, 'id_service'),
             ],
             'type_service'     => 'required|in:Clinique,Administratif,Aide_diagnostic,Support',
-            'id_division'      => 'nullable|exists:divisions,id_division',
             'tel_service'      => 'nullable|string|max:20',
             'id_agent_manager' => 'nullable|exists:users,id',
         ];

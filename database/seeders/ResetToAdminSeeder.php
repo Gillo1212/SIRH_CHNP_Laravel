@@ -72,32 +72,34 @@ class ResetToAdminSeeder extends Seeder
         DB::table('user_preferences')      ->whereIn('user_id', $usersToDelete)->delete();
         User::whereIn('id', $usersToDelete)->delete();
 
-        // Réinitialiser les managers de services
-        DB::table('services')->update(['id_agent_manager' => null]);
+        // Réinitialiser les managers et majors de services
+        DB::table('services')->update(['id_agent_manager' => null, 'id_agent_major' => null]);
 
         DB::statement('SET FOREIGN_KEY_CHECKS=1');
 
         $this->command->info('Base vidée (hors admin).');
 
-        // ── 3. Créer 5 nouveaux comptes ───────────────────────────────────
+        // ── 3. Créer 6 nouveaux comptes ───────────────────────────────────
         $this->creerDRH();
         $this->creerAgentRH();
         $this->creerManager();
+        $this->creerMajor();
         $this->creerAgent('OUMAR',   'Sow',     'M', 3,  'CHNP-00007');
         $this->creerAgent('MARIAMA', 'Cissé',   'F', 5,  'CHNP-00008');
 
         $this->command->table(
-            ['Rôle', 'Login', 'Mot de passe'],
+            ['Rôle', 'Login / Email', 'Mot de passe'],
             [
-                ['DRH',         'ibrahima.diallo', self::PASSWORD],
-                ['AgentRH',     'fatou.sarr',      self::PASSWORD],
-                ['Manager',     'moussa.ndiaye',   self::PASSWORD],
-                ['Agent',       'oumar.sow',       self::PASSWORD],
-                ['Agent',       'mariama.cisse',   self::PASSWORD],
+                ['DRH',         'ibrahima.diallo / drh@chnp.sn',     self::PASSWORD],
+                ['AgentRH',     'fatou.sarr / rh@chnp.sn',           self::PASSWORD],
+                ['Manager',     'moussa.ndiaye / manager@chnp.sn',   self::PASSWORD],
+                ['Major',       'aminata.diop / major@chnp.sn',      self::PASSWORD],
+                ['Agent',       'oumar.sow',                         self::PASSWORD],
+                ['Agent',       'mariama.cisse',                     self::PASSWORD],
             ]
         );
 
-        $this->command->info('✅ 5 comptes créés avec succès.');
+        $this->command->info(' 6 comptes créés avec succès.');
     }
 
     // ─────────────────────────────────────────────────────────────────────
@@ -205,6 +207,43 @@ class ResetToAdminSeeder extends Seeder
 
         // Assigner comme manager du service Pédiatrie
         DB::table('services')->where('id_service', 1)->update(['id_agent_manager' => $user->id]);
+    }
+
+    private function creerMajor(): void
+    {
+        $user = User::create([
+            'name'                => 'Aminata DIOP',
+            'login'               => 'aminata.diop',
+            'email'               => 'major@chnp.sn',
+            'password'            => Hash::make(self::PASSWORD),
+            'statut_compte'       => 'Actif',
+            'verouille'           => false,
+            'tentatives_connexion'=> 0,
+            'agent_completed'     => true,
+        ]);
+        $user->assignRole('Major');
+
+        Agent::create([
+            'user_id'            => $user->id,
+            'matricule'          => 'CHNP-00009',
+            'nom'                => 'DIOP',
+            'prenom'             => 'Aminata',
+            'date_naissance'     => '1985-04-22',
+            'lieu_naissance'     => 'Thiès',
+            'sexe'               => 'F',
+            'nationalite'        => self::NATIONALITE,
+            'email'              => 'major@chnp.sn',
+            'date_prise_service' => '2012-06-01',
+            'fontion'            => 'Major Bloc Opératoire',
+            'grade'              => 'TS1',
+            'categorie_cp'       => 'Technicien_Superieur',
+            'statut_agent'       => 'Actif',
+            'account_pending'    => false,
+            'id_service'         => 2,
+        ]);
+
+        // Assigner comme major du service (id 2)
+        DB::table('services')->where('id_service', 2)->update(['id_agent_major' => $user->id]);
     }
 
     private function creerAgent(string $nom, string $prenom, string $sexe, int $serviceId, string $matricule): void

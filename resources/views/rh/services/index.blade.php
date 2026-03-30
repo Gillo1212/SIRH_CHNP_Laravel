@@ -228,14 +228,7 @@
                 <option value="Aide_diagnostic" @selected(request('type') === 'Aide_diagnostic')>Aide diagnostic</option>
                 <option value="Support"         @selected(request('type') === 'Support')>Support</option>
             </select>
-            <select name="division" id="filterDivision" class="form-select" style="width:auto;min-width:180px;">
-                <option value="">Toutes les divisions</option>
-                @foreach($divisions as $div)
-                    <option value="{{ $div->id_division }}" @selected(request('division') == $div->id_division)>
-                        {{ $div->nom_division }}
-                    </option>
-                @endforeach
-            </select>
+
             <button type="submit" class="btn btn-primary d-flex align-items-center gap-2" style="white-space:nowrap;">
                 <i class="fas fa-filter"></i> Filtrer
             </button>
@@ -260,7 +253,7 @@
                 <tr>
                     <th>Service</th>
                     <th class="d-none d-md-table-cell">Type</th>
-                    <th class="d-none d-lg-table-cell">Division</th>
+                    <th class="d-none d-lg-table-cell">Divisions</th>
                     <th class="d-none d-md-table-cell">Manager</th>
                     <th>Agents</th>
                     <th class="d-none d-md-table-cell">Tél.</th>
@@ -283,8 +276,7 @@
                     };
                 @endphp
                 <tr data-nom="{{ strtolower($service->nom_service) }}"
-                    data-type="{{ $service->type_service }}"
-                    data-division="{{ $service->id_division }}">
+                    data-type="{{ $service->type_service }}">
                     <td>
                         <div class="fw-600" style="font-size:13.5px;">{{ $service->nom_service }}</div>
                         @if($service->tel_service)
@@ -295,7 +287,13 @@
                         <span class="type-badge {{ $typeClass }}">{{ $typeLabel }}</span>
                     </td>
                     <td class="d-none d-lg-table-cell" style="color:var(--theme-text-muted);font-size:12.5px;">
-                        {{ $service->division?->nom_division ?? '—' }}
+                        @if($service->divisions_count > 0)
+                            <span style="background:#ECFDF5;color:#065F46;font-size:11px;font-weight:700;padding:2px 8px;border-radius:20px;">
+                                <i class="fas fa-sitemap" style="font-size:9px;"></i> {{ $service->divisions_count }}
+                            </span>
+                        @else
+                            <span style="color:var(--theme-text-muted);font-size:12px;">—</span>
+                        @endif
                     </td>
                     <td class="d-none d-md-table-cell">
                         @if($service->manager && $service->manager->agent)
@@ -333,6 +331,11 @@
                             <button type="button" class="btn-icon m" title="Assigner manager"
                                     onclick="openManagerModal({{ $service->id_service }})">
                                 <i class="fas fa-user-tie"></i>
+                            </button>
+                            <button type="button" class="btn-icon" title="Assigner major"
+                                    style="color:#7C3AED;"
+                                    onclick="openMajorModal({{ $service->id_service }}, {{ $service->id_agent_major ?? 'null' }})">
+                                <i class="fas fa-user-nurse"></i>
                             </button>
                             @endcan
                             @can('delete', $service)
@@ -403,16 +406,15 @@
     @endphp
     <div class="service-card {{ $cardClass }}"
          data-nom="{{ strtolower($service->nom_service) }}"
-         data-type="{{ $service->type_service }}"
-         data-division="{{ $service->id_division }}">
+         data-type="{{ $service->type_service }}">
 
         <div class="service-card-body">
             <div class="d-flex align-items-start justify-content-between mb-2">
                 <div>
                     <div class="fw-700" style="font-size:14px;color:var(--theme-text);">{{ $service->nom_service }}</div>
-                    @if($service->division)
+                    @if($service->divisions_count > 0)
                         <div style="font-size:11.5px;color:var(--theme-text-muted);margin-top:2px;">
-                            <i class="fas fa-sitemap me-1"></i>{{ $service->division->nom_division }}
+                            <i class="fas fa-sitemap me-1"></i>{{ $service->divisions_count }} division(s)
                         </div>
                     @endif
                 </div>
@@ -432,8 +434,8 @@
 
             <div class="mt-3 pt-2" style="border-top:1px solid var(--theme-border);">
                 @if($service->manager && $service->manager->agent)
-                    <div class="d-flex align-items-center gap-2">
-                        <div style="width:26px;height:26px;border-radius:50%;background:linear-gradient(135deg,#0A4D8C,#1565C0);display:flex;align-items:center;justify-content:center;color:white;font-size:9px;font-weight:700;flex-shrink:0;">
+                    <div class="d-flex align-items-center gap-2 mb-1">
+                        <div style="width:22px;height:22px;border-radius:50%;background:linear-gradient(135deg,#0A4D8C,#1565C0);display:flex;align-items:center;justify-content:center;color:white;font-size:9px;font-weight:700;flex-shrink:0;">
                             {{ strtoupper(substr($service->manager->agent->prenom ?? 'M', 0, 1)) }}
                         </div>
                         <div>
@@ -443,6 +445,17 @@
                     </div>
                 @else
                     <span style="font-size:12px;color:var(--theme-text-muted);"><i class="fas fa-user-slash me-1"></i>Sans manager</span>
+                @endif
+                @if($service->major && $service->major->agent)
+                    <div class="d-flex align-items-center gap-2 mt-1">
+                        <div style="width:22px;height:22px;border-radius:50%;background:linear-gradient(135deg,#7C3AED,#9333EA);display:flex;align-items:center;justify-content:center;color:white;font-size:9px;font-weight:700;flex-shrink:0;">
+                            {{ strtoupper(substr($service->major->agent->prenom ?? 'M', 0, 1)) }}
+                        </div>
+                        <div>
+                            <div style="font-size:12px;font-weight:600;">{{ $service->major->agent->nom_complet }}</div>
+                            <div style="font-size:10px;color:var(--theme-text-muted);">Major</div>
+                        </div>
+                    </div>
                 @endif
             </div>
         </div>
@@ -462,6 +475,10 @@
             <button type="button" class="btn-icon m" title="Manager"
                     onclick="openManagerModal({{ $service->id_service }})">
                 <i class="fas fa-user-tie"></i><span>Manager</span>
+            </button>
+            <button type="button" class="btn-icon" title="Major" style="color:#7C3AED;"
+                    onclick="openMajorModal({{ $service->id_service }}, {{ $service->id_agent_major ?? 'null' }})">
+                <i class="fas fa-user-nurse"></i><span>Major</span>
             </button>
             @endcan
             @can('delete', $service)
@@ -520,17 +537,6 @@
                                 <option value="Support"         {{ old('type_service') == 'Support' ? 'selected' : '' }}>Support</option>
                             </select>
                             @error('type_service')<div class="invalid-feedback" style="font-size:12px;">{{ $message }}</div>@enderror
-                        </div>
-                        <div class="col-12 col-md-6">
-                            <label class="modal-label">Division</label>
-                            <select name="id_division" class="modal-input">
-                                <option value="">— Aucune division —</option>
-                                @foreach($divisions as $div)
-                                    <option value="{{ $div->id_division }}" {{ old('id_division') == $div->id_division ? 'selected' : '' }}>
-                                        {{ $div->nom_division }}
-                                    </option>
-                                @endforeach
-                            </select>
                         </div>
                         <div class="col-12 col-md-6">
                             <label class="modal-label">Téléphone</label>
@@ -611,15 +617,6 @@
                                 <option value="Administratif">Administratif</option>
                                 <option value="Aide_diagnostic">Aide au diagnostic</option>
                                 <option value="Support">Support</option>
-                            </select>
-                        </div>
-                        <div class="col-12 col-md-6">
-                            <label class="modal-label">Division</label>
-                            <select id="editDivision" name="id_division" class="modal-input">
-                                <option value="">— Aucune —</option>
-                                @foreach($divisions as $div)
-                                    <option value="{{ $div->id_division }}">{{ $div->nom_division }}</option>
-                                @endforeach
                             </select>
                         </div>
                         <div class="col-12 col-md-6">
@@ -713,6 +710,42 @@
 
 
 {{-- ═══════════════════════════════════════════════════════════════════════
+     MODAL — ASSIGNER MAJOR
+     ═══════════════════════════════════════════════════════════════════════ --}}
+<div class="modal fade" id="modalAssignMajor" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered modal-sm">
+        <div class="modal-content" style="background:var(--theme-panel-bg);">
+            <form id="formAssignMajor" method="POST">
+                @csrf
+                <div style="padding:24px 24px 0;">
+                    <div class="d-flex align-items-center justify-content-between mb-3">
+                        <h5 class="fw-bold mb-0" style="color:var(--theme-text);">
+                            <i class="fas fa-user-nurse me-2" style="color:#7C3AED;"></i>Assigner major
+                        </h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    </div>
+                    <p id="majorModalSubtitle" class="text-muted small mb-3"></p>
+                    <label class="modal-label">Major paramédical</label>
+                    <select id="majorSelect" name="id_agent_major" class="modal-input">
+                        <option value="">— Retirer le major —</option>
+                        @foreach($majors as $maj)
+                            <option value="{{ $maj->id }}">{{ $maj->agent?->nom_complet ?? $maj->login }}</option>
+                        @endforeach
+                    </select>
+                </div>
+                <div style="padding:16px 24px 20px;border-top:1px solid var(--theme-border);margin-top:20px;display:flex;gap:10px;justify-content:flex-end;">
+                    <button type="button" class="action-btn action-btn-outline" data-bs-dismiss="modal">Annuler</button>
+                    <button type="submit" class="action-btn" style="background:#7C3AED;color:#fff;border-radius:8px;font-size:13px;font-weight:500;padding:9px 16px;">
+                        <i class="fas fa-check"></i> Confirmer
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+
+{{-- ═══════════════════════════════════════════════════════════════════════
      MODAL — SUPPRIMER UN SERVICE
      ═══════════════════════════════════════════════════════════════════════ --}}
 <div class="modal fade" id="modalDeleteService" tabindex="-1">
@@ -750,9 +783,9 @@
             'id'          => $s->id_service,
             'nom'         => $s->nom_service,
             'type'        => $s->type_service,
-            'id_division' => $s->id_division,
             'tel'         => $s->tel_service,
             'id_manager'  => $s->id_agent_manager,
+            'id_major'    => $s->id_agent_major,
             'agents'      => $s->agents->map(function ($a) {
                 return [
                     'id'        => $a->id_agent,
@@ -790,6 +823,7 @@ const allAgents    = @json($jsAllAgents);
 const ROUTES = {
     update:      (id) => `/rh/services/${id}`,
     manager:     (id) => `/rh/services/${id}/assigner-manager`,
+    major:       (id) => `/rh/services/${id}/assigner-major`,
     destroy:     (id) => `/rh/services/${id}`,
     attach:      (id) => `/rh/services/${id}/attach-agent`,
     detach:      (id, aid) => `/rh/services/${id}/agents/${aid}`,
@@ -819,28 +853,24 @@ document.addEventListener('DOMContentLoaded', () => {
 function applyFilters() {
     const q    = document.getElementById('inputRecherche').value.toLowerCase().trim();
     const type = document.getElementById('filterType').value;
-    const div  = document.getElementById('filterDivision').value;
 
     // Tableau
     document.querySelectorAll('#servicesTableEl tbody tr').forEach(row => {
         const matchNom  = !q    || row.dataset.nom?.includes(q);
         const matchType = !type || row.dataset.type === type;
-        const matchDiv  = !div  || row.dataset.division == div;
-        row.style.display = (matchNom && matchType && matchDiv) ? '' : 'none';
+        row.style.display = (matchNom && matchType) ? '' : 'none';
     });
     // Cartes
     document.querySelectorAll('#servicesGrid .service-card').forEach(card => {
         const matchNom  = !q    || card.dataset.nom?.includes(q);
         const matchType = !type || card.dataset.type === type;
-        const matchDiv  = !div  || card.dataset.division == div;
-        card.style.display = (matchNom && matchType && matchDiv) ? '' : 'none';
+        card.style.display = (matchNom && matchType) ? '' : 'none';
     });
 }
 
 function resetFilters() {
     document.getElementById('inputRecherche').value = '';
     document.getElementById('filterType').value     = '';
-    document.getElementById('filterDivision').value = '';
     applyFilters();
 }
 
@@ -863,7 +893,6 @@ function openEditModal(serviceId) {
     document.getElementById('formEditService').action = ROUTES.update(serviceId);
     document.getElementById('editNom').value      = s.nom  || '';
     document.getElementById('editType').value     = s.type || '';
-    document.getElementById('editDivision').value = s.id_division || '';
     document.getElementById('editTel').value      = s.tel  || '';
     document.getElementById('editManager').value  = s.id_manager || '';
 
@@ -949,6 +978,18 @@ function openManagerModal(serviceId) {
     document.getElementById('managerModalSubtitle').textContent = 'Service : ' + s.nom;
     document.getElementById('managerSelect').value       = s.id_manager || '';
     new bootstrap.Modal(document.getElementById('modalAssignManager')).show();
+}
+
+/* ══════════════════════════════════════════════════════════
+   MODAL MAJOR
+   ══════════════════════════════════════════════════════════ */
+function openMajorModal(serviceId, currentMajorId) {
+    const s = servicesData.find(x => x.id == serviceId);
+    if (!s) return;
+    document.getElementById('formAssignMajor').action    = ROUTES.major(serviceId);
+    document.getElementById('majorModalSubtitle').textContent = 'Service : ' + s.nom;
+    document.getElementById('majorSelect').value         = s.id_major || '';
+    new bootstrap.Modal(document.getElementById('modalAssignMajor')).show();
 }
 
 /* ══════════════════════════════════════════════════════════

@@ -98,7 +98,41 @@ class RoleAndPermissionSeeder extends Seeder
             'voir_dashboard_agent',
         ]);
         
-        // 2. MANAGER DE SERVICE
+        // Permissions exclusives Major
+        Permission::create(['name' => 'voir_dashboard_major']);
+
+        // 2. MAJOR DE SERVICE (responsable paramédical)
+        $roleMajor = Role::create(['name' => 'Major']);
+        $roleMajor->givePermissionTo([
+            // Tout ce que l'Agent peut faire
+            'voir_propre_dossier',
+            'demander_conge',
+            'voir_mes_conges',
+            'voir_mes_absences',
+            'justifier_absence',
+            'voir_mon_planning',
+            'voir_mes_documents',
+            'telecharger_document',
+            'voir_dashboard_agent',
+
+            // Gestion équipe (lecture seule)
+            'voir_equipe',
+            'voir_conges_equipe',
+
+            // Absences équipe
+            'enregistrer_absence',
+
+            // Planning
+            'voir_planning_service',
+            'creer_planning',
+            'modifier_planning',
+            'transmettre_planning',
+
+            // Dashboard Major
+            'voir_dashboard_major',
+        ]);
+
+        // 3. MANAGER DE SERVICE
         $roleManager = Role::create(['name' => 'Manager']);
         $roleManager->givePermissionTo([
             // Tout ce que l'Agent peut faire
@@ -131,7 +165,7 @@ class RoleAndPermissionSeeder extends Seeder
             'voir_dashboard_manager',
         ]);
         
-        // 3. AGENT RH
+        // 4. AGENT RH
         $roleRH = Role::create(['name' => 'AgentRH']);
         $roleRH->givePermissionTo([
             // Gestion Personnel complète
@@ -181,7 +215,7 @@ class RoleAndPermissionSeeder extends Seeder
             'exporter_donnees',
         ]);
         
-        // 4. DRH (Directeur des Ressources Humaines)
+        // 5. DRH (Directeur des Ressources Humaines)
         // Permissions exclusives DRH
         $permissionsDRHExclusives = [
             'view_kpis_strategiques',
@@ -206,7 +240,7 @@ class RoleAndPermissionSeeder extends Seeder
         // + Permissions exclusives DRH
         $roleDRH->givePermissionTo($permissionsDRHExclusives);
 
-        // 5. ADMINISTRATEUR SYSTÈME
+        // 6. ADMINISTRATEUR SYSTÈME
         $roleAdmin = Role::create(['name' => 'AdminSystème']);
         $roleAdmin->givePermissionTo(Permission::all()); // Toutes les permissions
     }

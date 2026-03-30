@@ -51,6 +51,31 @@ class RoleSeeder extends Seeder
         'heures-sup.view-own',
     ];
 
+    /** Permissions supplémentaires Major (s'ajoutent aux permissions communes) — responsable paramédical */
+    private const PERMISSIONS_MAJOR = [
+        'agents.view-service',
+        'agents.search',
+        'contrats.view-service',
+        'contrats.alerts',
+        'conges.view-service',
+        'absences.view-service',
+        'absences.create',
+        'absences.validate-justif',
+        'absences.statistics',
+        'plannings.view-service',
+        'plannings.create',
+        'plannings.update',
+        'plannings.delete',
+        'plannings.submit',
+        'dashboard.view-service',
+        'dashboard.view-major',
+        'mouvements.view',
+        'heures-sup.view-service',
+        'heures-sup.create',
+        'documents.search',
+        'reports.view',
+    ];
+
     /** Permissions supplémentaires Manager (s'ajoutent aux permissions communes) */
     private const PERMISSIONS_MANAGER = [
         'agents.view-service',
@@ -244,8 +269,9 @@ class RoleSeeder extends Seeder
         // Flush le cache des permissions (Spatie)
         app()[\Spatie\Permission\PermissionRegistrar::class]->forgetCachedPermissions();
 
-        // ── Créer les 5 rôles ────────────────────────────────
+        // ── Créer les 6 rôles ────────────────────────────────
         $roleAgent  = Role::firstOrCreate(['name' => 'Agent',        'guard_name' => 'web']);
+        $roleMajor  = Role::firstOrCreate(['name' => 'Major',        'guard_name' => 'web']);
         $roleManager= Role::firstOrCreate(['name' => 'Manager',      'guard_name' => 'web']);
         $roleRH     = Role::firstOrCreate(['name' => 'AgentRH',      'guard_name' => 'web']);
         $roleDRH    = Role::firstOrCreate(['name' => 'DRH',          'guard_name' => 'web']);
@@ -253,6 +279,7 @@ class RoleSeeder extends Seeder
 
         // ── Construire les jeux de permissions cumulatifs ────
         $permsAgent   = self::PERMISSIONS_COMMUN;
+        $permsMajor   = array_unique(array_merge($permsAgent,   self::PERMISSIONS_MAJOR));
         $permsManager = array_unique(array_merge($permsAgent,   self::PERMISSIONS_MANAGER));
         $permsRH      = array_unique(array_merge($permsManager, self::PERMISSIONS_AGENT_RH));
         $permsDRH     = array_unique(array_merge($permsRH,      self::PERMISSIONS_DRH));
@@ -261,16 +288,18 @@ class RoleSeeder extends Seeder
 
         // ── Assigner les permissions ─────────────────────────
         $this->syncPermissions($roleAgent,   $permsAgent,   'Agent');
+        $this->syncPermissions($roleMajor,   $permsMajor,   'Major');
         $this->syncPermissions($roleManager, $permsManager, 'Manager');
         $this->syncPermissions($roleRH,      $permsRH,      'AgentRH');
         $this->syncPermissions($roleDRH,     $permsDRH,     'DRH');
         $this->syncPermissions($roleAdmin,   $allPerms,     'AdminSystème');
 
-        $this->command->info('✅ Matrice RBAC appliquée avec succès.');
+        $this->command->info(' Matrice RBAC appliquée avec succès.');
         $this->command->table(
             ['Rôle', 'Nb permissions'],
             [
                 ['Agent',        count($permsAgent)],
+                ['Major',        count($permsMajor)],
                 ['Manager',      count($permsManager)],
                 ['AgentRH',      count($permsRH)],
                 ['DRH',          count($permsDRH)],

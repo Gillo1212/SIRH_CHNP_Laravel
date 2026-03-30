@@ -61,11 +61,11 @@ cp Logo_1.png public/assets/images/logo.png
 
 ### Étape 3 : Vérifier les dépendances JS (CDN inclus)
 Le layout `master.blade.php` charge automatiquement :
-- ✅ Alpine.js 3.x
-- ✅ ApexCharts
-- ✅ SweetAlert2
-- ✅ Font Awesome 6
-- ✅ Google Fonts (Inter)
+-  Alpine.js 3.x
+-  ApexCharts
+-  SweetAlert2
+-  Font Awesome 6
+-  Google Fonts (Inter)
 
 ---
 
@@ -316,7 +316,7 @@ class DashboardController extends Controller
 
 ---
 
-## ✅ Checklist d'Intégration
+##  Checklist d'Intégration
 
 - [ ] Extraire le ZIP dans `resources/views/`
 - [ ] Copier `Logo_1.png` vers `public/assets/images/logo.png`

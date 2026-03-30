@@ -16,7 +16,6 @@ class StoreServiceRequest extends FormRequest
         return [
             'nom_service'       => 'required|string|max:100|unique:services,nom_service',
             'type_service'      => 'required|in:Clinique,Administratif,Aide_diagnostic,Support',
-            'id_division'       => 'nullable|exists:divisions,id_division',
             'tel_service'       => 'nullable|string|max:20',
             'id_agent_manager'  => 'nullable|exists:users,id',
         ];
@@ -29,7 +28,6 @@ class StoreServiceRequest extends FormRequest
             'nom_service.unique'   => 'Un service avec ce nom existe déjà.',
             'type_service.required'=> 'Le type de service est obligatoire.',
             'type_service.in'      => 'Le type doit être : Clinique, Administratif, Aide_diagnostic ou Support.',
-            'id_division.exists'   => 'La division sélectionnée n\'existe pas.',
             'id_agent_manager.exists' => 'L\'utilisateur sélectionné comme manager n\'existe pas.',
         ];
     }

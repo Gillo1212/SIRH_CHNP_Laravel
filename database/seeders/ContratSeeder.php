@@ -314,6 +314,6 @@ class ContratSeeder extends Seeder
         $alert60   = Contrat::actif()->expirant(60)->count();
         $alert30   = Contrat::actif()->expirant(30)->count();
 
-        $this->command->info("✅  {$total} contrats insérés — {$actifs} actifs | {$alert30} alertes < 30j | {$alert60} alertes < 60j");
+        $this->command->info("  {$total} contrats insérés — {$actifs} actifs | {$alert30} alertes < 30j | {$alert60} alertes < 60j");
     }
 }

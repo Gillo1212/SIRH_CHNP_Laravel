@@ -78,6 +78,14 @@ class User extends Authenticatable
     }
 
     /**
+     * Services dont cet utilisateur est major
+     */
+    public function servicesGeresMajor()
+    {
+        return $this->hasMany(Service::class, 'id_agent_major');
+    }
+
+    /**
      * Logs d'audit créés par cet utilisateur
      */
     public function logsAudit()

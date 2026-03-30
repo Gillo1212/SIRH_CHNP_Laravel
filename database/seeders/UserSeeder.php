@@ -99,7 +99,38 @@ class UserSeeder extends Seeder
             'id_agent_manager' => $manager->id,
         ]);
 
-        // 4. AGENT (Personnel de base)
+        // 4. MAJOR DE SERVICE (Urgences - service paramédical)
+        $major = User::create([
+            'name'                => 'Rokhaya MBAYE',
+            'login'               => 'rokhaya.mbaye',
+            'password'            => Hash::make(self::DEFAULT_PASSWORD),
+            'statut_compte'       => 'Actif',
+            'verouille'           => false,
+            'tentatives_connexion' => 0,
+        ]);
+        $major->assignRole('Major');
+
+        Agent::create([
+            'user_id'          => $major->id,
+            'matricule'        => 'CHNP-00004B',
+            'nom'              => 'MBAYE',
+            'prenom'           => 'Rokhaya',
+            'date_naissance'   => '1983-06-18',
+            'sexe'             => 'F',
+            'telephone'        => null,
+            'cni'              => null,
+            'religion'         => null,
+            'categorie_cp'     => 'Cadre_Moyen',
+            'famille_d_emploi' => 'Corps_Paramédical',
+            'statut_agent'     => 'Actif',
+            'id_service'       => 5, // Urgences (SAU)
+        ]);
+
+        DB::table('services')->where('id_service', 5)->update([
+            'id_agent_major' => $major->id,
+        ]);
+
+        // 5. AGENT (Personnel de base — Pédiatrie)
         $agent = User::create([
             'name'                => 'Aïssatou FALL',
             'login'               => 'aissatou.fall',
@@ -126,7 +157,7 @@ class UserSeeder extends Seeder
             'id_service'       => 1,
         ]);
 
-        // 5. DRH (Directeur des Ressources Humaines)
+        // 6. DRH (Directeur des Ressources Humaines)
         $drh = User::create([
             'name'                => 'Ibrahima DIALLO',
             'login'               => 'ibrahima.diallo',

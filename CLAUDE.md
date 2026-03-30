@@ -186,7 +186,7 @@ Agent < Manager < AgentRH < DRH < AdminSystème
 
 ## ⚠️ PÉRIMÈTRE MVP (IMPORTANT)
 
-### ✅ INCLUS dans le MVP
+###  INCLUS dans le MVP
 - Gestion personnel (agents, enfants, conjoints)
 - Gestion contrats (CRUD, alertes expiration)
 - Gestion congés (workflow 3 niveaux + saisie physique)
@@ -367,22 +367,22 @@ Schema::create('mouvements', function (Blueprint $table) {
 ## ⚠️ RÈGLES CRITIQUES
 
 ### Confidentialité
-1. ✅ Chiffrement AES-256 pour données CRITIQUES
-2. ✅ Policies AVANT chaque action
-3. ✅ Masquage affichage données sensibles
-4. ✅ Audit trail TOUS les accès
+1.  Chiffrement AES-256 pour données CRITIQUES
+2.  Policies AVANT chaque action
+3.  Masquage affichage données sensibles
+4.  Audit trail TOUS les accès
 
 ### Intégrité
-1. ✅ Form Requests TOUTES entrées
-2. ✅ DB::transaction() opérations multi-tables
-3. ✅ Contraintes DB (FK, UNIQUE, NOT NULL)
-4. ✅ Audit Log immuable (Spatie)
+1.  Form Requests TOUTES entrées
+2.  DB::transaction() opérations multi-tables
+3.  Contraintes DB (FK, UNIQUE, NOT NULL)
+4.  Audit Log immuable (Spatie)
 
 ### Disponibilité
-1. ✅ Eager loading (éviter N+1)
-2. ✅ Index DB optimisés
-3. ✅ Tests robustes (Feature + Unit)
-4. ✅ Backup quotidien chiffré
+1.  Eager loading (éviter N+1)
+2.  Index DB optimisés
+3.  Tests robustes (Feature + Unit)
+4.  Backup quotidien chiffré
 
 ## 💡 NOTES CLAUDE CODE
 
@@ -405,14 +405,14 @@ Demande confirmation AVANT :
 ## 🎯 OBJECTIF SOUTENANCE
 
 ### Livrables
-1. ✅ 10 modules COMPLETS et FONCTIONNELS
-2. ✅ 5 rôles RBAC (incluant DRH)
-3. ✅ Démonstration TRIADE CID
-4. ✅ Self-service Agent
-5. ✅ Tests (70% couverture)
-6. ✅ Documentation technique complète
-7. ✅ Code DÉFENDABLE
-8. ✅ 0 bugs critiques
+1.  10 modules COMPLETS et FONCTIONNELS
+2.  5 rôles RBAC (incluant DRH)
+3.  Démonstration TRIADE CID
+4.  Self-service Agent
+5.  Tests (70% couverture)
+6.  Documentation technique complète
+7.  Code DÉFENDABLE
+8.  0 bugs critiques
 
 ### Démonstration TRIADE CID
 

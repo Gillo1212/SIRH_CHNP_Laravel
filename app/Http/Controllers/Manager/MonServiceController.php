@@ -25,7 +25,7 @@ class MonServiceController extends Controller
     private function getManagerService(): Service
     {
         $service = Service::where('id_agent_manager', auth()->id())
-            ->with(['division', 'agents'])
+            ->with(['divisions', 'agents'])
             ->first();
 
         if (!$service) {
