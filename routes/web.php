@@ -2,11 +2,15 @@
 
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\Admin\AdminDashboardController;
 use App\Http\Controllers\Admin\UserController as AdminUserController;
 use App\Http\Controllers\Admin\UserAccountController;
 use App\Http\Controllers\Admin\RoleController;
 use App\Http\Controllers\Admin\PermissionController;
+use App\Http\Controllers\Admin\AuditController;
+use App\Http\Controllers\Admin\SettingsController;
+use App\Http\Controllers\Admin\BackupController;
 use App\Http\Controllers\RH\RHDashboardController;
 use App\Http\Controllers\RH\MouvementController;
 use App\Http\Controllers\RH\DocumentAdminController;
@@ -17,12 +21,12 @@ use App\Http\Controllers\RH\CongeRHController;
 use App\Http\Controllers\RH\AbsenceRHController;
 use App\Http\Controllers\RH\PlanningRHController;
 use App\Http\Controllers\RH\GEDController;
+use App\Http\Controllers\Agent\GEDAgentController;
 use App\Http\Controllers\RH\ServiceController;
 use App\Http\Controllers\RH\DivisionController;
 use App\Http\Controllers\RH\DemandeDocController;
 use App\Http\Controllers\RH\RapportRHController;
 use App\Http\Controllers\DRH\DRHDashboardController;
-use App\Http\Controllers\DRH\DecisionController;
 use App\Http\Controllers\DRH\RapportDRHController;
 use App\Http\Controllers\DRH\IndicateurController;
 use App\Http\Controllers\DRH\ValidationDRHController;
@@ -31,11 +35,14 @@ use App\Http\Controllers\Manager\EquipeController;
 use App\Http\Controllers\Manager\CongeManagerController;
 use App\Http\Controllers\Manager\AbsenceManagerController;
 use App\Http\Controllers\Manager\PlanningManagerController;
+use App\Http\Controllers\Manager\MonServiceController;
 use App\Http\Controllers\Agent\AgentDashboardController;
 use App\Http\Controllers\Agent\ProfilController;
 use App\Http\Controllers\Agent\CongeAgentController;
 use App\Http\Controllers\Agent\PECAgentController;
 use App\Http\Controllers\Agent\DocAdminAgentController;
+use App\Http\Controllers\Agent\AbsenceAgentController;
+use App\Http\Controllers\Agent\PlanningAgentController;
 use App\Http\Controllers\PreferenceController;
 use App\Http\Controllers\AideController;
 use App\Http\Controllers\SupportController;
@@ -127,18 +134,21 @@ Route::middleware(['auth', 'check.account.locked'])->group(function () {
         Route::delete('/permissions/{permission}', [PermissionController::class, 'destroy'])->name('permissions.destroy');
 
         // Audit
-        Route::get('/audit', fn() => wip('Journal d\'audit complet'))->name('audit.index');
-        Route::get('/audit/connexions', fn() => wip('Historique des connexions'))->name('audit.connexions');
-        Route::get('/audit/echecs', fn() => wip('Tentatives de connexion échouées'))->name('audit.echecs');
-        Route::get('/audit/export', fn() => wip('Export du journal d\'audit'))->name('audit.export');
+        Route::get('/audit', [AuditController::class, 'index'])->name('audit.index');
+        Route::get('/audit/connexions', [AuditController::class, 'connexions'])->name('audit.connexions');
+        Route::get('/audit/echecs', [AuditController::class, 'echecs'])->name('audit.echecs');
+        Route::get('/audit/export', [AuditController::class, 'export'])->name('audit.export');
 
         // Paramètres
-        Route::get('/settings', fn() => wip('Paramètres système'))->name('settings.index');
-        Route::get('/settings/notifications', fn() => wip('Configuration des notifications'))->name('settings.notifications');
+        Route::get('/settings',               [SettingsController::class, 'index'])->name('settings.index');
+        Route::post('/settings',              [SettingsController::class, 'update'])->name('settings.update');
+        Route::get('/settings/notifications', [SettingsController::class, 'notifications'])->name('settings.notifications');
 
         // Sauvegardes
-        Route::get('/backups', fn() => wip('Gestion des sauvegardes'))->name('backups.index');
-        Route::post('/backups/create', fn() => wip('Backup manuel'))->name('backups.create');
+        Route::get('/backups',                          [BackupController::class, 'index'])->name('backups.index');
+        Route::post('/backups/create',                  [BackupController::class, 'create'])->name('backups.create');
+        Route::get('/backups/{filename}/download',      [BackupController::class, 'download'])->name('backups.download');
+        Route::delete('/backups/{filename}',            [BackupController::class, 'delete'])->name('backups.delete');
     });
 
     /*
@@ -151,7 +161,7 @@ Route::middleware(['auth', 'check.account.locked'])->group(function () {
         Route::get('/dashboard', [DRHDashboardController::class, 'index'])->name('dashboard');
         Route::get('/kpis', [DRHDashboardController::class, 'kpis'])->name('kpis');
         Route::get('/budget', [DRHDashboardController::class, 'budget'])->name('budget');
-        Route::get('/organigramme', fn() => wip('Organigramme CHNP'))->name('organigramme');
+        Route::get('/organigramme', [DRHDashboardController::class, 'organigramme'])->name('organigramme');
 
         // Indicateurs RH
         Route::prefix('indicateurs')->name('indicateurs.')->group(function () {
@@ -167,20 +177,17 @@ Route::middleware(['auth', 'check.account.locked'])->group(function () {
             Route::post('/decisions/{id}/signer', [ValidationDRHController::class, 'signer'])->name('signer');
             Route::get('/mouvements', [ValidationDRHController::class, 'mouvements'])->name('mouvements');
             Route::post('/mouvements/{id}/valider', [ValidationDRHController::class, 'validerMouvement'])->name('valider-mouvement');
+            Route::post('/mouvements/{id}/rejeter', [ValidationDRHController::class, 'rejeterMouvement'])->name('rejeter-mouvement');
             Route::get('/pec-exceptionnelles', [ValidationDRHController::class, 'pecExceptionnelles'])->name('pec');
             Route::post('/pec/{id}/valider', [ValidationDRHController::class, 'validerPEC'])->name('valider-pec');
         });
 
-        // Décisions (alias)
-        Route::get('/decisions', [DecisionController::class, 'index'])->name('decisions.index');
-        Route::post('/decisions/{id}/signer', [DecisionController::class, 'signer'])->name('decisions.signer');
-
         // Rapports direction
         Route::prefix('rapports')->name('rapports.')->group(function () {
             Route::get('/bilan-social', [RapportDRHController::class, 'bilanSocial'])->name('bilan');
-            Route::get('/effectifs', fn() => wip('Rapport Effectifs'))->name('effectifs');
-            Route::get('/previsions-departs', fn() => wip('Prévisions des départs'))->name('previsions');
-            Route::get('/export-consolide', fn() => wip('Export consolidé'))->name('export');
+            Route::get('/effectifs', [RapportDRHController::class, 'effectifs'])->name('effectifs');
+            Route::get('/previsions-departs', [RapportDRHController::class, 'previsions'])->name('previsions');
+            Route::get('/export-consolide', [RapportDRHController::class, 'exportConsolide'])->name('export');
         });
     });
 
@@ -204,30 +211,38 @@ Route::middleware(['auth', 'check.account.locked'])->group(function () {
             Route::get('/{id}/edit', [AgentRHController::class, 'edit'])->name('edit');
             Route::put('/{id}', [AgentRHController::class, 'update'])->name('update');
             Route::delete('/{id}', [AgentRHController::class, 'destroy'])->name('destroy');
-            Route::get('/export/csv', [AgentRHController::class, 'export'])->name('export.csv');
+            Route::get('/export/csv',   [AgentRHController::class, 'export'])->name('export.csv');
+            Route::get('/export/excel', [AgentRHController::class, 'exportExcel'])->name('export.excel');
         });
 
         // Contrats
         Route::prefix('contrats')->name('contrats.')->group(function () {
-            Route::get('/', [ContratController::class, 'index'])->name('index');
-            Route::get('/create', [ContratController::class, 'create'])->name('create');
-            Route::post('/', [ContratController::class, 'store'])->name('store');
-            Route::get('/expiring', [ContratController::class, 'expiring'])->name('expiring');
-            Route::get('/{id}', [ContratController::class, 'show'])->name('show');
-            Route::get('/{id}/edit', [ContratController::class, 'edit'])->name('edit');
-            Route::put('/{id}', [ContratController::class, 'update'])->name('update');
+            Route::get('/',                                    [ContratController::class, 'index'])->name('index');
+            Route::get('/create',                              [ContratController::class, 'create'])->name('create');
+            Route::post('/',                                   [ContratController::class, 'store'])->name('store');
+            Route::get('/export',                              [ContratController::class, 'export'])->name('export');
+            Route::get('/expiring',                            [ContratController::class, 'expiring'])->name('expiring');
+            Route::get('/{id}',                                [ContratController::class, 'show'])->name('show');
+            Route::get('/{id}/edit',                           [ContratController::class, 'edit'])->name('edit');
+            Route::put('/{id}',                                [ContratController::class, 'update'])->name('update');
+            Route::post('/{id}/renouveler',                    [ContratController::class, 'renouveler'])->name('renouveler');
+            Route::patch('/{id}/cloturer',                     [ContratController::class, 'cloturer'])->name('cloturer');
         });
 
         // Mouvements
         Route::prefix('mouvements')->name('mouvements.')->group(function () {
-            Route::get('/', [MouvementController::class, 'index'])->name('index');
-            Route::get('/affectations', [MouvementController::class, 'affectations'])->name('affectations');
-            Route::get('/mutations', [MouvementController::class, 'mutations'])->name('mutations');
-            Route::get('/retours', fn() => wip('Retours / Réintégrations'))->name('retours');
-            Route::get('/departs', [MouvementController::class, 'departs'])->name('departs');
-            Route::get('/create', fn() => wip('Nouveau mouvement'))->name('create');
-            Route::post('/store', [MouvementController::class, 'store'])->name('store');
-            Route::get('/{id}', fn($id) => wip('Détail mouvement'))->name('show');
+            Route::get('/',                              [MouvementController::class, 'index'])->name('index');
+            Route::get('/affectations',                  [MouvementController::class, 'affectations'])->name('affectations');
+            Route::get('/mutations',                     [MouvementController::class, 'mutations'])->name('mutations');
+            Route::get('/retours',                       [MouvementController::class, 'retours'])->name('retours');
+            Route::get('/departs',                       [MouvementController::class, 'departs'])->name('departs');
+            Route::get('/export',                        [MouvementController::class, 'export'])->name('export');
+            Route::get('/create',                        [MouvementController::class, 'create'])->name('create');
+            Route::post('/',                             [MouvementController::class, 'store'])->name('store');
+            Route::get('/{id}',                          [MouvementController::class, 'show'])->name('show');
+            Route::put('/{id}',                          [MouvementController::class, 'update'])->name('update');
+            Route::post('/{id}/effectuer',               [MouvementController::class, 'effectuer'])->name('effectuer');
+            Route::post('/{id}/annuler',                 [MouvementController::class, 'annuler'])->name('annuler');
         });
 
         // Congés
@@ -245,10 +260,18 @@ Route::middleware(['auth', 'check.account.locked'])->group(function () {
 
         // Absences
         Route::prefix('absences')->name('absences.')->group(function () {
-            Route::get('/', [AbsenceRHController::class, 'index'])->name('index');
-            Route::get('/create', [AbsenceRHController::class, 'create'])->name('create');
-            Route::post('/', [AbsenceRHController::class, 'store'])->name('store');
-            Route::get('/{id}', [AbsenceRHController::class, 'show'])->name('show');
+            Route::get('/',        [AbsenceRHController::class, 'index'])->name('index');
+            Route::get('/export',  [AbsenceRHController::class, 'export'])->name('export');
+            Route::get('/create',  [AbsenceRHController::class, 'create'])->name('create');
+            Route::post('/',       [AbsenceRHController::class, 'store'])->name('store');
+            Route::get('/{id}',    [AbsenceRHController::class, 'show'])->name('show');
+            Route::get('/{id}/edit', [AbsenceRHController::class, 'edit'])->name('edit');
+            Route::put('/{id}',    [AbsenceRHController::class, 'update'])->name('update');
+            Route::delete('/{id}', [AbsenceRHController::class, 'destroy'])->name('destroy');
+            Route::patch('/{id}/valider-justificatif',            [AbsenceRHController::class, 'validerJustificatif'])->name('valider-justificatif');
+            Route::patch('/{id}/rejeter-justificatif',            [AbsenceRHController::class, 'rejeterJustificatif'])->name('rejeter-justificatif');
+            Route::patch('/{id}/pieces/{pieceId}/valider',        [AbsenceRHController::class, 'validerPiece'])->name('pieces.valider');
+            Route::patch('/{id}/pieces/{pieceId}/rejeter',        [AbsenceRHController::class, 'rejeterPiece'])->name('pieces.rejeter');
         });
 
         // Demandes documents (traitement RH)
@@ -274,24 +297,49 @@ Route::middleware(['auth', 'check.account.locked'])->group(function () {
             Route::get('/', [PriseEnChargeController::class, 'index'])->name('index');
             Route::get('/create', [PriseEnChargeController::class, 'create'])->name('create');
             Route::post('/store', [PriseEnChargeController::class, 'store'])->name('store');
-            Route::get('/historique', fn() => wip('Historique des prises en charge'))->name('historique');
+            Route::get('/historique', [PriseEnChargeController::class, 'historique'])->name('historique');
             Route::get('/{id}', [PriseEnChargeController::class, 'show'])->name('show');
+            Route::patch('/{id}', [PriseEnChargeController::class, 'update'])->name('update');
         });
 
         // Plannings
         Route::prefix('plannings')->name('plannings.')->group(function () {
-            Route::get('/', [PlanningRHController::class, 'index'])->name('index');
-            Route::get('/pending', [PlanningRHController::class, 'pending'])->name('pending');
-            Route::get('/{id}', [PlanningRHController::class, 'show'])->name('show');
-            Route::post('/{id}/valider', [PlanningRHController::class, 'valider'])->name('valider');
+            Route::get('/',               [PlanningRHController::class, 'index'])->name('index');
+            Route::get('/pending',        [PlanningRHController::class, 'pending'])->name('pending');
+            Route::get('/{id}',           [PlanningRHController::class, 'show'])->name('show');
+            Route::post('/{id}/valider',  [PlanningRHController::class, 'valider'])->name('valider');
+            Route::post('/{id}/rejeter',  [PlanningRHController::class, 'rejeter'])->name('rejeter');
         });
 
-        // GED
+        // GED — Gestion Électronique de Documents
+        Route::prefix('ged')->name('ged.')->group(function () {
+            // Dashboard GED
+            Route::get('/', [GEDController::class, 'index'])->name('index');
+            // Recherche globale
+            Route::get('/recherche', [GEDController::class, 'search'])->name('search');
+            // Étagères
+            Route::get('/etageres', [GEDController::class, 'etageres'])->name('etageres');
+            Route::post('/etageres', [GEDController::class, 'etagereStore'])->name('etageres.store');
+            // Dossiers (enveloppes)
+            Route::get('/dossiers', [GEDController::class, 'dossiers'])->name('dossiers');
+            Route::get('/dossiers/{id}', [GEDController::class, 'dossierShow'])->name('dossier.show');
+            // Documents
+            Route::get('/documents/create', [GEDController::class, 'create'])->name('documents.create');
+            Route::post('/documents', [GEDController::class, 'store'])->name('documents.store');
+            Route::get('/documents/{id}', [GEDController::class, 'show'])->name('documents.show');
+            Route::get('/documents/{id}/preview', [GEDController::class, 'preview'])->name('documents.preview');
+            Route::get('/documents/{id}/download', [GEDController::class, 'download'])->name('documents.download');
+            Route::patch('/documents/{id}/archiver', [GEDController::class, 'archiver'])->name('documents.archiver');
+            Route::patch('/documents/{id}/restaurer', [GEDController::class, 'restaurer'])->name('documents.restaurer');
+            Route::patch('/documents/{id}/detruire', [GEDController::class, 'detruire'])->name('documents.detruire');
+        });
+
+        // Alias de compatibilité pour l'ancienne route documents.*
         Route::prefix('documents')->name('documents.')->group(function () {
             Route::get('/', [GEDController::class, 'index'])->name('index');
+            Route::get('/search', [GEDController::class, 'search'])->name('search');
             Route::get('/create', [GEDController::class, 'create'])->name('create');
             Route::post('/', [GEDController::class, 'store'])->name('store');
-            Route::get('/search', [GEDController::class, 'search'])->name('search');
             Route::get('/{id}', [GEDController::class, 'show'])->name('show');
         });
 
@@ -300,9 +348,13 @@ Route::middleware(['auth', 'check.account.locked'])->group(function () {
             Route::get('/', [ServiceController::class, 'index'])->name('index');
             Route::get('/create', [ServiceController::class, 'create'])->name('create');
             Route::post('/', [ServiceController::class, 'store'])->name('store');
+            Route::get('/{id}', [ServiceController::class, 'show'])->name('show');
             Route::get('/{id}/edit', [ServiceController::class, 'edit'])->name('edit');
             Route::put('/{id}', [ServiceController::class, 'update'])->name('update');
+            Route::delete('/{id}', [ServiceController::class, 'destroy'])->name('destroy');
             Route::post('/{id}/assigner-manager', [ServiceController::class, 'assignerManager'])->name('assigner-manager');
+            Route::post('/{id}/attach-agent', [ServiceController::class, 'attachAgent'])->name('attach-agent');
+            Route::delete('/{id}/agents/{agentId}', [ServiceController::class, 'detachAgent'])->name('detach-agent');
         });
 
         // Divisions
@@ -312,6 +364,7 @@ Route::middleware(['auth', 'check.account.locked'])->group(function () {
             Route::post('/', [DivisionController::class, 'store'])->name('store');
             Route::get('/{id}/edit', [DivisionController::class, 'edit'])->name('edit');
             Route::put('/{id}', [DivisionController::class, 'update'])->name('update');
+            Route::delete('/{id}', [DivisionController::class, 'destroy'])->name('destroy');
         });
 
         // Rapports RH
@@ -321,11 +374,12 @@ Route::middleware(['auth', 'check.account.locked'])->group(function () {
             Route::get('/effectifs', [RapportRHController::class, 'effectifs'])->name('effectifs');
             Route::get('/stats', [RapportRHController::class, 'stats'])->name('stats');
             Route::get('/export', [RapportRHController::class, 'export'])->name('export');
+            Route::get('/chart-data', [RapportRHController::class, 'chartData'])->name('chart-data');
         });
     });
 
     // Alias pour documents-admin (compatibilité sidebar DRH)
-    Route::middleware(['role:AgentRH|DRH'])->prefix('documents-admin')->name('documents-admin.')->group(function () {
+    Route::middleware(['role:AgentRH|DRH|AdminSystème'])->prefix('documents-admin')->name('documents-admin.')->group(function () {
         Route::get('/', [DocumentAdminController::class, 'index'])->name('index');
         Route::get('/attestation/{agent}', [DocumentAdminController::class, 'attestation'])->name('attestation');
         Route::get('/certificat/{agent}', [DocumentAdminController::class, 'certificat'])->name('certificat');
@@ -334,12 +388,13 @@ Route::middleware(['auth', 'check.account.locked'])->group(function () {
     });
 
     // Alias pec.* (compatibilité sidebar)
-    Route::middleware(['role:AgentRH|DRH'])->prefix('prises-en-charge')->name('pec.')->group(function () {
+    Route::middleware(['role:AgentRH|DRH|AdminSystème'])->prefix('prises-en-charge')->name('pec.')->group(function () {
         Route::get('/', [PriseEnChargeController::class, 'index'])->name('index');
         Route::get('/create', [PriseEnChargeController::class, 'create'])->name('create');
         Route::post('/store', [PriseEnChargeController::class, 'store'])->name('store');
-        Route::get('/historique', fn() => wip('Historique des prises en charge'))->name('historique');
+        Route::get('/historique', [PriseEnChargeController::class, 'historique'])->name('historique');
         Route::get('/{id}', [PriseEnChargeController::class, 'show'])->name('show');
+        Route::patch('/{id}', [PriseEnChargeController::class, 'update'])->name('update');
     });
 
     /*
@@ -350,6 +405,13 @@ Route::middleware(['auth', 'check.account.locked'])->group(function () {
     Route::middleware(['role:Manager'])->prefix('manager')->name('manager.')->group(function () {
 
         Route::get('/dashboard', [ManagerDashboardController::class, 'index'])->name('dashboard');
+
+        // Mon Service (isolation stricte par service)
+        Route::prefix('mon-service')->name('service.')->middleware('manager.service')->group(function () {
+            Route::get('/', [MonServiceController::class, 'index'])->name('index');
+            Route::get('/agents', [MonServiceController::class, 'agents'])->name('agents');
+            Route::get('/statistiques', [MonServiceController::class, 'statistics'])->name('statistics');
+        });
 
         // Mon Équipe
         Route::get('/equipe', [EquipeController::class, 'index'])->name('equipe');
@@ -363,19 +425,27 @@ Route::middleware(['auth', 'check.account.locked'])->group(function () {
 
         // Absences
         Route::prefix('absences')->name('absences.')->group(function () {
-            Route::get('/', [AbsenceManagerController::class, 'index'])->name('index');
-            Route::get('/create', [AbsenceManagerController::class, 'create'])->name('create');
-            Route::post('/', [AbsenceManagerController::class, 'store'])->name('store');
+            Route::get('/',        [AbsenceManagerController::class, 'index'])->name('index');
+            Route::get('/create',  [AbsenceManagerController::class, 'create'])->name('create');
+            Route::post('/',       [AbsenceManagerController::class, 'store'])->name('store');
+            Route::get('/{id}',    [AbsenceManagerController::class, 'show'])->name('show');
         });
 
         // Plannings
         Route::prefix('planning')->name('planning.')->group(function () {
-            Route::get('/', [PlanningManagerController::class, 'index'])->name('index');
-            Route::get('/create', [PlanningManagerController::class, 'create'])->name('create');
-            Route::post('/', [PlanningManagerController::class, 'store'])->name('store');
-            Route::get('/{id}', [PlanningManagerController::class, 'show'])->name('show');
-            Route::post('/{id}/transmettre', [PlanningManagerController::class, 'transmettre'])->name('transmettre');
+            Route::get('/',                                [PlanningManagerController::class, 'index'])->name('index');
+            Route::get('/create',                          [PlanningManagerController::class, 'create'])->name('create');
+            Route::post('/',                               [PlanningManagerController::class, 'store'])->name('store');
+            Route::get('/{id}',                            [PlanningManagerController::class, 'show'])->name('show');
+            Route::put('/{id}',                            [PlanningManagerController::class, 'update'])->name('update');
+            Route::delete('/{id}',                         [PlanningManagerController::class, 'destroy'])->name('destroy');
+            Route::post('/{id}/transmettre',               [PlanningManagerController::class, 'transmettre'])->name('transmettre');
+            Route::post('/{id}/lignes',                    [PlanningManagerController::class, 'addLigne'])->name('lignes.store');
+            Route::delete('/{id}/lignes/{ligneId}',        [PlanningManagerController::class, 'removeLigne'])->name('lignes.destroy');
         });
+
+        // Mouvements du service (lecture seule)
+        Route::get('/mouvements', [MonServiceController::class, 'mouvements'])->name('mouvements');
     });
 
     /*
@@ -383,13 +453,15 @@ Route::middleware(['auth', 'check.account.locked'])->group(function () {
     | Routes AGENT
     |--------------------------------------------------------------------------
     */
-    Route::middleware(['role:Agent'])->prefix('agent')->name('agent.')->group(function () {
+    Route::middleware(['agent.profile'])->prefix('agent')->name('agent.')->group(function () {
 
         Route::get('/dashboard', [AgentDashboardController::class, 'index'])->name('dashboard');
 
         // Mon dossier
         Route::get('/profil', [ProfilController::class, 'index'])->name('profil');
         Route::get('/famille', [ProfilController::class, 'famille'])->name('famille');
+        Route::post('/profil/photo', [ProfilController::class, 'updatePhoto'])->name('profil.photo');
+        Route::put('/profil/password', [ProfilController::class, 'updatePassword'])->name('profil.password');
 
         // Documents administratifs (self-service)
         Route::prefix('docs')->name('docs.')->group(function () {
@@ -417,11 +489,42 @@ Route::middleware(['auth', 'check.account.locked'])->group(function () {
             Route::get('/{id}', [CongeAgentController::class, 'show'])->name('show');
         });
 
-        // Mon planning
-        Route::get('/planning', fn() => wip('Mon planning'))->name('planning');
+        // Mes absences (demande + justification)
+        Route::prefix('absences')->name('absences.')->group(function () {
+            Route::get('/',                      [AbsenceAgentController::class, 'index'])->name('index');
+            Route::post('/',                     [AbsenceAgentController::class, 'store'])->name('store');
+            Route::post('/{id}/justifier',       [AbsenceAgentController::class, 'uploadJustificatif'])->name('justifier');
+        });
 
-        // Mes documents
-        Route::get('/documents', fn() => wip('Mes documents'))->name('documents');
+        // Mon contrat
+        Route::get('/mon-contrat', [ProfilController::class, 'monContrat'])->name('mon-contrat');
+
+        // Mon parcours professionnel
+        Route::get('/mon-parcours', [ProfilController::class, 'monParcours'])->name('mon-parcours');
+
+        // Mon planning
+        Route::get('/planning', [PlanningAgentController::class, 'index'])->name('planning');
+
+        // Mes documents (GED Agent)
+        Route::prefix('documents')->name('documents.')->group(function () {
+            Route::get('/', [GEDAgentController::class, 'index'])->name('index');
+            Route::get('/{id}', [GEDAgentController::class, 'show'])->name('show');
+            Route::get('/{id}/preview', [GEDAgentController::class, 'preview'])->name('preview');
+            Route::get('/{id}/download', [GEDAgentController::class, 'download'])->name('download');
+        });
+    });
+
+    /*
+    |--------------------------------------------------------------------------
+    | Notifications (tous les rôles authentifiés)
+    |--------------------------------------------------------------------------
+    */
+    Route::prefix('notifications')->name('notifications.')->group(function () {
+        Route::get('/',                         [NotificationController::class, 'index'])->name('index');
+        Route::get('/{id}/read',                [NotificationController::class, 'markAsRead'])->name('read');
+        Route::post('/mark-all-read',           [NotificationController::class, 'markAllAsRead'])->name('mark-all-read');
+        Route::delete('/{id}',                  [NotificationController::class, 'destroy'])->name('destroy');
+        Route::delete('/',                      [NotificationController::class, 'destroyAll'])->name('destroy-all');
     });
 
     /*

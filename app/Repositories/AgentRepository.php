@@ -17,18 +17,18 @@ class AgentRepository implements AgentRepositoryInterface
     public function paginate(int $perPage = 15, array $filters = []): LengthAwarePaginator
     {
         $query = Agent::with(['service:id_service,nom_service', 'user:id,statut_compte'])
-            ->select('id_agent', 'matricule', 'nom', 'prenom', 'fonction', 'grade',
-                     'categorie_cp', 'statut', 'photo', 'id_service', 'user_id',
-                     'date_recrutement', 'created_at');
+            ->select('id_agent', 'matricule', 'nom', 'prenom', 'fontion', 'grade',
+                     'categorie_cp', 'statut_agent', 'photo', 'id_service', 'user_id',
+                     'date_prise_service', 'created_at');
 
-        // Filtre texte : nom, prénom, matricule, fonction
+        // Filtre texte : nom, prénom, matricule, fontion
         if (!empty($filters['recherche'])) {
             $terme = $filters['recherche'];
             $query->where(function ($q) use ($terme) {
                 $q->where('nom', 'like', "%{$terme}%")
                   ->orWhere('prenom', 'like', "%{$terme}%")
                   ->orWhere('matricule', 'like', "%{$terme}%")
-                  ->orWhere('fonction', 'like', "%{$terme}%");
+                  ->orWhere('fontion', 'like', "%{$terme}%");
             });
         }
 
@@ -39,7 +39,7 @@ class AgentRepository implements AgentRepositoryInterface
 
         // Filtre statut
         if (!empty($filters['statut'])) {
-            $query->where('statut', $filters['statut']);
+            $query->where('statut_agent', $filters['statut']);
         }
 
         // Filtre catégorie
@@ -61,7 +61,7 @@ class AgentRepository implements AgentRepositoryInterface
     public function allActifs(): Collection
     {
         return Agent::actif()
-            ->select('id_agent', 'matricule', 'nom', 'prenom', 'fonction')
+            ->select('id_agent', 'matricule', 'nom', 'prenom', 'fontion')
             ->orderBy('nom')->orderBy('prenom')
             ->get();
     }

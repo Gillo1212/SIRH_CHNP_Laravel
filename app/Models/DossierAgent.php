@@ -18,12 +18,18 @@ class DossierAgent extends Model
         'reference',
         'date_creation',
         'statut_da',
+        'description',
+        'notes',
+        'date_archivage',
+        'date_cloture',
     ];
 
     protected function casts(): array
     {
         return [
             'date_creation' => 'datetime',
+            'date_archivage' => 'datetime',
+            'date_cloture'  => 'datetime',
         ];
     }
 
@@ -41,12 +47,21 @@ class DossierAgent extends Model
         return $this->belongsTo(Agent::class, 'id_agent', 'id_agent');
     }
 
-    /**
-     * Documents contenus (composition)
-     */
     public function documents()
     {
         return $this->hasMany(Document::class, 'id_dossier', 'id_dossier');
+    }
+
+    public function documentsActifs()
+    {
+        return $this->hasMany(Document::class, 'id_dossier', 'id_dossier')
+                    ->where('statut_document', 'Actif');
+    }
+
+    public function documentsArchives()
+    {
+        return $this->hasMany(Document::class, 'id_dossier', 'id_dossier')
+                    ->where('statut_document', 'Archivé');
     }
 
     // =====================================================
@@ -72,60 +87,94 @@ class DossierAgent extends Model
     // ACCESSORS
     // =====================================================
 
-    public function getNombreDocumentsAttribute()
+    public function getNombreDocumentsAttribute(): int
     {
+        if ($this->relationLoaded('documents')) {
+            return $this->documents->count();
+        }
         return $this->documents()->count();
     }
 
-    public function getEstActifAttribute()
+    public function getNombreDocumentsActifsAttribute(): int
+    {
+        if ($this->relationLoaded('documents')) {
+            return $this->documents->where('statut_document', 'Actif')->count();
+        }
+        return $this->documents()->where('statut_document', 'Actif')->count();
+    }
+
+    public function getEstActifAttribute(): bool
     {
         return $this->statut_da === 'Actif';
     }
 
+    public function getStatutBadgeAttribute(): string
+    {
+        return match ($this->statut_da) {
+            'Actif'    => 'bg-success',
+            'Archivé'  => 'bg-secondary',
+            'Clôturé'  => 'bg-danger',
+            default    => 'bg-secondary',
+        };
+    }
+
+    public function getTauxRemplissageAttribute(): int
+    {
+        // Nombre de types de documents couverts / total des types principaux
+        $typesPrincipaux = ['Contrat', 'Piece_identite', 'Diplome'];
+        $typesPresents = $this->documents()
+                              ->whereIn('type_document', $typesPrincipaux)
+                              ->where('statut_document', 'Actif')
+                              ->distinct('type_document')
+                              ->count('type_document');
+        return (int) round(($typesPresents / count($typesPrincipaux)) * 100);
+    }
+
     // =====================================================
-    // MÉTHODES
+    // MÉTHODES CYCLE DE VIE
     // =====================================================
 
-    /**
-     * Archiver le dossier
-     */
-    public function archiver()
+    public function archiver(): void
     {
-        $this->update(['statut_da' => 'Archivé']);
+        $this->update([
+            'statut_da'      => 'Archivé',
+            'date_archivage' => now(),
+        ]);
+        // Archiver aussi tous les documents actifs
+        $this->documentsActifs()->update([
+            'statut_document' => 'Archivé',
+            'date_archivage'  => now(),
+        ]);
     }
 
-    /**
-     * Clôturer le dossier
-     */
-    public function cloturer()
+    public function cloturer(): void
     {
-        $this->update(['statut_da' => 'Clôturé']);
+        $this->update([
+            'statut_da'    => 'Clôturé',
+            'date_cloture' => now(),
+        ]);
     }
 
-    /**
-     * Réactiver le dossier
-     */
-    public function reactiver()
+    public function reactiver(): void
     {
-        $this->update(['statut_da' => 'Actif']);
+        $this->update([
+            'statut_da'      => 'Actif',
+            'date_archivage' => null,
+            'date_cloture'   => null,
+        ]);
     }
 
-    /**
-     * Générer une référence unique
-     */
-    public static function genererReference()
+    // =====================================================
+    // GÉNÉRATION RÉFÉRENCE
+    // =====================================================
+
+    public static function genererReference(): string
     {
         $annee = date('Y');
         $dernierDossier = self::where('reference', 'like', "DOSS-{$annee}-%")
                               ->orderBy('id_dossier', 'desc')
                               ->first();
-        
-        if ($dernierDossier) {
-            $numero = (int) substr($dernierDossier->reference, -4) + 1;
-        } else {
-            $numero = 1;
-        }
-        
+        $numero = $dernierDossier ? ((int) substr($dernierDossier->reference, -4) + 1) : 1;
         return "DOSS-{$annee}-" . str_pad($numero, 4, '0', STR_PAD_LEFT);
     }
 }

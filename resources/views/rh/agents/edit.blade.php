@@ -390,7 +390,7 @@
         <div style="font-size:20px;font-weight:800;color:#fff;">{{ $agent->prenom }} {{ $agent->nom }}</div>
         <div style="font-size:14px;color:rgba(255,255,255,.85);margin-top:4px;">
             <code style="background:rgba(255,255,255,.18);padding:3px 10px;border-radius:8px;font-size:13px;color:#fff;letter-spacing:1.5px;font-weight:700;">{{ $agent->matricule }}</code>
-            @if($agent->fonction) <span style="margin-left:8px;">· {{ $agent->fonction }}</span> @endif
+            @if($agent->famille_d_emploi) <span style="margin-left:8px;">· {{ str_replace('_', ' ', $agent->famille_d_emploi) }}</span> @endif
         </div>
     </div>
     <div style="position:relative;z-index:1;">
@@ -421,13 +421,19 @@
         </div>
         <div class="form-card-body">
             <div class="row g-3">
-                <div class="col-md-6">
+                <div class="col-md-4">
+                    <label class="form-label-custom">Matricule <span class="text-danger">*</span></label>
+                    <input type="text" name="matricule" class="form-control-custom @error('matricule') is-invalid @enderror"
+                           value="{{ old('matricule', $agent->matricule) }}" style="text-transform:uppercase;">
+                    @error('matricule') <div class="text-danger" style="font-size:11px;margin-top:4px;">{{ $message }}</div> @enderror
+                </div>
+                <div class="col-md-4">
                     <label class="form-label-custom">Nom de famille <span class="text-danger">*</span></label>
                     <input type="text" name="nom" class="form-control-custom @error('nom') is-invalid @enderror"
                            value="{{ old('nom', $agent->nom) }}" style="text-transform:uppercase;">
                     @error('nom') <div class="text-danger" style="font-size:11px;margin-top:4px;">{{ $message }}</div> @enderror
                 </div>
-                <div class="col-md-6">
+                <div class="col-md-4">
                     <label class="form-label-custom">Prénom <span class="text-danger">*</span></label>
                     <input type="text" name="prenom" class="form-control-custom @error('prenom') is-invalid @enderror"
                            value="{{ old('prenom', $agent->prenom) }}">
@@ -441,21 +447,15 @@
                     @error('date_naissance') <div class="text-danger" style="font-size:11px;margin-top:4px;">{{ $message }}</div> @enderror
                 </div>
                 <div class="col-md-4">
-                    <label class="form-label-custom">Lieu de naissance <span class="text-danger">*</span></label>
-                    <input type="text" name="lieu_naissance" class="form-control-custom @error('lieu_naissance') is-invalid @enderror"
-                           value="{{ old('lieu_naissance', $agent->lieu_naissance) }}">
-                    @error('lieu_naissance') <div class="text-danger" style="font-size:11px;margin-top:4px;">{{ $message }}</div> @enderror
+                    <label class="form-label-custom">Lieu de naissance</label>
+                    <input type="text" name="lieu_naissance" class="form-control-custom"
+                           value="{{ old('lieu_naissance', $agent->lieu_naissance) }}" placeholder="Dakar">
                 </div>
-                <div class="col-md-4">
-                    <label class="form-label-custom">Nationalité</label>
-                    <input type="text" name="nationalite" class="form-control-custom"
-                           value="{{ old('nationalite', $agent->nationalite) }}">
-                </div>
-                <div class="col-md-4">
+                <div class="col-md-2">
                     <label class="form-label-custom">Sexe <span class="text-danger">*</span></label>
                     <select name="sexe" class="form-select-custom @error('sexe') is-invalid @enderror">
-                        <option value="M" @selected(old('sexe', $agent->sexe)==='M')>Masculin</option>
-                        <option value="F" @selected(old('sexe', $agent->sexe)==='F')>Féminin</option>
+                        <option value="M" @selected(old('sexe', $agent->sexe)==='M')>M</option>
+                        <option value="F" @selected(old('sexe', $agent->sexe)==='F')>F</option>
                     </select>
                     @error('sexe') <div class="text-danger" style="font-size:11px;margin-top:4px;">{{ $message }}</div> @enderror
                 </div>
@@ -469,27 +469,32 @@
                     </select>
                 </div>
                 <div class="col-md-4">
-                    <label class="form-label-custom">Statut <span class="text-danger">*</span></label>
-                    <select name="statut" class="form-select-custom @error('statut') is-invalid @enderror">
-                        @foreach(['Actif','En_congé','Suspendu','Retraité'] as $st)
-                        <option value="{{ $st }}" @selected(old('statut', $agent->statut)===$st)>
+                    <label class="form-label-custom">Nationalité</label>
+                    <input type="text" name="nationalite" class="form-control-custom"
+                           value="{{ old('nationalite', $agent->nationalite) }}" placeholder="Sénégalaise">
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label-custom">Statut agent <span class="text-danger">*</span></label>
+                    <select name="statut_agent" class="form-select-custom @error('statut_agent') is-invalid @enderror">
+                        @foreach(['Actif','En_congé','Suspendu','Retraité','Démissionnaire'] as $st)
+                        <option value="{{ $st }}" @selected(old('statut_agent', $agent->statut_agent)===$st)>
                             {{ $st === 'En_congé' ? 'En congé' : $st }}
                         </option>
                         @endforeach
                     </select>
-                    @error('statut') <div class="text-danger" style="font-size:11px;margin-top:4px;">{{ $message }}</div> @enderror
+                    @error('statut_agent') <div class="text-danger" style="font-size:11px;margin-top:4px;">{{ $message }}</div> @enderror
                 </div>
             </div>
         </div>
     </div>
 
-    {{-- COORDONNÉES SENSIBLES --}}
+    {{-- DONNÉES SENSIBLES --}}
     <div class="form-card mb-3">
         <div class="form-card-header">
             <div class="header-icon" style="background:#FEE2E2;">
                 <i class="fas fa-lock" style="color:#DC2626;"></i>
             </div>
-            Coordonnées
+            Données sensibles
             <span style="font-size:10px;background:#FEE2E2;color:#991B1B;padding:3px 10px;border-radius:10px;margin-left:6px;font-weight:600;">
                 <i class="fas fa-shield-halved" style="font-size:9px;"></i> AES-256
             </span>
@@ -497,9 +502,35 @@
         <div class="form-card-body">
             <div class="sensitive-banner">
                 <i class="fas fa-shield-halved"></i>
-                <span>Données chiffrées. Cliquez sur <strong>Déchiffrer</strong> pour modifier.</span>
+                <span>Adresse, téléphone et CNI chiffrés (AES-256). Cliquez sur <strong>Déchiffrer</strong> pour modifier.</span>
             </div>
             <div class="row g-3">
+                <div class="col-md-6">
+                    <label class="form-label-custom">
+                        Adresse <i class="fas fa-lock" style="font-size:9px;color:#D97706;margin-left:4px;"></i>
+                    </label>
+                    <div class="field-sensitive-wrap">
+                        <input type="text" name="adresse" id="field_adresse"
+                               class="form-control-custom"
+                               :class="{ 'field-locked': !decrypted.adresse }"
+                               value="{{ old('adresse', $agent->adresse) }}"
+                               placeholder="HLM Grand Yoff, Dakar"
+                               :readonly="!decrypted.adresse">
+                        <button type="button" class="btn-decrypt"
+                                :class="{ 'decrypted': decrypted.adresse }"
+                                @click="toggleDecrypt('adresse')">
+                            <i class="fas" :class="decrypted.adresse ? 'fa-eye' : 'fa-key'"></i>
+                            <span x-text="decrypted.adresse ? 'Visible' : 'Déchiffrer'"></span>
+                        </button>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label-custom">Email personnel</label>
+                    <input type="email" name="email" class="form-control-custom"
+                           value="{{ old('email', $agent->email) }}" placeholder="agent@example.com">
+                </div>
+            </div>
+            <div class="row g-3 mt-1">
                 <div class="col-md-6">
                     <label class="form-label-custom">
                         Téléphone <i class="fas fa-lock" style="font-size:9px;color:#D97706;margin-left:4px;"></i>
@@ -523,53 +554,33 @@
                     </div>
                 </div>
                 <div class="col-md-6">
-                    <label class="form-label-custom">Email professionnel</label>
-                    <input type="email" name="email" class="form-control-custom @error('email') is-invalid @enderror"
-                           value="{{ old('email', $agent->email) }}" placeholder="a.diallo@chnp.sn">
-                    @error('email') <div class="text-danger" style="font-size:11px;margin-top:4px;">{{ $message }}</div> @enderror
-                </div>
-                <div class="col-12">
                     <label class="form-label-custom">
-                        Adresse <i class="fas fa-lock" style="font-size:9px;color:#D97706;margin-left:4px;"></i>
+                        N° CNI <i class="fas fa-lock" style="font-size:9px;color:#D97706;margin-left:4px;" title="Chiffré AES-256"></i>
                     </label>
-                    <div class="field-sensitive-wrap" style="position:relative;">
-                        <textarea name="adresse" id="field_adresse"
-                                  class="form-control-custom" rows="2"
-                                  :class="{ 'field-locked': !decrypted.adresse }"
-                                  placeholder="Quartier, Commune, Ville…"
-                                  :readonly="!decrypted.adresse"
-                                  style="padding-right:110px;">{{ old('adresse', $agent->adresse) }}</textarea>
-                        <button type="button" class="btn-decrypt" style="top:18px;transform:none;"
-                                :class="{ 'decrypted': decrypted.adresse }"
-                                @click="toggleDecrypt('adresse')">
-                            <i class="fas" :class="decrypted.adresse ? 'fa-eye' : 'fa-key'"></i>
-                            <span x-text="decrypted.adresse ? 'Visible' : 'Déchiffrer'"></span>
+                    <div class="field-sensitive-wrap">
+                        <input type="text" name="cni" id="field_cni"
+                               class="form-control-custom"
+                               :class="{ 'field-locked': !decrypted.cni }"
+                               value="{{ old('cni', $agent->cni) }}"
+                               placeholder="1 XXXXXXX XXXXX XX"
+                               :readonly="!decrypted.cni">
+                        <button type="button" class="btn-decrypt"
+                                :class="{ 'decrypted': decrypted.cni }"
+                                @click="toggleDecrypt('cni')">
+                            <i class="fas" :class="decrypted.cni ? 'fa-eye' : 'fa-key'"></i>
+                            <span x-text="decrypted.cni ? 'Visible' : 'Déchiffrer'"></span>
                         </button>
                     </div>
-                    <div class="field-hint-lock" x-show="!decrypted.adresse">
-                        <i class="fas fa-lock"></i> Cliquez pour modifier
+                    <div class="field-hint-lock" x-show="!decrypted.cni">
+                        <i class="fas fa-lock"></i> Carte Nationale d'Identité — Cliquez pour modifier
                     </div>
                 </div>
                 <div class="col-md-6">
-                    <label class="form-label-custom">
-                        N° Assurance maladie <i class="fas fa-lock" style="font-size:9px;color:#D97706;margin-left:4px;"></i>
-                    </label>
-                    <div class="field-sensitive-wrap">
-                        <input type="text" name="numero_assurance" id="field_assurance"
-                               class="form-control-custom"
-                               :class="{ 'field-locked': !decrypted.assurance }"
-                               value="{{ old('numero_assurance', $agent->numero_assurance) }}"
-                               placeholder="IPRES-XXXXXXXXX"
-                               :readonly="!decrypted.assurance">
-                        <button type="button" class="btn-decrypt"
-                                :class="{ 'decrypted': decrypted.assurance }"
-                                @click="toggleDecrypt('assurance')">
-                            <i class="fas" :class="decrypted.assurance ? 'fa-eye' : 'fa-key'"></i>
-                            <span x-text="decrypted.assurance ? 'Visible' : 'Déchiffrer'"></span>
-                        </button>
-                    </div>
-                    <div class="field-hint-lock" x-show="!decrypted.assurance">
-                        <i class="fas fa-lock"></i> Cliquez pour modifier
+                    <label class="form-label-custom">Religion</label>
+                    <input type="text" name="religion" class="form-control-custom"
+                           value="{{ old('religion', $agent->religion) }}" placeholder="Islam, Christianisme…">
+                    <div style="font-size:10px;color:#D97706;margin-top:4px;display:flex;align-items:center;gap:5px;">
+                        <i class="fas fa-info-circle"></i> Donnée personnelle sensible — accès restreint
                     </div>
                 </div>
             </div>
@@ -587,20 +598,19 @@
         <div class="form-card-body">
             <div class="row g-3">
                 <div class="col-md-4">
-                    <label class="form-label-custom">Date de recrutement <span class="text-danger">*</span></label>
-                    <input type="date" name="date_recrutement" class="form-control-custom @error('date_recrutement') is-invalid @enderror"
-                           value="{{ old('date_recrutement', $agent->date_recrutement?->format('Y-m-d')) }}">
-                    @error('date_recrutement') <div class="text-danger" style="font-size:11px;margin-top:4px;">{{ $message }}</div> @enderror
+                    <label class="form-label-custom">Date de prise de service</label>
+                    <input type="date" name="date_prise_service" class="form-control-custom"
+                           value="{{ old('date_prise_service', $agent->date_prise_service?->format('Y-m-d')) }}">
                 </div>
                 <div class="col-md-4">
                     <label class="form-label-custom">Fonction</label>
-                    <input type="text" name="fonction" class="form-control-custom"
-                           value="{{ old('fonction', $agent->fonction) }}" placeholder="Infirmier chef de poste">
+                    <input type="text" name="fontion" class="form-control-custom"
+                           value="{{ old('fontion', $agent->fontion) }}" placeholder="Infirmier chef de poste">
                 </div>
                 <div class="col-md-4">
                     <label class="form-label-custom">Grade</label>
                     <input type="text" name="grade" class="form-control-custom"
-                           value="{{ old('grade', $agent->grade) }}" placeholder="IES2">
+                           value="{{ old('grade', $agent->grade) }}" placeholder="A1, P2, T3…">
                 </div>
                 <div class="col-md-6">
                     <label class="form-label-custom">Catégorie socio-professionnelle</label>
@@ -616,7 +626,18 @@
                         @endforeach
                     </select>
                 </div>
-                <div class="col-md-3">
+                <div class="col-md-6">
+                    <label class="form-label-custom">Famille d'emploi</label>
+                    <select name="famille_d_emploi" class="form-select-custom">
+                        <option value="">— Choisir —</option>
+                        @foreach(\App\Models\Agent::FAMILLES_EMPLOI as $fe)
+                        <option value="{{ $fe }}" @selected(old('famille_d_emploi', $agent->famille_d_emploi)===$fe)>
+                            {{ str_replace('_', ' ', $fe) }}
+                        </option>
+                        @endforeach
+                    </select>
+                </div>
+                <div class="col-md-6">
                     <label class="form-label-custom">Service</label>
                     <select name="id_service" class="form-select-custom">
                         <option value="">— Aucun —</option>
@@ -625,7 +646,7 @@
                         @endforeach
                     </select>
                 </div>
-                <div class="col-md-3">
+                <div class="col-md-6">
                     <label class="form-label-custom">Division</label>
                     <select name="id_division" class="form-select-custom">
                         <option value="">— Aucune —</option>
@@ -731,31 +752,15 @@
     <div class="form-card mb-3">
         <div class="form-card-header">
             <div class="header-icon" style="background:#EFF6FF;">
-                <i class="fas fa-camera" style="color:#0A4D8C;"></i>
+                <i class="fas fa-user" style="color:#0A4D8C;"></i>
             </div>
-            Photo de profil
+            Avatar
         </div>
-        <div class="form-card-body">
-            <div class="photo-upload-wrap">
-                <label for="photoInput" class="photo-circle">
-                    @if($agent->photo)
-                    <img id="photoPreview" src="{{ asset('storage/'.$agent->photo) }}" alt="">
-                    @else
-                    <div id="photoPreview" style="display:none;width:100%;height:100%;"></div>
-                    <div class="photo-circle-placeholder" id="photoPlaceholder">
-                        <i class="fas fa-user"></i>
-                    </div>
-                    @endif
-                    <div class="photo-circle-overlay"><i class="fas fa-camera"></i></div>
-                </label>
-                <input type="file" name="photo" id="photoInput" accept="image/jpeg,image/png"
-                       class="d-none" onchange="previewPhoto(this)">
-                <label for="photoInput" class="action-btn action-btn-outline" style="font-size:12px;padding:8px 16px;cursor:pointer;">
-                    <i class="fas fa-upload"></i>
-                    {{ $agent->photo ? 'Changer' : 'Choisir' }}
-                </label>
-                <div style="font-size:11px;color:#9CA3AF;text-align:center;">JPEG/PNG · Max 2 Mo</div>
+        <div class="form-card-body text-center" style="padding:20px;">
+            <div style="width:80px;height:80px;border-radius:50%;background:linear-gradient(135deg,#0A4D8C,#1565C0);display:flex;align-items:center;justify-content:center;font-size:28px;font-weight:800;color:#fff;margin:0 auto 12px;">
+                {{ strtoupper(substr($agent->prenom,0,1).substr($agent->nom,0,1)) }}
             </div>
+            <div style="font-size:12px;color:#9CA3AF;">Initiales de l'agent</div>
         </div>
     </div>
 
@@ -817,13 +822,12 @@ function editAgentForm() {
     return {
         conjoints: @json($conjointsData),
         enfants: @json($enfantsData),
-        decrypted: { telephone: false, adresse: false, assurance: false },
-        
+        decrypted: { telephone: false, cni: false },
+
         toggleDecrypt(field) {
             this.decrypted[field] = !this.decrypted[field];
             if (this.decrypted[field]) {
-                const id = field === 'assurance' ? 'field_assurance' : 'field_' + field;
-                setTimeout(() => document.getElementById(id)?.focus(), 50);
+                setTimeout(() => document.getElementById('field_' + field)?.focus(), 50);
             }
         },
         addConjoint() {
@@ -836,25 +840,5 @@ function editAgentForm() {
     };
 }
 
-function previewPhoto(input) {
-    if (input.files && input.files[0]) {
-        const reader = new FileReader();
-        reader.onload = e => {
-            let preview = document.getElementById('photoPreview');
-            const placeholder = document.getElementById('photoPlaceholder');
-            if (preview.tagName === 'IMG') {
-                preview.src = e.target.result;
-            } else {
-                const img = document.createElement('img');
-                img.id = 'photoPreview';
-                img.src = e.target.result;
-                img.style.cssText = 'width:100%;height:100%;object-fit:cover;';
-                preview.replaceWith(img);
-            }
-            if (placeholder) placeholder.style.display = 'none';
-        };
-        reader.readAsDataURL(input.files[0]);
-    }
-}
 </script>
 @endpush

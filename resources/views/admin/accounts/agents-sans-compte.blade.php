@@ -161,9 +161,9 @@
                                 <div class="fw-600" style="color:#111827;">{{ $agent->prenom }} {{ $agent->nom }}</div>
                                 <div style="font-size:11px;color:#9CA3AF;">{{ ucfirst(strtolower($agent->sexe === 'M' ? 'Homme' : 'Femme')) }}</div>
                             </td>
-                            <td style="color:#374151;font-size:12px;">{{ $agent->fonction ?? '—' }}</td>
+                            <td style="color:#374151;font-size:12px;">{{ str_replace('_',' ',$agent->famille_d_emploi ?? '—') ?? '—' }}</td>
                             <td style="color:#6B7280;font-size:12px;">{{ $agent->service->nom_service ?? '—' }}</td>
-                            <td style="color:#9CA3AF;font-size:12px;">{{ $agent->date_recrutement ? \Carbon\Carbon::parse($agent->date_recrutement)->format('d/m/Y') : '—' }}</td>
+                            <td style="color:#9CA3AF;font-size:12px;">{{ str_replace('_', ' ', $agent->statut_agent ?? '—') }}</td>
                             <td class="text-center">
                                 <button type="button"
                                         class="btn btn-sm btn-primary fw-600"

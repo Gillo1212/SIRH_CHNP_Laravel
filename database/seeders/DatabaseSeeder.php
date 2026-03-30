@@ -13,12 +13,15 @@ class DatabaseSeeder extends Seeder
     {
         // Ordre important : respecter les dépendances
         $this->call([
-            RoleAndPermissionSeeder::class,
+            PermissionSeeder::class,
+            RoleSeeder::class,
             DivisionSeeder::class,
             ServiceSeeder::class,
             TypeCongeSeeder::class,
             TypePosteSeeder::class,
             UserSeeder::class,
+            ContratSeeder::class,
+            RichDataSeeder::class,
         ]);
     }
 }

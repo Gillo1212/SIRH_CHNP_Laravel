@@ -32,7 +32,9 @@ class AgentPolicy
 
     /**
      * Voir le dossier complet d'un agent
-     * Un agent peut voir son propre dossier
+     * - Agent : son propre dossier seulement
+     * - Manager : uniquement les agents de son service
+     * - AgentRH/DRH : tous les agents
      */
     public function view(User $user, Agent $agent): bool
     {
@@ -41,7 +43,17 @@ class AgentPolicy
             return true;
         }
 
-        return $user->hasAnyRole(['AgentRH', 'DRH', 'Manager']);
+        if ($user->hasAnyRole(['AgentRH', 'DRH'])) {
+            return true;
+        }
+
+        // Manager : seulement les agents de son service
+        if ($user->hasRole('Manager')) {
+            $service = \App\Models\Service::where('id_agent_manager', $user->id)->first();
+            return $service && $agent->id_service === $service->id_service;
+        }
+
+        return false;
     }
 
     /**

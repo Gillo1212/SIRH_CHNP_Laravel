@@ -138,8 +138,8 @@
 
     /* Ancienneté */
     $anciennete = null;
-    if ($agent && $agent->date_recrutement) {
-        $anciennete = $agent->date_recrutement->diffInYears(now());
+    if ($agent && $agent->date_prise_service) {
+        $anciennete = $agent->date_prise_service->diffInYears(now());
     }
 
     /* Onglet actif selon la session (ex: retour après changement mdp) */
@@ -515,11 +515,11 @@
                     </div>
                     <div class="col-6 col-md-3">
                         <div class="pf-label">Date de recrutement</div>
-                        <div class="pf-value">{{ $agent->date_recrutement?->format('d/m/Y') ?? '—' }}</div>
+                        <div class="pf-value">{{ $agent->date_prise_service?->format('d/m/Y') ?? '—' }}</div>
                     </div>
                     <div class="col-6 col-md-3">
                         <div class="pf-label">Fonction</div>
-                        <div class="pf-value">{{ $agent->fonction ?? '—' }}</div>
+                        <div class="pf-value">{{ $agent->fontion ?? '—' }}</div>
                     </div>
                     <div class="col-6 col-md-3">
                         <div class="pf-label">Grade</div>

@@ -133,7 +133,7 @@
 <div class="d-flex align-items-center justify-content-between mb-4 flex-wrap gap-3">
     <div>
         <h4 class="mb-0 fw-700" style="color: #111827;">
-            Bonjour, {{ Auth::user()->agent->prenom ?? 'Directeur' }} 👋
+            Bonjour, {{ Auth::user()->agent->prenom ?? 'Directeur' }} 
         </h4>
         <p class="mb-0 text-muted" style="font-size: 13.5px;">
             {{ now()->isoFormat('dddd D MMMM YYYY') }} — Direction des Ressources Humaines
@@ -143,7 +143,7 @@
         <a href="{{ route('drh.rapports.bilan') }}" class="action-btn action-btn-outline">
             <i class="fas fa-file-export"></i> Bilan social
         </a>
-        <a href="{{ route('drh.decisions.index') }}" class="action-btn action-btn-primary">
+        <a href="{{ route('drh.validations.decisions') }}" class="action-btn action-btn-primary">
             <i class="fas fa-check-double"></i> Valider décisions
             {{-- badge dynamique --}}
         </a>
@@ -178,10 +178,6 @@
                 </div>
                 <span class="badge-status" style="background:#ECFDF5; color:#065F46; font-size:11px; font-weight:600; padding:2px 10px; border-radius:20px;">Actifs</span>
             </div>
-            @php
-                try { $effectifTotal = \App\Models\Agent::where('statut', 'actif')->count(); }
-                catch (\Exception $e) { $effectifTotal = 0; }
-            @endphp
             <div class="kpi-value">{{ $effectifTotal }}</div>
             <div class="kpi-label">Effectif total actif</div>
             <div class="kpi-trend up"><i class="fas fa-arrow-up me-1"></i>Personnel en poste</div>
@@ -197,13 +193,6 @@
                 </div>
                 <span class="badge-status" style="background:#FEF3C7; color:#92400E; font-size:11px; font-weight:600; padding:2px 10px; border-radius:20px;">Ce mois</span>
             </div>
-            @php
-                try {
-                    $absencesMonth = \App\Models\Absence::whereMonth('date_absence', now()->month)
-                        ->whereYear('date_absence', now()->year)->count();
-                } catch (\Exception $e) { $absencesMonth = 0; }
-                $tauxAbsenteisme = $effectifTotal > 0 ? round(($absencesMonth / max($effectifTotal, 1)) * 100, 1) : 0;
-            @endphp
             <div class="kpi-value">{{ $tauxAbsenteisme }}%</div>
             <div class="kpi-label">Taux d'absentéisme</div>
             <div class="kpi-trend neutral"><i class="fas fa-calendar-times me-1"></i>{{ $absencesMonth }} absence(s) ce mois</div>
@@ -238,15 +227,8 @@
                     <i class="fas fa-file-contract" style="color: #DC2626;"></i>
                 </div>
                 <div>
-                    @php
-                        try {
-                            $contratsExpiring = \App\Models\Contrat::where('date_fin', '<=', now()->addDays(60))
-                                ->where('date_fin', '>=', now())
-                                ->where('statut_contrat', 'Actif')->count();
-                        } catch (\Exception $e) { $contratsExpiring = 0; }
-                    @endphp
                     <div class="kpi-value" style="font-size:22px;">{{ $contratsExpiring }}</div>
-                    <div class="kpi-label">Contrats à renouveler <br><small>(< 60 jours)</small></div>
+                    <div class="kpi-label">Contrat renouv. <br><small>(< 60 jours)</small></div>
                 </div>
             </div>
         </div>
@@ -260,13 +242,8 @@
                     <i class="fas fa-hourglass-half" style="color: #D97706;"></i>
                 </div>
                 <div>
-                    @php
-                        try {
-                            $demandesEnAttente = \App\Models\Demande::whereIn('statut_demande', ['En_attente', 'Validé'])->count();
-                        } catch (\Exception $e) { $demandesEnAttente = 0; }
-                    @endphp
                     <div class="kpi-value" style="font-size:22px;">{{ $demandesEnAttente }}</div>
-                    <div class="kpi-label">Demandes en attente<br><small>(toutes catégories)</small></div>
+                    <div class="kpi-label">Demande en att.<br><small>(toutes catégories)</small></div>
                 </div>
             </div>
         </div>
@@ -280,12 +257,6 @@
                     <i class="fas fa-exchange-alt" style="color: #0A4D8C;"></i>
                 </div>
                 <div>
-                    @php
-                        try {
-                            $mouvementsMois = \App\Models\Mouvement::whereMonth('created_at', now()->month)
-                                ->whereYear('created_at', now()->year)->count();
-                        } catch (\Exception $e) { $mouvementsMois = 0; }
-                    @endphp
                     <div class="kpi-value" style="font-size:22px;">{{ $mouvementsMois }}</div>
                     <div class="kpi-label">Mouvements<br><small>ce mois</small></div>
                 </div>
@@ -301,13 +272,8 @@
                     <i class="fas fa-heartbeat" style="color: #059669;"></i>
                 </div>
                 <div>
-                    @php
-                        try {
-                            $pecEnCours = \App\Models\PriseEnCharge::where('statut', 'En_cours')->count();
-                        } catch (\Exception $e) { $pecEnCours = 0; }
-                    @endphp
-                    <div class="kpi-value" style="font-size:22px;">{{ $pecEnCours }}</div>
-                    <div class="kpi-label">Prises en charge<br><small>en cours</small></div>
+                    <div class="kpi-value" style="font-size:22px;">{{ $planningsPending }}</div>
+                    <div class="kpi-label">Plannings<br><small>à valider</small></div>
                 </div>
             </div>
         </div>
@@ -370,14 +336,28 @@
         <div style="background:#fff; border:1px solid #E5E7EB; border-radius:12px; padding:20px;">
             <div class="d-flex align-items-center justify-content-between mb-3">
                 <div class="fw-600" style="color:#111827;">Décisions en attente</div>
-                <a href="{{ route('drh.decisions.index') }}" style="font-size:12px; color:#1565C0; text-decoration:none; font-weight:500;">
+                <a href="{{ route('drh.validations.decisions') }}" style="font-size:12px; color:#1565C0; text-decoration:none; font-weight:500;">
                     Voir tout <i class="fas fa-arrow-right ms-1"></i>
                 </a>
             </div>
+            @forelse($mouvementsEnAttente as $mouv)
+            @php $ct = $mouv->couleurType; @endphp
+            <div class="decision-row" style="border-bottom:1px solid #F3F4F6;">
+                <div style="width:34px;height:34px;border-radius:8px;background:{{ $ct['bg'] }};display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+                    <i class="fas {{ $ct['icon'] }}" style="color:{{ $ct['color'] }};font-size:14px;"></i>
+                </div>
+                <div class="flex-grow-1 min-width-0">
+                    <div style="font-size:13px;font-weight:500;color:#111827;">{{ $mouv->agent?->prenom }} {{ $mouv->agent?->nom }}</div>
+                    <div style="font-size:11px;color:#9CA3AF;">{{ $ct['label'] }} · {{ $mouv->date_mouvement->format('d/m/Y') }}</div>
+                </div>
+                <a href="{{ route('drh.validations.mouvements') }}" class="badge-status badge-pending">Valider</a>
+            </div>
+            @empty
             <div style="color:#9CA3AF; text-align:center; padding:24px 0; font-size:13px;">
                 <i class="fas fa-check-double fa-2x mb-2 d-block" style="color:#D1D5DB;"></i>
-                Aucune décision en attente de signature
+                Aucun mouvement en attente
             </div>
+            @endforelse
         </div>
     </div>
 
@@ -424,7 +404,7 @@
 <div class="quick-actions-panel" style="margin-top: 24px;">
     <div class="fw-600 mb-3" style="color: #0A4D8C;">Actions rapides</div>
     <div class="d-flex flex-wrap gap-2">
-        <a href="{{ route('drh.decisions.index') }}" class="action-btn action-btn-primary">
+        <a href="{{ route('drh.validations.decisions') }}" class="action-btn action-btn-primary">
             <i class="fas fa-signature"></i> Valider décisions en attente
         </a>
         <a href="{{ route('drh.rapports.bilan') }}" class="action-btn action-btn-outline">
@@ -433,9 +413,9 @@
         <a href="{{ route('drh.kpis') }}" class="action-btn action-btn-outline">
             <i class="fas fa-tachometer-alt"></i> KPIs détaillés
         </a>
-        <a href="{{ route('drh.budget') }}" class="action-btn action-btn-outline">
+        <!-- <a href="{{ route('drh.budget') }}" class="action-btn action-btn-outline">
             <i class="fas fa-coins"></i> Suivi budgétaire
-        </a>
+        </a> -->  <!--A implémenter dans la version 2 du projet -->
     </div>
 </div>
 
@@ -460,19 +440,13 @@ document.addEventListener('DOMContentLoaded', function () {
     };
 
     // ── Graphique 1 : Évolution effectifs 12 mois ─
-    const labelsMonths = [];
-    const now = new Date();
-    for (let i = 11; i >= 0; i--) {
-        const d = new Date(now.getFullYear(), now.getMonth() - i, 1);
-        labelsMonths.push(d.toLocaleDateString('fr-FR', { month: 'short', year: '2-digit' }));
-    }
     new Chart(document.getElementById('chartEffectifs'), {
         type: 'line',
         data: {
-            labels: labelsMonths,
+            labels: @json($labels12Mois),
             datasets: [{
                 label: 'Effectif actif',
-                data: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, {{ $effectifTotal }}],
+                data: @json($effectifs12Mois),
                 borderColor: colors.primary,
                 backgroundColor: 'rgba(10, 77, 140, 0.06)',
                 borderWidth: 2,
@@ -496,41 +470,34 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 
     // ── Graphique 2 : Répartition contrats (donut) ─
+    @if(!empty($contratsTypesData))
     new Chart(document.getElementById('chartContrats'), {
         type: 'doughnut',
         data: {
-            labels: ['CDI', 'CDD', 'Stage', 'Autre'],
+            labels: @json($contratsTypesLabels),
             datasets: [{
-                data: [60, 25, 10, 5],
-                backgroundColor: [colors.primary, colors.secondary, colors.amber, colors.light],
-                borderWidth: 2,
-                borderColor: '#fff',
+                data: @json($contratsTypesData),
+                backgroundColor: [colors.primary, colors.secondary, colors.amber, colors.light, colors.green, colors.red],
+                borderWidth: 2, borderColor: '#fff',
             }]
         },
         options: {
-            responsive: true,
-            cutout: '65%',
-            plugins: {
-                legend: {
-                    position: 'bottom',
-                    labels: { font: { size: 11 }, color: colors.text, padding: 10, boxWidth: 10 }
-                }
-            }
+            responsive: true, cutout: '65%',
+            plugins: { legend: { position: 'bottom', labels: { font: { size: 11 }, color: colors.text, padding: 10, boxWidth: 10 } } }
         }
     });
+    @endif
 
     // ── Graphique 3 : Absentéisme par service ─────
     new Chart(document.getElementById('chartAbsenteisme'), {
         type: 'bar',
         data: {
-            labels: ['Médecine', 'Chirurgie', 'Urgences', 'Administratif', 'RH'],
+            labels: @json($absServicesLabels),
             datasets: [{
                 label: 'Absences',
-                data: [0, 0, 0, 0, 0],
+                data: @json($absServicesData),
                 backgroundColor: 'rgba(217, 119, 6, 0.15)',
-                borderColor: colors.amber,
-                borderWidth: 1.5,
-                borderRadius: 4,
+                borderColor: colors.amber, borderWidth: 1.5, borderRadius: 4,
             }]
         },
         options: {
@@ -547,25 +514,22 @@ document.addEventListener('DOMContentLoaded', function () {
     new Chart(document.getElementById('chartAges'), {
         type: 'bar',
         data: {
-            labels: ['< 25 ans', '25-35 ans', '36-45 ans', '46-55 ans', '> 55 ans'],
+            labels: @json($pyramideLabels),
             datasets: [{
                 label: 'Effectif',
-                data: [0, 0, 0, 0, 0],
+                data: @json($pyramideData),
                 backgroundColor: [
-                    'rgba(10, 77, 140, 0.15)',
-                    'rgba(10, 77, 140, 0.30)',
-                    'rgba(10, 77, 140, 0.50)',
-                    'rgba(10, 77, 140, 0.70)',
-                    'rgba(10, 77, 140, 0.90)',
+                    'rgba(10, 77, 140, 0.20)',
+                    'rgba(10, 77, 140, 0.40)',
+                    'rgba(10, 77, 140, 0.60)',
+                    'rgba(10, 77, 140, 0.80)',
+                    'rgba(10, 77, 140, 1.0)',
                 ],
-                borderColor: colors.primary,
-                borderWidth: 1.5,
-                borderRadius: 4,
+                borderColor: colors.primary, borderWidth: 1.5, borderRadius: 4,
             }]
         },
         options: {
-            indexAxis: 'y',
-            responsive: true,
+            indexAxis: 'y', responsive: true,
             plugins: { legend: { display: false } },
             scales: {
                 x: { grid: { color: colors.grid }, ticks: { color: colors.text, font: { size: 11 } }, beginAtZero: true },

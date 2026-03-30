@@ -3,65 +3,92 @@
 namespace App\Http\Controllers\Manager;
 
 use App\Http\Controllers\Controller;
-use App\Models\User;
+use App\Models\Absence;
 use App\Models\Demande;
+use App\Models\LignePlanning;
 use App\Models\Service;
-use Illuminate\Http\Request;
 
 class ManagerDashboardController extends Controller
 {
     public function index()
     {
-        $user = auth()->user();
-        
-        // Vérifier que l'utilisateur est bien manager d'un service
+        $user    = auth()->user();
         $service = Service::where('id_agent_manager', $user->id)->first();
-        
+
         if (!$service) {
-            // Rendre le dashboard avec service null — éviter redirect vers agent.dashboard
-            // (un Manager n'a pas le rôle Agent)
-            return view('manager.dashboard', [
-                'stats' => [
-                    'service'          => null,
-                    'total_agents'     => 0,
-                    'demandes_pending' => 0,
-                    'conges_pending'   => 0,
-                    'agents'           => collect(),
-                    'recent_demandes'  => collect(),
-                ],
-                'noService' => true,
-            ]);
+            return view('manager.dashboard', ['noService' => true]);
         }
 
-        // Statistiques du service
-        $stats = [
-            'service' => $service,
-            'total_agents' => $service->agents()->actif()->count(),
-            'demandes_pending' => Demande::whereHas('agent', function($query) use ($service) {
-                $query->where('id_service', $service->id_service);
-            })->where('statut_demande', 'En_attente')->count(),
-            
-            'conges_pending' => Demande::whereHas('agent', function($query) use ($service) {
-                $query->where('id_service', $service->id_service);
-            })
+        $serviceId = $service->id_service;
+
+        // ── Effectifs ─────────────────────────────────────────────────
+        $totalAgents   = $service->agents()->actif()->count();
+        $agentsEnConge = $service->agents()->where('statut_agent', 'En_congé')->count();
+
+        $absencesToday = Absence::whereHas('demande', function ($q) use ($serviceId) {
+            $q->whereHas('agent', fn ($q2) => $q2->where('id_service', $serviceId));
+        })->whereDate('date_absence', today())->count();
+
+        $agentsPresents = max(0, $totalAgents - $absencesToday - $agentsEnConge);
+
+        // ── Congés à valider (Manager 1ère étape) ─────────────────────
+        $congesEnAttenteCount = Demande::whereHas('agent', fn ($q) => $q->where('id_service', $serviceId))
             ->where('type_demande', 'Conge')
             ->where('statut_demande', 'En_attente')
-            ->count(),
-            
-            // Agents du service
-            'agents' => $service->agents()->actif()->get(),
-            
-            // Dernières demandes
-            'recent_demandes' => Demande::with(['agent', 'conge', 'absence'])
-                ->whereHas('agent', function($query) use ($service) {
-                    $query->where('id_service', $service->id_service);
-                })
-                ->where('statut_demande', 'En_attente')
-                ->latest()
-                ->take(5)
-                ->get(),
-        ];
+            ->count();
 
-        return view('manager.dashboard', compact('stats'));
+        $congesEnAttente = Demande::whereHas('agent', fn ($q) => $q->where('id_service', $serviceId))
+            ->where('type_demande', 'Conge')
+            ->where('statut_demande', 'En_attente')
+            ->with(['agent', 'conge.typeConge'])
+            ->latest()
+            ->take(5)
+            ->get();
+
+        // ── Planning semaine (lignes validées du service) ──────────────
+        $lignesSemaine = LignePlanning::with(['agent', 'typePoste'])
+            ->whereHas('planning', fn ($q) => $q
+                ->where('id_service', $serviceId)
+                ->where('statut_planning', 'Validé'))
+            ->whereBetween('date_poste', [
+                now()->startOfWeek()->toDateString(),
+                now()->endOfWeek()->toDateString(),
+            ])
+            ->orderBy('date_poste')
+            ->orderBy('heure_debut')
+            ->get()
+            ->groupBy(fn ($l) => $l->date_poste->dayOfWeekIso - 1); // 0=Lun … 6=Dim
+
+        // ── Absentéisme 6 derniers mois (chart) ───────────────────────
+        $absenteisme6Mois = [];
+        $labelsAbsences   = [];
+        for ($i = 5; $i >= 0; $i--) {
+            $month             = now()->subMonths($i);
+            $labelsAbsences[]  = $month->isoFormat('MMM');
+            $absenteisme6Mois[] = Absence::whereHas('demande', function ($q) use ($serviceId) {
+                $q->whereHas('agent', fn ($q2) => $q2->where('id_service', $serviceId));
+            })->whereMonth('date_absence', $month->month)
+              ->whereYear('date_absence', $month->year)
+              ->count();
+        }
+
+        // ── Répartition types postes ce mois (chart) ──────────────────
+        $repartitionRaw = LignePlanning::whereHas('planning', fn ($q) => $q
+                ->where('id_service', $serviceId)->where('statut_planning', 'Validé'))
+            ->whereMonth('date_poste', now()->month)
+            ->whereYear('date_poste', now()->year)
+            ->with('typePoste')
+            ->get()
+            ->groupBy(fn ($l) => $l->typePoste->libelle ?? 'Autre')
+            ->map->count();
+
+        $postesLabels = $repartitionRaw->keys()->values()->toArray();
+        $postesData   = $repartitionRaw->values()->toArray();
+
+        return view('manager.dashboard', compact(
+            'service', 'totalAgents', 'agentsEnConge', 'absencesToday', 'agentsPresents',
+            'congesEnAttenteCount', 'congesEnAttente', 'lignesSemaine',
+            'absenteisme6Mois', 'labelsAbsences', 'postesLabels', 'postesData'
+        ));
     }
 }

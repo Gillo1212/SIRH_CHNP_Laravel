@@ -52,17 +52,20 @@
 <div class="d-flex align-items-center justify-content-between mb-4 flex-wrap gap-3">
     <div>
         <h4 class="mb-0 fw-bold" style="color:#111827;">
-            Bonjour, {{ Auth::user()->agent->prenom ?? 'Agent RH' }} 👋
+            Bonjour, {{ Auth::user()->agent->prenom ?? 'Agent RH' }} 
         </h4>
         <p class="mb-0 text-muted" style="font-size:13.5px;">
             {{ now()->isoFormat('dddd D MMMM YYYY') }} — Service des Ressources Humaines
         </p>
     </div>
     <div class="d-flex gap-2 flex-wrap">
-        <a href="#" class="action-btn action-btn-outline">
-            <i class="fas fa-file-export"></i> Exporter
+        <a href="{{ route('rh.plannings.pending') }}" class="action-btn action-btn-outline">
+            <i class="fas fa-calendar-check"></i> Plannings
+            @if($planningsPending > 0)
+                <span style="background:#0A4D8C;color:white;border-radius:20px;font-size:11px;font-weight:700;padding:1px 7px;">{{ $planningsPending }}</span>
+            @endif
         </a>
-        <a href="#" class="action-btn action-btn-primary">
+        <a href="{{ route('rh.agents.create') }}" class="action-btn action-btn-primary">
             <i class="fas fa-user-plus"></i> Nouvel agent
         </a>
     </div>
@@ -71,13 +74,7 @@
 {{-- ─── KPIs ─────────────────────────────────────────────────────── --}}
 <div class="section-title">KPIs Ressources Humaines</div>
 <div class="row g-3 mb-4">
-    @php
-        try { $totalAgents     = \App\Models\Agent::where('statut','actif')->count(); }                 catch(\Exception $e) { $totalAgents = 0; }
-        try { $contratsExpiring = \App\Models\Contrat::where('date_fin','<=',now()->addDays(60))->where('date_fin','>=',now())->where('statut_contrat','Actif')->count(); } catch(\Exception $e) { $contratsExpiring = 0; }
-        try { $pendingLeaves   = \App\Models\Demande::where('type_demande','Conge')->whereIn('statut_demande',['En_attente','Validé'])->count(); } catch(\Exception $e) { $pendingLeaves = 0; }
-        try { $absencesToday   = \App\Models\Absence::whereDate('date_absence', today())->count(); }    catch(\Exception $e) { $absencesToday = 0; }
-        try { $enConge         = \App\Models\Agent::where('statut','en_conge')->count(); }              catch(\Exception $e) { $enConge = 0; }
-    @endphp
+    @php /* Data from controller */ @endphp
 
     <div class="col-12 col-sm-6 col-xl-3">
         <div class="kpi-card blue">
@@ -162,20 +159,33 @@
         <div class="panel">
             <div class="d-flex align-items-center justify-content-between mb-3">
                 <div class="fw-600" style="color:#111827;">Demandes de congés en attente</div>
-                <a href="#" style="font-size:12px;color:#1565C0;text-decoration:none;font-weight:500;">Voir tout <i class="fas fa-arrow-right ms-1"></i></a>
+                <a href="{{ route('rh.conges.pending') }}" style="font-size:12px;color:#1565C0;text-decoration:none;font-weight:500;">Voir tout <i class="fas fa-arrow-right ms-1"></i></a>
             </div>
-            @foreach([['M','Mamadou Diallo','Annuel','15/03 — 22/03','Validé Manager','#FEF3C7','#92400E'],['F','Fatou Ndiaye','Maladie','18/03 — 20/03','En attente','#FEF3C7','#92400E'],['A','Awa Sow','Maternité','01/04 — 01/07','En attente','#FEF3C7','#92400E']] as [$init,$nom,$type,$dates,$statut,$bg,$col])
+            @forelse($recentDemandes as $demande)
+            @php
+                $a = $demande->agent;
+                $init = $a ? strtoupper(substr($a->prenom,0,1).substr($a->nom,0,1)) : '?';
+                $typeC = $demande->conge?->typeConge?->libelle ?? 'Congé';
+                $statut = $demande->statut_demande;
+                $sMap = ['En_attente'=>['#FEF3C7','#92400E','En attente'],'Validé'=>['#DBEAFE','#1E40AF','Validé Manager'],'Approuvé'=>['#D1FAE5','#065F46','Approuvé']];
+                [$sbg,$scol,$slib] = $sMap[$statut] ?? ['#F3F4F6','#374151',$statut];
+            @endphp
             <div class="data-row">
                 <div class="d-flex align-items-center gap-3">
                     <div style="width:32px;height:32px;border-radius:50%;background:linear-gradient(135deg,#0A4D8C,#1565C0);display:flex;align-items:center;justify-content:center;color:white;font-weight:700;font-size:12px;">{{ $init }}</div>
                     <div>
-                        <div style="font-size:13px;font-weight:500;color:#111827;">{{ $nom }}</div>
-                        <div style="font-size:12px;color:#9CA3AF;">{{ $type }} · {{ $dates }}</div>
+                        <div style="font-size:13px;font-weight:500;color:#111827;">{{ $a?->prenom }} {{ $a?->nom }}</div>
+                        <div style="font-size:12px;color:#9CA3AF;">{{ $typeC }} · {{ $demande->created_at->format('d/m/Y') }}</div>
                     </div>
                 </div>
-                <span class="badge-status" style="background:{{ $bg }};color:{{ $col }};">{{ $statut }}</span>
+                <span class="badge-status" style="background:{{ $sbg }};color:{{ $scol }};">{{ $slib }}</span>
             </div>
-            @endforeach
+            @empty
+            <div style="text-align:center;padding:24px 0;color:#9CA3AF;font-size:13px;">
+                <i class="fas fa-check-double fa-2x mb-2 d-block" style="color:#D1D5DB;"></i>
+                Aucune demande en cours
+            </div>
+            @endforelse
         </div>
     </div>
 
@@ -186,17 +196,28 @@
                 <div class="fw-600" style="color:#111827;">
                     <i class="fas fa-exclamation-triangle me-1" style="color:#D97706;"></i>Contrats à renouveler
                 </div>
-                <a href="#" style="font-size:12px;color:#1565C0;text-decoration:none;font-weight:500;">Voir tout <i class="fas fa-arrow-right ms-1"></i></a>
+                <a href="{{ route('rh.contrats.expiring') }}" style="font-size:12px;color:#1565C0;text-decoration:none;font-weight:500;">Voir tout <i class="fas fa-arrow-right ms-1"></i></a>
             </div>
-            @foreach([['Ibrahima Fall','CDD','25/03/2026','12 jours','#FEE2E2','#991B1B'],['Ousmane Ba','CDD','15/04/2026','33 jours','#FEF3C7','#92400E'],['Aminata Diop','Interim','30/04/2026','48 jours','#FEF3C7','#92400E'],['Moussa Sarr','CDD','10/05/2026','58 jours','#FEF3C7','#92400E']] as [$nom,$type,$date,$jours,$bg,$col])
+            @forelse($contratsExpirantList as $contrat)
+            @php
+                $jours = now()->diffInDays($contrat->date_fin);
+                $urgence = $jours <= 14;
+                $cbg = $urgence ? '#FEE2E2' : '#FEF3C7';
+                $ccol = $urgence ? '#991B1B' : '#92400E';
+            @endphp
             <div class="data-row">
                 <div>
-                    <div style="font-size:13px;font-weight:500;color:#111827;">{{ $nom }}</div>
-                    <div style="font-size:12px;color:#9CA3AF;">{{ $type }} · Expire le {{ $date }}</div>
+                    <div style="font-size:13px;font-weight:500;color:#111827;">{{ $contrat->agent?->prenom }} {{ $contrat->agent?->nom }}</div>
+                    <div style="font-size:12px;color:#9CA3AF;">{{ $contrat->type_contrat }} · Expire le {{ $contrat->date_fin->format('d/m/Y') }}</div>
                 </div>
-                <span class="badge-status" style="background:{{ $bg }};color:{{ $col }};">{{ $jours }}</span>
+                <span class="badge-status" style="background:{{ $cbg }};color:{{ $ccol }};">{{ $jours }}j</span>
             </div>
-            @endforeach
+            @empty
+            <div style="text-align:center;padding:24px 0;color:#9CA3AF;font-size:13px;">
+                <i class="fas fa-shield-alt fa-2x mb-2 d-block" style="color:#D1D5DB;"></i>
+                Aucun contrat urgent
+            </div>
+            @endforelse
         </div>
     </div>
 </div>
@@ -205,11 +226,12 @@
 <div style="background:linear-gradient(135deg,#EFF6FF 0%,#E0F2FE 100%);border:1px solid #BFDBFE;border-radius:12px;padding:20px;">
     <div class="fw-600 mb-3" style="color:#0A4D8C;">Actions rapides</div>
     <div class="d-flex flex-wrap gap-2">
-        <a href="#" class="action-btn action-btn-primary"><i class="fas fa-user-plus"></i> Nouvel agent</a>
+        <a href="{{ route('rh.agents.create') }}" class="action-btn action-btn-primary"><i class="fas fa-user-plus"></i> Nouvel agent</a>
+        <a href="{{ route('rh.contrats.index') }}" class="action-btn action-btn-outline"><i class="fas fa-file-contract"></i> Contrats</a>
         <a href="{{ route('rh.conge-physique') }}" class="action-btn action-btn-outline"><i class="fas fa-umbrella-beach"></i> Saisir congé</a>
         <a href="{{ route('rh.mouvements.index') }}" class="action-btn action-btn-outline"><i class="fas fa-exchange-alt"></i> Mouvement</a>
         <a href="{{ route('rh.docs-admin.index') }}" class="action-btn action-btn-outline"><i class="fas fa-file-alt"></i> Documents admin.</a>
-        <a href="{{ route('pec.create') }}" class="action-btn action-btn-outline"><i class="fas fa-heartbeat"></i> Prise en charge</a>
+        <a href="{{ route('rh.pec.create') }}" class="action-btn action-btn-outline"><i class="fas fa-heartbeat"></i> Prise en charge</a>
     </div>
 </div>
 
@@ -231,8 +253,8 @@ document.addEventListener('DOMContentLoaded', function () {
     new Chart(document.getElementById('chartServices'), {
         type: 'bar',
         data: {
-            labels: ['Urgences','Pédiatrie','Chirurgie','Cardiologie','Radiologie','Maternité','RH','Administration'],
-            datasets: [{ label: 'Agents', data: [42,35,28,22,18,15,10,8],
+            labels: @json($servicesLabels),
+            datasets: [{ label: 'Agents', data: @json($servicesData),
                 backgroundColor: isDark ? 'rgba(88,166,255,0.15)' : 'rgba(10,77,140,0.13)',
                 borderColor: colors.primary, borderWidth: 1.5, borderRadius: 4 }]
         },
@@ -246,11 +268,13 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     });
 
+    @if(!empty($congesData))
     new Chart(document.getElementById('chartConges'), {
         type: 'doughnut',
         data: {
-            labels: ['Annuel','Maladie','Maternité','Exceptionnel'],
-            datasets: [{ data: [55,25,12,8], backgroundColor: [colors.primary,colors.red,colors.amber,'#7C3AED'],
+            labels: @json($congesLabels),
+            datasets: [{ data: @json($congesData),
+                backgroundColor: [colors.primary, colors.red, colors.amber, '#7C3AED', colors.green, '#0D9488'],
                 borderWidth: 2, borderColor: colors.border }]
         },
         options: {
@@ -258,6 +282,7 @@ document.addEventListener('DOMContentLoaded', function () {
             plugins: { legend: { position: 'bottom', labels: { font: { size: 11 }, color: colors.text, padding: 8, boxWidth: 10 } } }
         }
     });
+    @endif
 });
 </script>
 @endpush

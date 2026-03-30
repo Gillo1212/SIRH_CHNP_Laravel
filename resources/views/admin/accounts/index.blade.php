@@ -84,43 +84,44 @@
     </div>
 
     {{-- Filtres --}}
-    <div class="panel mb-4">
+    <div class="bg-white rounded shadow-sm p-3 mb-4">
         <form action="{{ route('admin.accounts.index') }}" method="GET">
-            <div class="row g-3 align-items-end">
-                <div class="col-md-4">
+            <div class="d-flex align-items-center gap-2 flex-wrap">
+                <div class="flex-grow-1" style="min-width:250px;max-width:400px;">
                     <div class="input-group">
-                        <span class="input-group-text bg-white border-end-0"><i class="fas fa-search text-muted" style="font-size:12px;"></i></span>
-                        <input type="text" name="search" class="form-control border-start-0 ps-0"
-                               placeholder="Login, email..." value="{{ request('search') }}">
+                        <span class="input-group-text bg-white border-end-0">
+                            <i class="fas fa-search text-muted" style="font-size:12px;"></i>
+                        </span>
+                        <input type="text" name="search" class="form-control border-start-0"
+                               placeholder="Login, email..."
+                               value="{{ request('search') }}">
                     </div>
                 </div>
-                <div class="col-md-2">
-                    <select name="role" class="form-select">
-                        <option value="">Tous les rôles</option>
-                        @foreach($roles as $role)
-                            <option value="{{ $role->name }}" {{ request('role') == $role->name ? 'selected' : '' }}>{{ $role->name }}</option>
-                        @endforeach
-                    </select>
-                </div>
-                <div class="col-md-2">
-                    <select name="dossier_status" class="form-select">
-                        <option value="">Dossier RH</option>
-                        <option value="completed" {{ request('dossier_status') == 'completed' ? 'selected' : '' }}>Complété</option>
-                        <option value="pending"   {{ request('dossier_status') == 'pending'   ? 'selected' : '' }}>En attente</option>
-                    </select>
-                </div>
-                <div class="col-md-2">
-                    <select name="statut" class="form-select">
-                        <option value="">Statut compte</option>
-                        <option value="Actif"    {{ request('statut') == 'Actif'    ? 'selected' : '' }}>Actif</option>
-                        <option value="Suspendu" {{ request('statut') == 'Suspendu' ? 'selected' : '' }}>Suspendu</option>
-                        <option value="Inactif"  {{ request('statut') == 'Inactif'  ? 'selected' : '' }}>Inactif</option>
-                    </select>
-                </div>
-                <div class="col-md-2 d-flex gap-2">
-                    <button type="submit" class="btn btn-primary fw-600 flex-fill"><i class="fas fa-filter me-1"></i>Filtrer</button>
-                    <a href="{{ route('admin.accounts.index') }}" class="btn btn-outline-secondary"><i class="fas fa-times"></i></a>
-                </div>
+                <select name="role" class="form-select" style="width:auto;min-width:160px;">
+                    <option value="">Tous les rôles</option>
+                    @foreach($roles as $role)
+                        <option value="{{ $role->name }}" {{ request('role') == $role->name ? 'selected' : '' }}>{{ $role->name }}</option>
+                    @endforeach
+                </select>
+                <select name="dossier_status" class="form-select" style="width:auto;min-width:150px;">
+                    <option value="">Dossier RH</option>
+                    <option value="completed" {{ request('dossier_status') == 'completed' ? 'selected' : '' }}>Complété</option>
+                    <option value="pending"   {{ request('dossier_status') == 'pending'   ? 'selected' : '' }}>En attente</option>
+                </select>
+                <select name="statut" class="form-select" style="width:auto;min-width:150px;">
+                    <option value="">Statut compte</option>
+                    <option value="Actif"    {{ request('statut') == 'Actif'    ? 'selected' : '' }}>Actif</option>
+                    <option value="Suspendu" {{ request('statut') == 'Suspendu' ? 'selected' : '' }}>Suspendu</option>
+                    <option value="Inactif"  {{ request('statut') == 'Inactif'  ? 'selected' : '' }}>Inactif</option>
+                </select>
+                <button type="submit" class="btn btn-primary d-flex align-items-center gap-2" style="white-space:nowrap;">
+                    <i class="fas fa-filter"></i> Filtrer
+                </button>
+                @if(request()->anyFilled(['search', 'role', 'dossier_status', 'statut']))
+                    <a href="{{ route('admin.accounts.index') }}" class="btn btn-outline-secondary" title="Réinitialiser">
+                        <i class="fas fa-times"></i>
+                    </a>
+                @endif
             </div>
         </form>
     </div>

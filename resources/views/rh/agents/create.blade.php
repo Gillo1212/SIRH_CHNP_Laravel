@@ -313,8 +313,8 @@
                 <button type="button" class="create-tab-btn" :class="{ 'active': currentTab === 'identite' }" @click="currentTab = 'identite'">
                     <i class="fas fa-id-card"></i> Identité
                 </button>
-                <button type="button" class="create-tab-btn" :class="{ 'active': currentTab === 'coordonnees' }" @click="currentTab = 'coordonnees'">
-                    <i class="fas fa-lock"></i> Coordonnées
+                <button type="button" class="create-tab-btn" :class="{ 'active': currentTab === 'donnees_sensibles' }" @click="currentTab = 'donnees_sensibles'">
+                    <i class="fas fa-lock"></i> Données sensibles
                     <span class="tab-badge-lock"><i class="fas fa-shield-halved"></i></span>
                 </button>
                 <button type="button" class="create-tab-btn" :class="{ 'active': currentTab === 'pro' }" @click="currentTab = 'pro'">
@@ -341,87 +341,107 @@
                                 <i class="fas fa-user" style="color:#0A4D8C;"></i> Informations personnelles
                             </div>
                             <div class="row g-3">
-                                <div class="col-md-6">
+                                <div class="col-md-4">
+                                    <label class="form-label-sm">Matricule <span class="required">*</span></label>
+                                    <input type="text" name="matricule" class="form-input" value="{{ old('matricule') }}" placeholder="CHNP-00001" style="text-transform:uppercase;">
+                                    <div class="form-hint">Saisir le matricule de l'agent</div>
+                                </div>
+                                <div class="col-md-4">
                                     <label class="form-label-sm">Nom de famille <span class="required">*</span></label>
                                     <input type="text" name="nom" class="form-input" value="{{ old('nom') }}" placeholder="DIALLO" style="text-transform:uppercase;">
                                 </div>
-                                <div class="col-md-6">
+                                <div class="col-md-4">
                                     <label class="form-label-sm">Prénom <span class="required">*</span></label>
                                     <input type="text" name="prenom" class="form-input" value="{{ old('prenom') }}" placeholder="Amadou">
                                 </div>
                                 <div class="col-md-4">
                                     <label class="form-label-sm">Date de naissance <span class="required">*</span></label>
-                                    <input type="date" name="date_naissance" class="form-input" value="{{ old('date_naissance') }}">
+                                    <input type="date" name="date_naissance" class="form-input" value="{{ old('date_naissance') }}"
+                                           max="{{ now()->subYears(18)->format('Y-m-d') }}">
                                 </div>
                                 <div class="col-md-4">
-                                    <label class="form-label-sm">Lieu de naissance <span class="required">*</span></label>
+                                    <label class="form-label-sm">Lieu de naissance</label>
                                     <input type="text" name="lieu_naissance" class="form-input" value="{{ old('lieu_naissance') }}" placeholder="Dakar">
                                 </div>
-                                <div class="col-md-4">
-                                    <label class="form-label-sm">Nationalité</label>
-                                    <input type="text" name="nationalite" class="form-input" value="{{ old('nationalite', 'Sénégalaise') }}">
-                                </div>
-                                <div class="col-md-4">
+                                <div class="col-md-2">
                                     <label class="form-label-sm">Sexe <span class="required">*</span></label>
                                     <select name="sexe" class="form-input">
-                                        <option value="">— Choisir —</option>
-                                        <option value="M">Masculin</option>
-                                        <option value="F">Féminin</option>
+                                        <option value="">—</option>
+                                        <option value="M" @selected(old('sexe')==='M')>M</option>
+                                        <option value="F" @selected(old('sexe')==='F')>F</option>
                                     </select>
                                 </div>
                                 <div class="col-md-4">
                                     <label class="form-label-sm">Situation familiale</label>
                                     <select name="situation_familiale" class="form-input">
                                         <option value="">— Choisir —</option>
-                                        <option value="Célibataire">Célibataire</option>
-                                        <option value="Marié">Marié</option>
-                                        <option value="Divorcé">Divorcé</option>
-                                        <option value="Veuf">Veuf</option>
+                                        <option value="Célibataire" @selected(old('situation_familiale')==='Célibataire')>Célibataire</option>
+                                        <option value="Marié" @selected(old('situation_familiale')==='Marié')>Marié(e)</option>
+                                        <option value="Divorcé" @selected(old('situation_familiale')==='Divorcé')>Divorcé(e)</option>
+                                        <option value="Veuf" @selected(old('situation_familiale')==='Veuf')>Veuf/Veuve</option>
                                     </select>
                                 </div>
                                 <div class="col-md-4">
-                                    <label class="form-label-sm">Statut <span class="required">*</span></label>
-                                    <select name="statut" class="form-input">
+                                    <label class="form-label-sm">Nationalité</label>
+                                    <input type="text" name="nationalite" class="form-input" value="{{ old('nationalite', 'Sénégalaise') }}" placeholder="Sénégalaise">
+                                </div>
+                                <div class="col-md-4">
+                                    <label class="form-label-sm">Statut agent</label>
+                                    <select name="statut_agent" class="form-input">
                                         <option value="Actif" selected>Actif</option>
                                         <option value="En_congé">En congé</option>
                                         <option value="Suspendu">Suspendu</option>
+                                        <option value="Retraité">Retraité</option>
+                                        <option value="Démissionnaire">Démissionnaire</option>
                                     </select>
-                                </div>
-                                <div class="col-md-6">
-                                    <label class="form-label-sm">Photo</label>
-                                    <input type="file" name="photo" class="form-input" accept="image/jpeg,image/png">
-                                    <div class="form-hint">JPEG ou PNG, max 2 Mo</div>
                                 </div>
                             </div>
                         </div>
                     </div>
 
-                    {{-- TAB COORDONNÉES --}}
-                    <div x-show="currentTab === 'coordonnees'" x-cloak>
+                    {{-- TAB DONNÉES SENSIBLES --}}
+                    <div x-show="currentTab === 'donnees_sensibles'" x-cloak>
                         <div class="sensitive-notice">
                             <i class="fas fa-shield-halved"></i>
-                            <span>Ces données sont stockées <strong>chiffrées</strong> (AES-256).</span>
+                            <span>L'adresse, le téléphone et le CNI sont stockés <strong>chiffrés</strong> (AES-256). La religion est une donnée personnelle sensible.</span>
                         </div>
                         <div class="form-card">
                             <div class="form-card-title">
-                                <i class="fas fa-phone" style="color:#D97706;"></i> Contact & Adresse
+                                <i class="fas fa-lock" style="color:#D97706;"></i> Données personnelles sensibles
                             </div>
                             <div class="row g-3">
                                 <div class="col-md-6">
-                                    <label class="form-label-sm">Téléphone <i class="fas fa-lock" style="font-size:9px;color:#D97706;"></i></label>
+                                    <label class="form-label-sm">
+                                        Adresse <i class="fas fa-lock" style="font-size:9px;color:#D97706;" title="Chiffré AES-256"></i>
+                                    </label>
+                                    <input type="text" name="adresse" class="form-input" value="{{ old('adresse') }}" placeholder="HLM Grand Yoff, Dakar">
+                                    <div class="form-hint"><i class="fas fa-lock" style="font-size:9px;"></i> Stocké chiffré en base (AES-256)</div>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label-sm">Email personnel</label>
+                                    <input type="email" name="email" class="form-input" value="{{ old('email') }}" placeholder="agent@example.com">
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label-sm">
+                                        Téléphone <i class="fas fa-lock" style="font-size:9px;color:#D97706;" title="Chiffré AES-256"></i>
+                                    </label>
                                     <input type="tel" name="telephone" class="form-input" value="{{ old('telephone') }}" placeholder="+221 77 000 00 00">
+                                    <div class="form-hint"><i class="fas fa-lock" style="font-size:9px;"></i> Stocké chiffré en base (AES-256)</div>
                                 </div>
                                 <div class="col-md-6">
-                                    <label class="form-label-sm">Email professionnel</label>
-                                    <input type="email" name="email" class="form-input" value="{{ old('email') }}" placeholder="a.diallo@chnp.sn">
-                                </div>
-                                <div class="col-12">
-                                    <label class="form-label-sm">Adresse <i class="fas fa-lock" style="font-size:9px;color:#D97706;"></i></label>
-                                    <textarea name="adresse" class="form-input" rows="2" placeholder="Quartier, Commune, Ville…">{{ old('adresse') }}</textarea>
+                                    <label class="form-label-sm">
+                                        N° CNI <i class="fas fa-lock" style="font-size:9px;color:#D97706;" title="Chiffré AES-256"></i>
+                                    </label>
+                                    <input type="text" name="cni" class="form-input" value="{{ old('cni') }}" placeholder="1 XXXXXXX XXXXX XX">
+                                    <div class="form-hint"><i class="fas fa-lock" style="font-size:9px;"></i> Carte Nationale d'Identité — Chiffré AES-256</div>
                                 </div>
                                 <div class="col-md-6">
-                                    <label class="form-label-sm">N° Assurance maladie <i class="fas fa-lock" style="font-size:9px;color:#D97706;"></i></label>
-                                    <input type="text" name="numero_assurance" class="form-input" value="{{ old('numero_assurance') }}" placeholder="IPRES-XXXXXXXXX">
+                                    <label class="form-label-sm">Religion</label>
+                                    <input type="text" name="religion" class="form-input" value="{{ old('religion') }}" placeholder="Islam, Christianisme…">
+                                    <div class="form-hint">
+                                        <i class="fas fa-info-circle" style="font-size:9px;color:#D97706;"></i>
+                                        Donnée personnelle sensible — accès restreint
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -434,17 +454,17 @@
                                 <i class="fas fa-briefcase" style="color:#0A4D8C;"></i> Informations professionnelles
                             </div>
                             <div class="row g-3">
-                                <div class="col-md-4">
-                                    <label class="form-label-sm">Date de recrutement <span class="required">*</span></label>
-                                    <input type="date" name="date_recrutement" class="form-input" value="{{ old('date_recrutement', now()->format('Y-m-d')) }}">
+                                <div class="col-md-6">
+                                    <label class="form-label-sm">Date de prise de service</label>
+                                    <input type="date" name="date_prise_service" class="form-input" value="{{ old('date_prise_service') }}">
                                 </div>
-                                <div class="col-md-4">
+                                <div class="col-md-6">
                                     <label class="form-label-sm">Fonction</label>
-                                    <input type="text" name="fonction" class="form-input" value="{{ old('fonction') }}" placeholder="Infirmier chef">
+                                    <input type="text" name="fontion" class="form-input" value="{{ old('fontion') }}" placeholder="Infirmier chef de poste">
                                 </div>
-                                <div class="col-md-4">
+                                <div class="col-md-6">
                                     <label class="form-label-sm">Grade</label>
-                                    <input type="text" name="grade" class="form-input" value="{{ old('grade') }}" placeholder="IES2">
+                                    <input type="text" name="grade" class="form-input" value="{{ old('grade') }}" placeholder="A1, P2, T3…">
                                 </div>
                                 <div class="col-md-6">
                                     <label class="form-label-sm">Catégorie socio-professionnelle</label>
@@ -456,7 +476,20 @@
                                         <option value="Technicien">Technicien</option>
                                         <option value="Agent_Administratif">Agent Administratif</option>
                                         <option value="Agent_de_Service">Agent de Service</option>
+                                        <option value="Commis_Administration">Commis d'Administration</option>
                                         <option value="Ouvrier">Ouvrier</option>
+                                        <option value="Sans_Diplome">Sans Diplôme</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label-sm">Famille d'emploi</label>
+                                    <select name="famille_d_emploi" class="form-input">
+                                        <option value="">— Choisir —</option>
+                                        <option value="Corps_Médical">Corps Médical</option>
+                                        <option value="Corps_Paramédical">Corps Paramédical</option>
+                                        <option value="Corps_Administratif">Corps Administratif</option>
+                                        <option value="Corps_Technique">Corps Technique</option>
+                                        <option value="Corps_de_Soutien">Corps de Soutien</option>
                                     </select>
                                 </div>
                                 <div class="col-md-3">

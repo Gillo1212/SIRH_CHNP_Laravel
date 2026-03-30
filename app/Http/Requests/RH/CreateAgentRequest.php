@@ -15,38 +15,37 @@ class CreateAgentRequest extends FormRequest
     {
         return [
             // Identité
-            'nom'                 => ['required', 'string', 'min:2', 'max:100'],
-            'prenom'              => ['required', 'string', 'min:2', 'max:100'],
-            'date_naissance'      => ['required', 'date', 'before:-18 years'],
-            'lieu_naissance'      => ['required', 'string', 'max:100'],
-            'sexe'                => ['required', 'in:M,F'],
-            'situation_familiale' => ['nullable', 'in:Célibataire,Marié,Divorcé,Veuf'],
-            'nationalite'         => ['nullable', 'string', 'max:50'],
+            'matricule'          => ['required', 'string', 'max:20', 'unique:agents,matricule'],
+            'nom'                => ['required', 'string', 'min:2', 'max:100'],
+            'prenom'             => ['required', 'string', 'min:2', 'max:100'],
+            'date_naissance'     => ['required', 'date', 'before:-18 years'],
+            'lieu_naissance'     => ['nullable', 'string', 'max:100'],
+            'sexe'               => ['required', 'in:M,F'],
+            'situation_familiale'=> ['nullable', 'in:Célibataire,Marié,Divorcé,Veuf'],
+            'nationalite'        => ['nullable', 'string', 'max:50'],
 
-            // Coordonnées (données sensibles)
-            'adresse'             => ['nullable', 'string', 'max:500'],
-            'telephone'           => ['nullable', 'string', 'max:20'],
-            'email'               => ['nullable', 'email', 'max:150', 'unique:agents,email'],
+            // Données sensibles (AES-256 ou personnelles)
+            'adresse'            => ['nullable', 'string', 'max:255'],
+            'telephone'          => ['nullable', 'string', 'max:20'],
+            'email'              => ['nullable', 'email', 'max:150'],
+            'religion'           => ['nullable', 'string', 'max:50'],
+            'cni'                => ['nullable', 'string', 'max:50'],
 
             // Professionnel
-            'date_recrutement'    => ['required', 'date'],
-            'fonction'            => ['nullable', 'string', 'max:100'],
-            'grade'               => ['nullable', 'string', 'max:20'],
-            'categorie_cp'        => ['nullable', 'in:Cadre_Superieur,Cadre_Moyen,Technicien_Superieur,Technicien,Agent_Administratif,Agent_de_Service,Commis_Administration,Ouvrier,Sans_Diplome'],
-            'numero_assurance'    => ['nullable', 'string', 'max:50'],
-            'id_service'          => ['nullable', 'integer', 'exists:services,id_service'],
-            'id_division'         => ['nullable', 'integer', 'exists:divisions,id_division'],
+            'date_prise_service' => ['nullable', 'date'],
+            'fontion'            => ['nullable', 'string', 'max:100'],
+            'grade'              => ['nullable', 'string', 'max:100'],
+            'categorie_cp'       => ['nullable', 'in:Cadre_Superieur,Cadre_Moyen,Technicien_Superieur,Technicien,Agent_Administratif,Agent_de_Service,Commis_Administration,Ouvrier,Sans_Diplome'],
+            'famille_d_emploi'   => ['nullable', 'string', 'max:100'],
+            'statut_agent'       => ['nullable', 'in:Actif,En_congé,Suspendu,Retraité,Démissionnaire'],
+            'id_service'         => ['nullable', 'integer', 'exists:services,id_service'],
+            'id_division'        => ['nullable', 'integer', 'exists:divisions,id_division'],
 
-            // Liaison compte Admin-first (optionnel)
-            'user_id'             => ['nullable', 'integer', 'exists:users,id'],
+            // Liaison compte (optionnel)
+            'user_id'            => ['nullable', 'integer', 'exists:users,id'],
+            'password'           => ['nullable', 'string', 'min:8'],
 
-            // Compte (optionnel — généré si absent)
-            'password'            => ['nullable', 'string', 'min:8'],
-
-            // Photo
-            'photo'               => ['nullable', 'image', 'mimes:jpeg,jpg,png', 'max:2048'],
-
-            // Famille (tableaux dynamiques)
+            // Famille (tableaux dynamiques — conservés)
             'enfants'                          => ['nullable', 'array', 'max:15'],
             'enfants.*.prenom_complet'         => ['required_with:enfants.*.date_naissance_enfant', 'string', 'max:100'],
             'enfants.*.date_naissance_enfant'  => ['required_with:enfants.*.prenom_complet', 'date'],
@@ -63,20 +62,18 @@ class CreateAgentRequest extends FormRequest
     public function messages(): array
     {
         return [
-            'nom.required'              => 'Le nom de famille est obligatoire.',
-            'prenom.required'           => 'Le prénom est obligatoire.',
-            'date_naissance.required'   => 'La date de naissance est obligatoire.',
-            'date_naissance.before'     => 'L\'agent doit avoir au moins 18 ans.',
-            'lieu_naissance.required'   => 'Le lieu de naissance est obligatoire.',
-            'sexe.required'             => 'Le sexe est obligatoire.',
-            'sexe.in'                   => 'Le sexe doit être M ou F.',
-            'date_recrutement.required' => 'La date de recrutement est obligatoire.',
-            'email.unique'              => 'Cette adresse email est déjà utilisée.',
-            'email.email'               => 'L\'adresse email n\'est pas valide.',
-            'photo.image'               => 'La photo doit être une image.',
-            'photo.max'                 => 'La photo ne doit pas dépasser 2 Mo.',
-            'id_service.exists'         => 'Le service sélectionné n\'existe pas.',
-            'id_division.exists'        => 'La division sélectionnée n\'existe pas.',
+            'nom.required'            => 'Le nom de famille est obligatoire.',
+            'prenom.required'         => 'Le prénom est obligatoire.',
+            'date_naissance.required' => 'La date de naissance est obligatoire.',
+            'date_naissance.before'   => 'L\'agent doit avoir au moins 18 ans.',
+            'sexe.required'           => 'Le sexe est obligatoire.',
+            'sexe.in'                 => 'Le sexe doit être M ou F.',
+            'id_service.exists'       => 'Le service sélectionné n\'existe pas.',
+            'id_division.exists'      => 'La division sélectionnée n\'existe pas.',
+            'matricule.required'      => 'Le matricule est obligatoire.',
+            'matricule.unique'        => 'Ce matricule est déjà utilisé.',
+            'statut_agent.in'         => 'Statut agent invalide.',
+            'categorie_cp.in'         => 'Catégorie socio-professionnelle invalide.',
         ];
     }
 }

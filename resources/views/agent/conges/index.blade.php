@@ -15,6 +15,15 @@
 .kpi-card .kpi-icon { width:44px;height:44px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0; }
 .kpi-card .kpi-value { font-size:26px;font-weight:700;line-height:1.1;margin-top:10px; }
 .kpi-card .kpi-label { font-size:12px;margin-top:2px;font-weight:500;color:var(--theme-text-muted); }
+.kpi-card::before { content:'';position:absolute;top:0;right:0;width:80px;height:80px;border-radius:0 12px 0 80px;opacity:.07; }
+.kpi-card.amber::before { background:#D97706; }
+.kpi-card.blue::before  { background:#0A4D8C; }
+.kpi-card.green::before { background:#059669; }
+.kpi-card.red::before   { background:#DC2626; }
+.action-btn { display:inline-flex;align-items:center;gap:8px;padding:9px 16px;border-radius:8px;font-size:13px;font-weight:500;text-decoration:none;border:none;cursor:pointer;transition:all 180ms;white-space:nowrap; }
+.action-btn-primary { background:#0A4D8C;color:#fff; }
+.action-btn-primary:hover { background:#1565C0;color:#fff;box-shadow:0 4px 12px rgba(10,77,140,.30); }
+@keyframes toastIn { from { opacity:0;transform:translateX(40px); } to { opacity:1;transform:translateX(0); } }
 
 .badge-statut { display:inline-flex;align-items:center;gap:5px;padding:4px 10px;border-radius:20px;font-size:11px;font-weight:600; }
 .badge-en_attente { background:#FEF3C7;color:#92400E; }
@@ -30,29 +39,13 @@
 @section('content')
 <div class="container-fluid px-4 py-4">
 
-    {{-- Alertes --}}
-    @if(session('success'))
-        <div class="alert alert-success alert-dismissible d-flex align-items-center gap-2 mb-4" role="alert" style="border-radius:10px;border-left:4px solid #10B981;">
-            <i class="fas fa-check-circle"></i>
-            <span>{{ session('success') }}</span>
-            <button type="button" class="btn-close ms-auto" data-bs-dismiss="alert"></button>
-        </div>
-    @endif
-    @if(session('error'))
-        <div class="alert alert-danger alert-dismissible d-flex align-items-center gap-2 mb-4" role="alert" style="border-radius:10px;border-left:4px solid #EF4444;">
-            <i class="fas fa-exclamation-circle"></i>
-            <span>{{ session('error') }}</span>
-            <button type="button" class="btn-close ms-auto" data-bs-dismiss="alert"></button>
-        </div>
-    @endif
-
     {{-- Header --}}
     <div class="d-flex justify-content-between align-items-center mb-4">
         <div>
             <h4 class="fw-bold mb-0" style="color:var(--theme-text);">Mes congés</h4>
             <p class="text-muted small mb-0">Gérez vos demandes de congé et consultez vos soldes</p>
         </div>
-        <a href="{{ route('agent.conges.create') }}" class="btn btn-primary d-flex align-items-center gap-2" style="background:#0A4D8C;border:none;border-radius:8px;padding:9px 18px;">
+        <a href="{{ route('agent.conges.create') }}" class="action-btn action-btn-primary">
             <i class="fas fa-plus"></i> Nouvelle demande
         </a>
     </div>
@@ -60,7 +53,7 @@
     {{-- KPI Cards --}}
     <div class="row g-3 mb-4">
         <div class="col-6 col-md-3">
-            <div class="kpi-card border" style="background:var(--theme-panel-bg);">
+            <div class="kpi-card amber border" style="background:var(--theme-panel-bg);">
                 <div class="d-flex justify-content-between align-items-start">
                     <div>
                         <div class="kpi-value" style="color:#F59E0B;">{{ $stats['en_attente'] }}</div>
@@ -71,7 +64,7 @@
             </div>
         </div>
         <div class="col-6 col-md-3">
-            <div class="kpi-card border" style="background:var(--theme-panel-bg);">
+            <div class="kpi-card blue border" style="background:var(--theme-panel-bg);">
                 <div class="d-flex justify-content-between align-items-start">
                     <div>
                         <div class="kpi-value" style="color:#3B82F6;">{{ $stats['validees'] }}</div>
@@ -82,7 +75,7 @@
             </div>
         </div>
         <div class="col-6 col-md-3">
-            <div class="kpi-card border" style="background:var(--theme-panel-bg);">
+            <div class="kpi-card green border" style="background:var(--theme-panel-bg);">
                 <div class="d-flex justify-content-between align-items-start">
                     <div>
                         <div class="kpi-value" style="color:#10B981;">{{ $stats['approuvees'] }}</div>
@@ -93,7 +86,7 @@
             </div>
         </div>
         <div class="col-6 col-md-3">
-            <div class="kpi-card border" style="background:var(--theme-panel-bg);">
+            <div class="kpi-card red border" style="background:var(--theme-panel-bg);">
                 <div class="d-flex justify-content-between align-items-start">
                     <div>
                         <div class="kpi-value" style="color:#EF4444;">{{ $stats['rejetees'] }}</div>
@@ -220,3 +213,21 @@
     </div>
 </div>
 @endsection
+
+@push('scripts')
+<script>
+function showToast(message, type) {
+    const cfg = { success:{bg:'#10B981',icon:'fa-check-circle'}, error:{bg:'#EF4444',icon:'fa-exclamation-circle'} };
+    const c = cfg[type] || cfg.success;
+    const id = 'toast-' + Date.now();
+    document.body.insertAdjacentHTML('beforeend', `<div id="${id}" style="position:fixed;top:22px;right:22px;z-index:10000;background:${c.bg};color:#fff;border-radius:12px;padding:14px 20px;display:flex;align-items:center;gap:12px;box-shadow:0 8px 28px rgba(0,0,0,.18);font-size:14px;font-weight:500;max-width:400px;animation:toastIn .3s ease;"><i class="fas ${c.icon}" style="font-size:18px;flex-shrink:0;"></i><span>${message}</span><button onclick="document.getElementById('${id}').remove()" style="background:none;border:none;color:#fff;font-size:20px;cursor:pointer;margin-left:auto;padding:0 0 0 8px;line-height:1;">×</button></div>`);
+    setTimeout(() => document.getElementById(id)?.remove(), 4500);
+}
+@if(session('success'))
+    document.addEventListener('DOMContentLoaded', () => showToast(@json(session('success')), 'success'));
+@endif
+@if(session('error'))
+    document.addEventListener('DOMContentLoaded', () => showToast(@json(session('error')), 'error'));
+@endif
+</script>
+@endpush

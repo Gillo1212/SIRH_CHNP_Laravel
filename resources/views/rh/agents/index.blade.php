@@ -46,25 +46,8 @@
 .action-btn-outline:hover { background:var(--sirh-primary-hover);color:#0A4D8C;border-color:#BFDBFE; }
 
 /* ════════════════════════════════════════════════════════════
-   FILTER PANEL
+   FILTER — styles handled by master layout .filter-bar
    ════════════════════════════════════════════════════════════ */
-.filter-panel { border-radius:12px;padding:17px 20px; }
-.filter-panel .form-label {
-    font-size:11px;font-weight:700;text-transform:uppercase;
-    letter-spacing:.05em;margin-bottom:5px;
-}
-.filter-panel .form-control,
-.filter-panel .form-select {
-    border-radius:8px;font-size:13px;
-    border-color:var(--theme-border);
-    background:var(--theme-panel-bg);
-    color:var(--theme-text);
-}
-.filter-panel .form-control:focus,
-.filter-panel .form-select:focus {
-    border-color:#0A4D8C;
-    box-shadow:0 0 0 3px rgba(10,77,140,.12);
-}
 .input-group-text {
     background:var(--theme-bg-secondary);
     border-color:var(--theme-border);
@@ -197,7 +180,17 @@
 }
 .modal-header-sirh h5 { font-size:17px;font-weight:700;margin-bottom:4px; }
 .modal-header-sirh p  { font-size:13px;color:var(--theme-text-muted);margin-bottom:0; }
-.modal-body-sirh { padding:20px 24px; }
+.modal-body-sirh {
+    padding: 20px 24px;
+    max-height: 420px;
+    overflow-y: auto;
+    scrollbar-width: thin;
+    scrollbar-color: #0A4D8C #E5E7EB;
+}
+.modal-body-sirh::-webkit-scrollbar { width: 8px; }
+.modal-body-sirh::-webkit-scrollbar-track { background: #E5E7EB; border-radius: 4px; }
+.modal-body-sirh::-webkit-scrollbar-thumb { background: #0A4D8C; border-radius: 4px; }
+.modal-body-sirh::-webkit-scrollbar-thumb:hover { background: #1565C0; }
 .modal-footer-sirh { padding:16px 24px 20px;border:none;gap:10px;justify-content:flex-end; }
 
 /* Tabs dans modal */
@@ -380,9 +373,12 @@
             </button>
         </div>
         @can('export', \App\Models\Agent::class)
-        <a href="{{ route('rh.agents.export.csv', request()->only(['statut','service'])) }}"
+        <a href="{{ route('rh.agents.export.excel', request()->query()) }}"
            class="action-btn action-btn-outline">
-            <i class="fas fa-file-csv"></i> Export CSV
+            <i class="fas fa-file-excel"></i> Export Excel
+            @if(request()->anyFilled(['recherche','service','statut','sexe']))
+            <span style="font-size:10px;background:#D1FAE5;color:#065F46;padding:1px 5px;border-radius:10px;font-weight:700;">filtré</span>
+            @endif
         </a>
         @endcan
         @can('create', \App\Models\Agent::class)
@@ -397,61 +393,47 @@
 {{-- ═══════════════════════════════════════════════════════════
      FILTRES
      ═══════════════════════════════════════════════════════════ --}}
-<div class="filter-panel panel mb-3">
+<div class="bg-white rounded shadow-sm p-3 mb-4">
     <form method="GET" action="{{ route('rh.agents.index') }}">
-        <div class="row g-2 align-items-end">
-            <div class="col-12 col-md-4">
-                <label class="form-label">Rechercher</label>
+        <div class="d-flex align-items-center gap-2 flex-wrap">
+            <div class="flex-grow-1" style="min-width:250px;max-width:400px;">
                 <div class="input-group">
-                    <span class="input-group-text"><i class="fas fa-search" style="font-size:12px;"></i></span>
-                    <input type="text" name="recherche" class="form-control"
-                           style="border-left:none;border-radius:0 8px 8px 0;font-size:13px;"
+                    <span class="input-group-text bg-white border-end-0">
+                        <i class="fas fa-search text-muted" style="font-size:12px;"></i>
+                    </span>
+                    <input type="text" name="recherche" class="form-control border-start-0"
                            placeholder="Nom, prénom, matricule, fonction…"
                            value="{{ $filters['recherche'] ?? '' }}">
                 </div>
             </div>
-            <div class="col-6 col-md-2">
-                <label class="form-label">Service</label>
-                <select name="service" class="form-select" style="font-size:13px;border-radius:8px;">
-                    <option value="">Tous les services</option>
-                    @foreach($services as $s)
-                        <option value="{{ $s->id_service }}" @selected(($filters['service'] ?? '') == $s->id_service)>
-                            {{ $s->nom_service }}
-                        </option>
-                    @endforeach
-                </select>
-            </div>
-            <div class="col-6 col-md-2">
-                <label class="form-label">Statut</label>
-                <select name="statut" class="form-select" style="font-size:13px;border-radius:8px;">
-                    <option value="">Tous</option>
-                    <option value="Actif"    @selected(($filters['statut'] ?? '') === 'Actif')>Actif</option>
-                    <option value="En_congé" @selected(($filters['statut'] ?? '') === 'En_congé')>En congé</option>
-                    <option value="Suspendu" @selected(($filters['statut'] ?? '') === 'Suspendu')>Suspendu</option>
-                    <option value="Retraité" @selected(($filters['statut'] ?? '') === 'Retraité')>Retraité</option>
-                </select>
-            </div>
-            <div class="col-6 col-md-2">
-                <label class="form-label">Sexe</label>
-                <select name="sexe" class="form-select" style="font-size:13px;border-radius:8px;">
-                    <option value="">Tous</option>
-                    <option value="M" @selected(($filters['sexe'] ?? '') === 'M')>Masculin</option>
-                    <option value="F" @selected(($filters['sexe'] ?? '') === 'F')>Féminin</option>
-                </select>
-            </div>
-            <div class="col-6 col-md-2">
-                <label class="form-label">&nbsp;</label>
-                <div class="d-flex gap-2">
-                    <button type="submit" class="action-btn action-btn-primary flex-fill" style="justify-content:center;">
-                        <i class="fas fa-filter"></i> Filtrer
-                    </button>
-                    @if(array_filter($filters))
-                    <a href="{{ route('rh.agents.index') }}" class="action-btn action-btn-outline" title="Réinitialiser" style="padding:9px 12px;">
-                        <i class="fas fa-xmark"></i>
-                    </a>
-                    @endif
-                </div>
-            </div>
+            <select name="service" class="form-select" style="width:auto;min-width:160px;">
+                <option value="">Tous les services</option>
+                @foreach($services as $s)
+                    <option value="{{ $s->id_service }}" @selected(($filters['service'] ?? '') == $s->id_service)>
+                        {{ $s->nom_service }}
+                    </option>
+                @endforeach
+            </select>
+            <select name="statut" class="form-select" style="width:auto;min-width:150px;">
+                <option value="">Tous les statuts</option>
+                <option value="Actif"    @selected(($filters['statut'] ?? '') === 'Actif')>Actif</option>
+                <option value="En_congé" @selected(($filters['statut'] ?? '') === 'En_congé')>En congé</option>
+                <option value="Suspendu" @selected(($filters['statut'] ?? '') === 'Suspendu')>Suspendu</option>
+                <option value="Retraité" @selected(($filters['statut'] ?? '') === 'Retraité')>Retraité</option>
+            </select>
+            <select name="sexe" class="form-select" style="width:auto;min-width:130px;">
+                <option value="">Tous les sexes</option>
+                <option value="M" @selected(($filters['sexe'] ?? '') === 'M')>Masculin</option>
+                <option value="F" @selected(($filters['sexe'] ?? '') === 'F')>Féminin</option>
+            </select>
+            <button type="submit" class="btn btn-primary d-flex align-items-center gap-2" style="white-space:nowrap;">
+                <i class="fas fa-filter"></i> Filtrer
+            </button>
+            @if(!empty($filters['recherche']) || !empty($filters['service']) || !empty($filters['statut']) || !empty($filters['sexe']))
+                <a href="{{ route('rh.agents.index') }}" class="btn btn-outline-secondary" title="Réinitialiser">
+                    <i class="fas fa-times"></i>
+                </a>
+            @endif
         </div>
     </form>
 </div>
@@ -481,21 +463,21 @@
                 @php
                     $colors = ['#0A4D8C','#059669','#7C3AED','#D97706','#0891B2','#DC2626'];
                     $color  = $colors[$agent->id_agent % 6];
-                    $bpClass = match($agent->statut) {
+                    $bpClass = match($agent->statut_agent) {
                         'Actif'    => 'bp-actif',
                         'En_congé' => 'bp-conge',
                         'Suspendu' => 'bp-suspendu',
                         'Retraité' => 'bp-retraite',
                         default    => 'bp-retraite',
                     };
-                    $bpIcon = match($agent->statut) {
+                    $bpIcon = match($agent->statut_agent) {
                         'Actif'    => 'fa-circle-check',
                         'En_congé' => 'fa-umbrella-beach',
                         'Suspendu' => 'fa-ban',
                         'Retraité' => 'fa-door-open',
                         default    => 'fa-circle',
                     };
-                    $statutLabel = $agent->statut === 'En_congé' ? 'En congé' : $agent->statut;
+                    $statutLabel = $agent->statut_agent === 'En_congé' ? 'En congé' : $agent->statut_agent;
                 @endphp
                 <tr>
                     <td>
@@ -520,7 +502,7 @@
                             </div>
                         </div>
                     </td>
-                    <td class="d-none d-md-table-cell" style="color:var(--theme-text-muted);">{{ $agent->fonction ?? '—' }}</td>
+                    <td class="d-none d-md-table-cell" style="color:var(--theme-text-muted);">{{ str_replace('_',' ',$agent->famille_d_emploi ?? '—') ?? '—' }}</td>
                     <td class="d-none d-lg-table-cell">
                         @if($agent->service)
                         <span style="font-size:12px;background:var(--theme-bg-secondary);padding:3px 9px;border-radius:6px;font-weight:500;">
@@ -530,7 +512,7 @@
                         @endif
                     </td>
                     <td class="d-none d-xl-table-cell" style="color:var(--theme-text-muted);font-size:12.5px;">
-                        {{ $agent->date_recrutement?->format('d/m/Y') ?? '—' }}
+                        {{ $agent->date_prise_service?->format('d/m/Y') ?? '—' }}
                     </td>
                     <td>
                         <span class="badge-pill {{ $bpClass }}">
@@ -620,8 +602,8 @@
     @php
         $colors  = ['#0A4D8C','#059669','#7C3AED','#D97706','#0891B2','#DC2626'];
         $color   = $colors[$agent->id_agent % 6];
-        $bpClass = match($agent->statut) { 'Actif'=>'bp-actif','En_congé'=>'bp-conge','Suspendu'=>'bp-suspendu',default=>'bp-retraite' };
-        $statutLabel = $agent->statut === 'En_congé' ? 'En congé' : $agent->statut;
+        $bpClass = match($agent->statut_agent) { 'Actif'=>'bp-actif','En_congé'=>'bp-conge','Suspendu'=>'bp-suspendu',default=>'bp-retraite' };
+        $statutLabel = $agent->statut_agent === 'En_congé' ? 'En congé' : $agent->statut_agent;
     @endphp
     <div class="agent-card">
         <div class="agent-card-top">
@@ -637,7 +619,7 @@
             </div>
             <div style="font-size:14px;font-weight:700;">{{ $agent->prenom }} {{ $agent->nom }}</div>
             <div style="font-size:11.5px;color:var(--theme-text-muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%;">
-                {{ $agent->fonction ?? 'Sans fonction' }}
+                {{ str_replace('_',' ',$agent->famille_d_emploi ?? '—') ?? 'Sans fonction' }}
             </div>
         </div>
         <div class="agent-card-body">
@@ -651,10 +633,10 @@
                 {{ $agent->service->nom_service }}
             </div>
             @endif
-            @if($agent->date_recrutement)
+            @if($agent->date_prise_service)
             <div class="agent-card-meta">
                 <i class="fas fa-calendar-check" style="color:#0A4D8C;width:14px;"></i>
-                Dep. {{ $agent->date_recrutement->format('d/m/Y') }}
+                Dep. {{ $agent->date_prise_service->format('d/m/Y') }}
             </div>
             @endif
         </div>
@@ -695,7 +677,7 @@
     <div class="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable">
         <div class="modal-content">
 
-            {{-- EN-TÊTE --}}
+            {{-- ── EN-TÊTE ── --}}
             <div class="modal-header-sirh">
                 <div>
                     <div class="modal-icon" style="background:#EFF6FF;">
@@ -714,11 +696,12 @@
                 </button>
             </div>
 
-            {{-- FORMULAIRE --}}
+            {{-- ── FORMULAIRE ── --}}
             <form method="POST" action="{{ route('rh.agents.store') }}" enctype="multipart/form-data"
-                  x-data="agentModalForm()" id="formAddAgent">
+                  x-data="agentModalForm()" id="formAddAgent"
+                  @submit="$el.querySelector('[name=_tab]').value = tab">
             @csrf
-            {{-- Liaison compte Admin-first --}}
+            <input type="hidden" name="_tab" value="{{ old('_tab', 'identite') }}">
             @if(isset($compteACompleter) && $compteACompleter)
                 <input type="hidden" name="user_id" value="{{ $compteACompleter->id }}">
             @endif
@@ -730,43 +713,78 @@
                 <div style="background:#EFF6FF;border:1px solid #BFDBFE;border-radius:10px;padding:12px 16px;margin-bottom:16px;display:flex;align-items:center;gap:12px;">
                     <i class="fas fa-link" style="color:#1D4ED8;font-size:18px;flex-shrink:0;"></i>
                     <div>
-                        <div style="font-weight:700;font-size:13px;color:#1E3A8A;">Complétion du dossier pour le compte Admin</div>
+                        <div style="font-weight:700;font-size:13px;color:#1E3A8A;">Complétion du dossier pour le compte</div>
                         <div style="font-size:12px;color:#3B82F6;">
                             Login : <strong>{{ $compteACompleter->login }}</strong> &nbsp;·&nbsp;
                             Rôle(s) : {{ $compteACompleter->roles->pluck('name')->join(', ') }}
                         </div>
-                        <div style="font-size:11px;color:#6B7280;margin-top:2px;">
-                            Ce dossier sera automatiquement lié au compte une fois enregistré.
-                        </div>
+                        <div style="font-size:11px;color:#6B7280;margin-top:2px;">Ce dossier sera automatiquement lié au compte une fois enregistré.</div>
                     </div>
                 </div>
                 @endif
 
-                {{-- NAV TABS --}}
+                {{-- Résumé des erreurs --}}
+                @if($errors->any())
+                <div style="background:#FEF2F2;border:1px solid #FECACA;border-radius:10px;padding:12px 16px;margin-bottom:16px;">
+                    <div style="font-size:12.5px;font-weight:700;color:#DC2626;margin-bottom:6px;">
+                        <i class="fas fa-circle-exclamation me-1"></i>{{ $errors->count() }} erreur(s) à corriger :
+                    </div>
+                    <ul style="margin:0;padding-left:18px;font-size:12px;color:#991B1B;">
+                        @foreach($errors->all() as $error)
+                        <li>{{ $error }}</li>
+                        @endforeach
+                    </ul>
+                </div>
+                @endif
+
+                {{-- ── NAV TABS ── --}}
                 <div class="modal-nav-tabs">
-                    <button type="button" :class="{ active: tab==='identite' }" @click="tab='identite'">
+                    <button type="button"
+                            :class="{ active: tab==='identite' }"
+                            @click="tab='identite'">
                         <i class="fas fa-id-card me-1"></i> Identité
+                        @if($errors->hasAny(['matricule','nom','prenom','date_naissance','lieu_naissance','sexe','situation_familiale','nationalite','statut_agent']))
+                            <span style="width:7px;height:7px;border-radius:50%;background:#EF4444;display:inline-block;margin-left:4px;"></span>
+                        @endif
                     </button>
-                    <button type="button" :class="{ active: tab==='coordonnees' }" @click="tab='coordonnees'">
+                    <button type="button"
+                            :class="{ active: tab==='coordonnees' }"
+                            @click="tab='coordonnees'">
                         <i class="fas fa-lock me-1"></i> Coordonnées
-                        <span style="font-size:9px;background:#FEE2E2;color:#991B1B;padding:1px 5px;border-radius:6px;margin-left:4px;">🔒</span>
+                        <span style="font-size:9px;background:#FEE2E2;color:#991B1B;padding:1px 5px;border-radius:6px;margin-left:4px;">AES-256</span>
+                        @if($errors->hasAny(['telephone','email','adresse','numero_assurance','cni','religion']))
+                            <span style="width:7px;height:7px;border-radius:50%;background:#EF4444;display:inline-block;margin-left:4px;"></span>
+                        @endif
                     </button>
-                    <button type="button" :class="{ active: tab==='professionnel' }" @click="tab='professionnel'">
+                    <button type="button"
+                            :class="{ active: tab==='professionnel' }"
+                            @click="tab='professionnel'">
                         <i class="fas fa-briefcase me-1"></i> Professionnel
+                        @if($errors->hasAny(['date_prise_service','fontion','grade','categorie_cp','famille_d_emploi','id_service','id_division']))
+                            <span style="width:7px;height:7px;border-radius:50%;background:#EF4444;display:inline-block;margin-left:4px;"></span>
+                        @endif
                     </button>
-                    <button type="button" :class="{ active: tab==='famille' }" @click="tab='famille'">
+                    <button type="button"
+                            :class="{ active: tab==='famille' }"
+                            @click="tab='famille'">
                         <i class="fas fa-users me-1"></i> Famille
+                        <span class="ms-1" style="font-size:10px;color:var(--theme-text-muted);">
+                            (<span x-text="conjoints.length + enfants.length"></span>)
+                        </span>
                     </button>
                 </div>
 
-                {{-- ── ONGLET IDENTITÉ ── --}}
+                {{-- ════════════════════════════════
+                     ONGLET 1 — IDENTITÉ
+                     ════════════════════════════════ --}}
                 <div x-show="tab==='identite'" x-transition>
 
-                    {{-- Photo + matricule --}}
+                    {{-- Photo + Matricule --}}
                     <div class="d-flex align-items-center gap-4 mb-4 p-3" style="background:var(--theme-bg-secondary);border-radius:12px;">
-                        <div>
-                            <label for="photoInputModal" class="photo-upload-zone" style="cursor:pointer;">
-                                <img id="photoPreviewModal" src="" alt="" style="display:none;width:90px;height:90px;object-fit:cover;border-radius:50%;">
+                        <div style="flex-shrink:0;">
+                            <label for="photoInputModal" class="photo-upload-zone" style="cursor:pointer;position:relative;">
+                                <img id="photoPreviewModal" src="" alt=""
+                                     style="display:none;width:90px;height:90px;object-fit:cover;border-radius:50%;position:absolute;inset:0;">
                                 <div id="photoPlaceholderModal" style="text-align:center;">
                                     <i class="fas fa-camera" style="font-size:22px;color:#0A4D8C;"></i>
                                     <div style="font-size:10px;color:#6B7280;margin-top:4px;">Photo</div>
@@ -777,10 +795,16 @@
                                    class="d-none" onchange="previewPhotoModal(this)">
                         </div>
                         <div class="flex-grow-1">
-                            <div style="font-size:13px;font-weight:600;margin-bottom:4px;">Matricule (auto-généré)</div>
-                            <div style="font-size:20px;font-weight:800;color:#0A4D8C;letter-spacing:1.5px;">{{ $prochainMatricule }}</div>
-                            <div style="font-size:11px;color:var(--theme-text-muted);margin-top:2px;">
-                                <i class="fas fa-info-circle me-1"></i>Attribué automatiquement à la création
+                            <label class="form-label-sm">Matricule <span class="text-danger">*</span></label>
+                            <input type="text" name="matricule"
+                                   class="form-control-sirh @error('matricule') is-invalid @enderror"
+                                   value="{{ old('matricule') }}" placeholder="CHNP-00001"
+                                   style="text-transform:uppercase;font-family:monospace;font-size:14px;font-weight:600;" required>
+                            @error('matricule')
+                                <div class="text-danger" style="font-size:12px;margin-top:3px;">{{ $message }}</div>
+                            @enderror
+                            <div style="font-size:11px;color:var(--theme-text-muted);margin-top:3px;">
+                                <i class="fas fa-keyboard me-1"></i>Format : CHNP-XXXXX
                             </div>
                         </div>
                     </div>
@@ -788,32 +812,34 @@
                     <div class="row g-3">
                         <div class="col-md-6">
                             <label class="form-label-sm">Nom de famille <span class="text-danger">*</span></label>
-                            <input type="text" name="nom" class="form-control-sirh @error('nom') is-invalid @enderror"
+                            <input type="text" name="nom"
+                                   class="form-control-sirh @error('nom') is-invalid @enderror"
                                    value="{{ old('nom') }}" placeholder="DIALLO" style="text-transform:uppercase;">
                             @error('nom') <div class="text-danger" style="font-size:12px;margin-top:3px;">{{ $message }}</div> @enderror
                         </div>
                         <div class="col-md-6">
                             <label class="form-label-sm">Prénom <span class="text-danger">*</span></label>
-                            <input type="text" name="prenom" class="form-control-sirh @error('prenom') is-invalid @enderror"
+                            <input type="text" name="prenom"
+                                   class="form-control-sirh @error('prenom') is-invalid @enderror"
                                    value="{{ old('prenom') }}" placeholder="Amadou">
                             @error('prenom') <div class="text-danger" style="font-size:12px;margin-top:3px;">{{ $message }}</div> @enderror
                         </div>
                         <div class="col-md-4">
                             <label class="form-label-sm">Date de naissance <span class="text-danger">*</span></label>
-                            <input type="date" name="date_naissance" class="form-control-sirh @error('date_naissance') is-invalid @enderror"
+                            <input type="date" name="date_naissance"
+                                   class="form-control-sirh @error('date_naissance') is-invalid @enderror"
                                    value="{{ old('date_naissance') }}" max="{{ now()->subYears(18)->format('Y-m-d') }}">
                             @error('date_naissance') <div class="text-danger" style="font-size:12px;margin-top:3px;">{{ $message }}</div> @enderror
                         </div>
                         <div class="col-md-4">
-                            <label class="form-label-sm">Lieu de naissance <span class="text-danger">*</span></label>
-                            <input type="text" name="lieu_naissance" class="form-control-sirh @error('lieu_naissance') is-invalid @enderror"
+                            <label class="form-label-sm">Lieu de naissance</label>
+                            <input type="text" name="lieu_naissance" class="form-control-sirh"
                                    value="{{ old('lieu_naissance') }}" placeholder="Dakar">
-                            @error('lieu_naissance') <div class="text-danger" style="font-size:12px;margin-top:3px;">{{ $message }}</div> @enderror
                         </div>
                         <div class="col-md-4">
                             <label class="form-label-sm">Nationalité</label>
                             <input type="text" name="nationalite" class="form-control-sirh"
-                                   value="{{ old('nationalite','Sénégalaise') }}">
+                                   value="{{ old('nationalite', 'Sénégalaise') }}">
                         </div>
                         <div class="col-md-4">
                             <label class="form-label-sm">Sexe <span class="text-danger">*</span></label>
@@ -833,25 +859,42 @@
                                 @endforeach
                             </select>
                         </div>
+                        <div class="col-md-4">
+                            <label class="form-label-sm">Statut agent</label>
+                            <select name="statut_agent" class="form-select-sirh">
+                                <option value="Actif" @selected(old('statut_agent','Actif')==='Actif')>Actif</option>
+                                <option value="En_congé" @selected(old('statut_agent')==='En_congé')>En congé</option>
+                                <option value="Suspendu" @selected(old('statut_agent')==='Suspendu')>Suspendu</option>
+                                <option value="Retraité" @selected(old('statut_agent')==='Retraité')>Retraité</option>
+                                <option value="Démissionnaire" @selected(old('statut_agent')==='Démissionnaire')>Démissionnaire</option>
+                            </select>
+                        </div>
                     </div>
                 </div>{{-- /tab identité --}}
 
-                {{-- ── ONGLET COORDONNÉES ── --}}
+                {{-- ════════════════════════════════
+                     ONGLET 2 — COORDONNÉES (AES-256)
+                     ════════════════════════════════ --}}
                 <div x-show="tab==='coordonnees'" x-transition>
-                    <div class="p-3 mb-4" style="background:#FFF7ED;border:1px solid #FED7AA;border-radius:10px;font-size:12.5px;color:#92400E;">
-                        <i class="fas fa-shield-halved me-1" style="color:#D97706;"></i>
-                        <strong>Données protégées :</strong> Téléphone, adresse et n° assurance sont stockés chiffrés (AES-256) en base de données.
+                    <div class="p-3 mb-4" style="background:#FFF7ED;border:1px solid #FED7AA;border-radius:10px;display:flex;align-items:flex-start;gap:10px;">
+                        <i class="fas fa-shield-halved mt-1" style="color:#D97706;font-size:16px;flex-shrink:0;"></i>
+                        <div style="font-size:12.5px;color:#92400E;">
+                            <strong>Données protégées (Confidentialité CID) :</strong>
+                            Téléphone, adresse, CNI et n° assurance sont stockés <strong>chiffrés AES-256</strong> en base de données.
+                            Seuls les agents RH et DRH peuvent y accéder.
+                        </div>
                     </div>
                     <div class="row g-3">
                         <div class="col-md-6 field-sensitive">
                             <label class="form-label-sm">Téléphone</label>
                             <input type="tel" name="telephone" class="form-control-sirh"
                                    value="{{ old('telephone') }}" placeholder="+221 77 000 00 00">
-                            <div class="hint-encrypted"><i class="fas fa-lock" style="font-size:9px;"></i>Stocké chiffré</div>
+                            <div class="hint-encrypted"><i class="fas fa-lock" style="font-size:9px;"></i> Stocké chiffré (AES-256)</div>
                         </div>
                         <div class="col-md-6">
                             <label class="form-label-sm">Email professionnel</label>
-                            <input type="email" name="email" class="form-control-sirh @error('email') is-invalid @enderror"
+                            <input type="email" name="email"
+                                   class="form-control-sirh @error('email') is-invalid @enderror"
                                    value="{{ old('email') }}" placeholder="a.diallo@chnp.sn">
                             @error('email') <div class="text-danger" style="font-size:12px;margin-top:3px;">{{ $message }}</div> @enderror
                         </div>
@@ -859,51 +902,83 @@
                             <label class="form-label-sm">Adresse</label>
                             <textarea name="adresse" class="form-control-sirh" rows="2"
                                       placeholder="Quartier, Commune, Ville…">{{ old('adresse') }}</textarea>
-                            <div class="hint-encrypted"><i class="fas fa-lock" style="font-size:9px;"></i>Stockée chiffrée</div>
+                            <div class="hint-encrypted"><i class="fas fa-lock" style="font-size:9px;"></i> Stockée chiffrée (AES-256)</div>
+                        </div>
+                        <div class="col-md-6 field-sensitive">
+                            <label class="form-label-sm">N° CNI</label>
+                            <input type="text" name="cni" class="form-control-sirh"
+                                   value="{{ old('cni') }}" placeholder="1 XXXXXXX XXXXX XX">
+                            <div class="hint-encrypted"><i class="fas fa-lock" style="font-size:9px;"></i> Carte Nationale d'Identité — chiffrée</div>
                         </div>
                         <div class="col-md-6 field-sensitive">
                             <label class="form-label-sm">N° Assurance maladie</label>
                             <input type="text" name="numero_assurance" class="form-control-sirh"
                                    value="{{ old('numero_assurance') }}" placeholder="IPRES-XXXXXXXXX">
-                            <div class="hint-encrypted"><i class="fas fa-lock" style="font-size:9px;"></i>Stocké chiffré</div>
+                            <div class="hint-encrypted"><i class="fas fa-lock" style="font-size:9px;"></i> Stocké chiffré (AES-256)</div>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label-sm">Religion</label>
+                            <input type="text" name="religion" class="form-control-sirh"
+                                   value="{{ old('religion') }}" placeholder="Islam, Christianisme…">
+                            <div style="font-size:10.5px;color:#9CA3AF;margin-top:3px;display:flex;align-items:center;gap:4px;">
+                                <i class="fas fa-info-circle" style="font-size:9px;color:#D97706;"></i>
+                                Donnée personnelle sensible — accès restreint
+                            </div>
                         </div>
                     </div>
                 </div>{{-- /tab coordonnées --}}
 
-                {{-- ── ONGLET PROFESSIONNEL ── --}}
+                {{-- ════════════════════════════════
+                     ONGLET 3 — PROFESSIONNEL
+                     ════════════════════════════════ --}}
                 <div x-show="tab==='professionnel'" x-transition>
                     <div class="row g-3">
                         <div class="col-md-4">
-                            <label class="form-label-sm">Date de recrutement <span class="text-danger">*</span></label>
-                            <input type="date" name="date_recrutement" class="form-control-sirh @error('date_recrutement') is-invalid @enderror"
-                                   value="{{ old('date_recrutement') }}" max="{{ now()->format('Y-m-d') }}">
-                            @error('date_recrutement') <div class="text-danger" style="font-size:12px;margin-top:3px;">{{ $message }}</div> @enderror
+                            <label class="form-label-sm">Date de prise de service</label>
+                            <input type="date" name="date_prise_service" class="form-control-sirh"
+                                   value="{{ old('date_prise_service') }}" max="{{ now()->format('Y-m-d') }}">
                         </div>
                         <div class="col-md-4">
                             <label class="form-label-sm">Fonction</label>
-                            <input type="text" name="fonction" class="form-control-sirh"
-                                   value="{{ old('fonction') }}" placeholder="Infirmier chef de poste">
+                            <input type="text" name="fontion" class="form-control-sirh"
+                                   value="{{ old('fontion') }}" placeholder="Infirmier chef de poste">
                         </div>
                         <div class="col-md-4">
                             <label class="form-label-sm">Grade</label>
                             <input type="text" name="grade" class="form-control-sirh"
-                                   value="{{ old('grade') }}" placeholder="IES2">
+                                   value="{{ old('grade') }}" placeholder="IES2, A1, P2…">
                         </div>
                         <div class="col-md-6">
                             <label class="form-label-sm">Catégorie socio-professionnelle</label>
                             <select name="categorie_cp" class="form-select-sirh">
                                 <option value="">— Choisir —</option>
                                 @foreach([
-                                    'Cadre_Superieur'=>'Cadre Supérieur','Cadre_Moyen'=>'Cadre Moyen',
-                                    'Technicien_Superieur'=>'Technicien Supérieur','Technicien'=>'Technicien',
-                                    'Agent_Administratif'=>'Agent Administratif','Agent_de_Service'=>'Agent de Service',
-                                    'Commis_Administration'=>"Commis d'Administration",'Ouvrier'=>'Ouvrier','Sans_Diplome'=>'Sans Diplôme',
-                                ] as $val => $label)
-                                <option value="{{ $val }}" @selected(old('categorie_cp')===$val)>{{ $label }}</option>
+                                    'Cadre_Superieur'      => 'Cadre Supérieur',
+                                    'Cadre_Moyen'          => 'Cadre Moyen',
+                                    'Technicien_Superieur' => 'Technicien Supérieur',
+                                    'Technicien'           => 'Technicien',
+                                    'Agent_Administratif'  => 'Agent Administratif',
+                                    'Agent_de_Service'     => 'Agent de Service',
+                                    'Commis_Administration'=> "Commis d'Administration",
+                                    'Ouvrier'              => 'Ouvrier',
+                                    'Sans_Diplome'         => 'Sans Diplôme',
+                                ] as $val => $lbl)
+                                <option value="{{ $val }}" @selected(old('categorie_cp')===$val)>{{ $lbl }}</option>
                                 @endforeach
                             </select>
                         </div>
-                        <div class="col-md-3">
+                        <div class="col-md-6">
+                            <label class="form-label-sm">Famille d'emploi</label>
+                            <select name="famille_d_emploi" class="form-select-sirh">
+                                <option value="">— Choisir —</option>
+                                <option value="Corps_Médical"       @selected(old('famille_d_emploi')==='Corps_Médical')>Corps Médical</option>
+                                <option value="Corps_Paramédical"   @selected(old('famille_d_emploi')==='Corps_Paramédical')>Corps Paramédical</option>
+                                <option value="Corps_Administratif" @selected(old('famille_d_emploi')==='Corps_Administratif')>Corps Administratif</option>
+                                <option value="Corps_Technique"     @selected(old('famille_d_emploi')==='Corps_Technique')>Corps Technique</option>
+                                <option value="Corps_de_Soutien"    @selected(old('famille_d_emploi')==='Corps_de_Soutien')>Corps de Soutien</option>
+                            </select>
+                        </div>
+                        <div class="col-md-6">
                             <label class="form-label-sm">Service</label>
                             <select name="id_service" class="form-select-sirh">
                                 <option value="">— Aucun —</option>
@@ -912,7 +987,7 @@
                                 @endforeach
                             </select>
                         </div>
-                        <div class="col-md-3">
+                        <div class="col-md-6">
                             <label class="form-label-sm">Division</label>
                             <select name="id_division" class="form-select-sirh">
                                 <option value="">— Aucune —</option>
@@ -922,29 +997,44 @@
                             </select>
                         </div>
 
-                        {{-- Encart CID --}}
+                        {{-- Encart Triade CID --}}
                         <div class="col-12">
                             <div style="background:linear-gradient(135deg,#EFF6FF,#E0F2FE);border:1px solid #BFDBFE;border-radius:10px;padding:14px;">
                                 <div style="font-size:12px;font-weight:700;color:#1E40AF;margin-bottom:8px;">
-                                    <i class="fas fa-shield-alt me-1"></i> Triade CID — Garanties
+                                    <i class="fas fa-shield-alt me-1"></i> Triade CID — Garanties appliquées
                                 </div>
                                 <div class="row g-0" style="font-size:11.5px;color:#374151;">
-                                    <div class="col-md-4"><i class="fas fa-lock me-1" style="color:#059669;"></i>AES-256 pour données critiques</div>
-                                    <div class="col-md-4"><i class="fas fa-database me-1" style="color:#059669;"></i>Transaction DB atomique</div>
-                                    <div class="col-md-4"><i class="fas fa-history me-1" style="color:#059669;"></i>Audit trail automatique</div>
+                                    <div class="col-md-4 d-flex align-items-center gap-1 mb-1">
+                                        <i class="fas fa-lock" style="color:#059669;width:14px;"></i>AES-256 données critiques
+                                    </div>
+                                    <div class="col-md-4 d-flex align-items-center gap-1 mb-1">
+                                        <i class="fas fa-database" style="color:#059669;width:14px;"></i>Transaction DB atomique
+                                    </div>
+                                    <div class="col-md-4 d-flex align-items-center gap-1 mb-1">
+                                        <i class="fas fa-history" style="color:#059669;width:14px;"></i>Audit trail automatique
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>{{-- /tab professionnel --}}
 
-                {{-- ── ONGLET FAMILLE ── --}}
+                {{-- ════════════════════════════════
+                     ONGLET 4 — FAMILLE
+                     ════════════════════════════════ --}}
                 <div x-show="tab==='famille'" x-transition>
+
                     {{-- Conjoint --}}
                     <div class="mb-4">
                         <div class="form-section-label">
                             <i class="fas fa-heart" style="color:#7C3AED;"></i> Conjoint(e)
-                            <span class="ms-auto" style="font-weight:400;text-transform:none;letter-spacing:0;font-size:11px;color:var(--theme-text-muted);">Maximum 1</span>
+                            <span style="font-weight:400;text-transform:none;letter-spacing:0;font-size:11px;color:var(--theme-text-muted);margin-left:6px;">max. 1</span>
+                            <button type="button" class="ms-auto action-btn action-btn-outline"
+                                    style="font-size:11px;padding:5px 11px;"
+                                    @click="addConjoint"
+                                    x-show="conjoints.length === 0">
+                                <i class="fas fa-plus"></i> Ajouter
+                            </button>
                         </div>
                         <template x-for="(c, i) in conjoints" :key="i">
                             <div class="famille-item">
@@ -953,22 +1043,22 @@
                                 </button>
                                 <div class="row g-2">
                                     <div class="col-md-3">
-                                        <label class="form-label-sm">Nom</label>
+                                        <label class="form-label-sm" style="font-size:11px;">Nom</label>
                                         <input type="text" :name="`conjoints[${i}][nom_conj]`" x-model="c.nom_conj"
-                                               class="form-control-sirh" placeholder="FALL">
+                                               class="form-control-sirh" placeholder="FALL" style="text-transform:uppercase;">
                                     </div>
                                     <div class="col-md-3">
-                                        <label class="form-label-sm">Prénom</label>
+                                        <label class="form-label-sm" style="font-size:11px;">Prénom</label>
                                         <input type="text" :name="`conjoints[${i}][prenom_conj]`" x-model="c.prenom_conj"
                                                class="form-control-sirh" placeholder="Fatou">
                                     </div>
                                     <div class="col-md-3">
-                                        <label class="form-label-sm">Date naissance</label>
+                                        <label class="form-label-sm" style="font-size:11px;">Date naissance</label>
                                         <input type="date" :name="`conjoints[${i}][date_naissance_conj]`" x-model="c.date_naissance_conj"
                                                class="form-control-sirh">
                                     </div>
                                     <div class="col-md-3">
-                                        <label class="form-label-sm">Lien</label>
+                                        <label class="form-label-sm" style="font-size:11px;">Lien</label>
                                         <select :name="`conjoints[${i}][type_lien]`" x-model="c.type_lien" class="form-select-sirh">
                                             <option value="Époux">Époux</option>
                                             <option value="Épouse">Épouse</option>
@@ -977,12 +1067,8 @@
                                 </div>
                             </div>
                         </template>
-                        <div x-show="conjoints.length === 0">
-                            <div style="font-size:12.5px;color:var(--theme-text-muted);margin-bottom:8px;">Aucun conjoint enregistré.</div>
-                            <button type="button" class="action-btn action-btn-outline" style="font-size:12px;padding:7px 14px;"
-                                    @click="addConjoint">
-                                <i class="fas fa-plus"></i> Ajouter un conjoint
-                            </button>
+                        <div x-show="conjoints.length === 0" style="font-size:12.5px;color:var(--theme-text-muted);">
+                            Aucun conjoint enregistré.
                         </div>
                     </div>
 
@@ -990,7 +1076,9 @@
                     <div>
                         <div class="form-section-label d-flex align-items-center">
                             <i class="fas fa-child" style="color:#059669;"></i> Enfants
-                            <span class="ms-2" style="font-weight:400;text-transform:none;letter-spacing:0;font-size:11px;color:var(--theme-text-muted);">(<span x-text="enfants.length"></span> enregistré(s))</span>
+                            <span class="ms-2" style="font-weight:400;text-transform:none;letter-spacing:0;font-size:11px;color:var(--theme-text-muted);">
+                                (<span x-text="enfants.length"></span> enregistré(s))
+                            </span>
                             <button type="button" class="ms-auto action-btn action-btn-outline"
                                     style="font-size:11px;padding:5px 11px;" @click="addEnfant">
                                 <i class="fas fa-plus"></i> Ajouter
@@ -1003,17 +1091,17 @@
                                 </button>
                                 <div class="row g-2">
                                     <div class="col-md-5">
-                                        <label class="form-label-sm">Prénom complet</label>
+                                        <label class="form-label-sm" style="font-size:11px;">Prénom complet</label>
                                         <input type="text" :name="`enfants[${i}][prenom_complet]`" x-model="e.prenom_complet"
                                                class="form-control-sirh" placeholder="Moussa Ibrahima">
                                     </div>
                                     <div class="col-md-4">
-                                        <label class="form-label-sm">Date de naissance</label>
+                                        <label class="form-label-sm" style="font-size:11px;">Date de naissance</label>
                                         <input type="date" :name="`enfants[${i}][date_naissance_enfant]`" x-model="e.date_naissance_enfant"
                                                class="form-control-sirh">
                                     </div>
                                     <div class="col-md-3">
-                                        <label class="form-label-sm">Lien</label>
+                                        <label class="form-label-sm" style="font-size:11px;">Lien</label>
                                         <select :name="`enfants[${i}][lien_filiation]`" x-model="e.lien_filiation" class="form-select-sirh">
                                             <option value="Fils">Fils</option>
                                             <option value="Fille">Fille</option>
@@ -1026,15 +1114,16 @@
                             Aucun enfant enregistré.
                         </div>
                     </div>
+
                 </div>{{-- /tab famille --}}
 
             </div>{{-- /modal-body-sirh --}}
 
-            {{-- PIED DU MODAL --}}
+            {{-- ── PIED DU MODAL ── --}}
             <div class="modal-footer-sirh d-flex">
                 <span style="font-size:12px;color:var(--theme-text-muted);flex:1;align-self:center;">
                     <i class="fas fa-shield-alt me-1" style="color:#059669;"></i>
-                    Données chiffrées · Audit enregistré
+                    Données chiffrées · Audit enregistré · Transaction atomique
                 </span>
                 <button type="button" class="action-btn action-btn-outline" data-bs-dismiss="modal">
                     <i class="fas fa-xmark"></i> Annuler

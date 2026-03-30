@@ -3,12 +3,12 @@
 namespace App\Exports;
 
 use App\Models\Agent;
-use Illuminate\Http\Response;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 
 /**
  * Export CSV des agents
  * Note : utilisation de CSV natif PHP (maatwebsite/excel v1.1 non compatible Laravel 12)
+ * Confidentialité CID : les champs chiffrés (téléphone, cni) ne sont PAS exportés.
  */
 class AgentsExport
 {
@@ -35,19 +35,19 @@ class AgentsExport
             // En-têtes
             fputcsv($handle, [
                 'Matricule', 'Nom', 'Prénom', 'Sexe',
-                'Date Naissance', 'Date Recrutement',
-                'Fonction', 'Grade', 'Catégorie',
-                'Service', 'Division', 'Statut',
+                'Date Naissance', 'Catégorie CSP',
+                "Famille d'emploi", 'Statut contrat',
+                'Service', 'Division',
             ], ';');
 
             // Données (sans les champs chiffrés — Confidentialité CID)
             $query = Agent::with(['service:id_service,nom_service', 'division:id_division,nom_division'])
                 ->select('id_agent', 'matricule', 'nom', 'prenom', 'sexe',
-                         'date_naissance', 'date_recrutement', 'fonction', 'grade',
-                         'categorie_cp', 'statut', 'id_service', 'id_division');
+                         'date_naissance', 'famille_d_emploi',
+                         'categorie_cp', 'statut_agent', 'id_service', 'id_division');
 
-            if (!empty($this->filters['statut'])) {
-                $query->where('statut', $this->filters['statut']);
+            if (!empty($this->filters['statut_agent'])) {
+                $query->where('statut_agent', $this->filters['statut_agent']);
             }
             if (!empty($this->filters['service'])) {
                 $query->where('id_service', $this->filters['service']);
@@ -62,13 +62,11 @@ class AgentsExport
                             $agent->prenom,
                             $agent->sexe === 'M' ? 'Masculin' : 'Féminin',
                             $agent->date_naissance?->format('d/m/Y'),
-                            $agent->date_recrutement?->format('d/m/Y'),
-                            $agent->fonction ?? '—',
-                            $agent->grade ?? '—',
                             str_replace('_', ' ', $agent->categorie_cp ?? '—'),
+                            $agent->famille_d_emploi ? str_replace('_', ' ', $agent->famille_d_emploi) : '—',
+                            $agent->statut_agent ?? '—',
                             $agent->service?->nom_service ?? '—',
                             $agent->division?->nom_division ?? '—',
-                            $agent->statut,
                         ], ';');
                     }
                 });

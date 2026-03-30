@@ -518,11 +518,7 @@
     <div class="d-flex align-items-start gap-4 flex-wrap" style="position:relative;z-index:1;">
 
         <div class="profile-avatar-hero">
-            @if($agent->photo)
-                <img src="{{ asset('storage/'.$agent->photo) }}" alt="{{ $agent->nom_complet }}">
-            @else
-                {{ strtoupper(substr($agent->prenom,0,1).substr($agent->nom,0,1)) }}
-            @endif
+            {{ strtoupper(substr($agent->prenom,0,1).substr($agent->nom,0,1)) }}
         </div>
 
         <div class="flex-grow-1">
@@ -531,14 +527,15 @@
                     {{ $agent->prenom }} {{ $agent->nom }}
                 </h4>
                 @php
-                    $bpClass = match($agent->statut) {
-                        'Actif'    => 'fa-circle-check',
-                        'En_congé' => 'fa-umbrella-beach',
-                        'Suspendu' => 'fa-ban',
-                        'Retraité' => 'fa-door-open',
-                        default    => 'fa-circle',
+                    $bpClass = match($agent->statut_agent) {
+                        'Actif'         => 'fa-circle-check',
+                        'En_congé'      => 'fa-umbrella-beach',
+                        'Suspendu'      => 'fa-ban',
+                        'Retraité'      => 'fa-door-open',
+                        'Démissionnaire'=> 'fa-person-walking-arrow-right',
+                        default         => 'fa-circle',
                     };
-                    $statutLabel = $agent->statut === 'En_congé' ? 'En congé' : $agent->statut;
+                    $statutLabel = $agent->statut_agent === 'En_congé' ? 'En congé' : ($agent->statut_agent ?? 'Actif');
                 @endphp
                 <span class="profile-badge-statut">
                     <i class="fas {{ $bpClass }}" style="font-size:11px;"></i>
@@ -551,10 +548,10 @@
                     <i class="fas fa-id-badge"></i>
                     <strong style="letter-spacing:1px;">{{ $agent->matricule }}</strong>
                 </div>
-                @if($agent->fonction)
+                @if($agent->famille_d_emploi)
                 <div class="profile-meta">
                     <i class="fas fa-stethoscope"></i>
-                    {{ $agent->fonction }}
+                    {{ str_replace('_', ' ', $agent->famille_d_emploi) }}
                 </div>
                 @endif
                 @if($agent->service)
@@ -578,16 +575,10 @@
         </div>
 
         <div class="d-none d-xl-flex flex-column gap-3" style="position:relative;z-index:1;">
-            @if($agent->grade)
+            @if($agent->categorie_cp)
             <div style="background:rgba(255,255,255,.15);border-radius:12px;padding:14px 20px;text-align:center;backdrop-filter:blur(4px);">
-                <div style="font-size:20px;font-weight:800;color:#fff;">{{ $agent->grade }}</div>
-                <div style="font-size:11px;color:rgba(255,255,255,.75);margin-top:2px;">Grade</div>
-            </div>
-            @endif
-            @if($agent->date_recrutement)
-            <div style="background:rgba(255,255,255,.15);border-radius:12px;padding:14px 20px;text-align:center;backdrop-filter:blur(4px);">
-                <div style="font-size:20px;font-weight:800;color:#fff;">{{ $agent->date_recrutement->diffInYears(now()) }} ans</div>
-                <div style="font-size:11px;color:rgba(255,255,255,.75);margin-top:2px;">Ancienneté</div>
+                <div style="font-size:14px;font-weight:800;color:#fff;">{{ str_replace('_',' ',$agent->categorie_cp) }}</div>
+                <div style="font-size:11px;color:rgba(255,255,255,.75);margin-top:2px;">Catégorie</div>
             </div>
             @endif
         </div>
@@ -677,10 +668,6 @@
                             <span class="info-value">{{ $agent->date_naissance?->format('d/m/Y') ?? '—' }}</span>
                         </div>
                         <div class="info-row">
-                            <span class="info-label">Lieu de naissance</span>
-                            <span class="info-value">{{ $agent->lieu_naissance ?? '—' }}</span>
-                        </div>
-                        <div class="info-row">
                             <span class="info-label">Sexe</span>
                             <span class="info-value">
                                 <i class="fas fa-{{ $agent->sexe === 'M' ? 'mars' : 'venus' }} me-2"
@@ -689,12 +676,22 @@
                             </span>
                         </div>
                         <div class="info-row">
-                            <span class="info-label">Situation familiale</span>
-                            <span class="info-value">{{ $agent->situation_familiale ?? '—' }}</span>
-                        </div>
-                        <div class="info-row">
-                            <span class="info-label">Nationalité</span>
-                            <span class="info-value">{{ $agent->nationalite ?? 'Sénégalaise' }}</span>
+                            <span class="info-label">Statut contrat</span>
+                            <span class="info-value">
+                                @php
+                                    $sc = $agent->statut_agent ?? 'Actif';
+                                    $scClass = match($sc) {
+                                        'Actif'         => 'bp-actif',
+                                        'En_congé'      => 'bp-conge',
+                                        'Suspendu'      => 'bp-suspendu',
+                                        'Retraité','Démissionnaire' => 'bp-retraite',
+                                        default         => 'bp-actif',
+                                    };
+                                @endphp
+                                <span class="badge-pill {{ $scClass }}">
+                                    {{ $sc === 'En_congé' ? 'En congé' : $sc }}
+                                </span>
+                            </span>
                         </div>
                     </div>
                 </div>
@@ -714,20 +711,9 @@
                     </div>
                     <div class="info-panel-body">
                         <div class="info-row">
-                            <span class="info-label">Email</span>
-                            <span class="info-value">
-                                @if($agent->email)
-                                    <a href="mailto:{{ $agent->email }}" style="color:#0A4D8C;text-decoration:none;font-weight:500;">
-                                        {{ $agent->email }}
-                                    </a>
-                                @else —
-                                @endif
-                            </span>
-                        </div>
-                        <div class="info-row">
                             <span class="info-label">
                                 Téléphone
-                                <i class="fas fa-lock ms-1" style="font-size:9px;color:#D97706;"></i>
+                                <i class="fas fa-lock ms-1" style="font-size:9px;color:#D97706;" title="Chiffré AES-256"></i>
                             </span>
                             <span class="info-value">
                                 <span x-show="!revealed.telephone" class="masked-value">
@@ -748,46 +734,33 @@
                         </div>
                         <div class="info-row">
                             <span class="info-label">
-                                Adresse
-                                <i class="fas fa-lock ms-1" style="font-size:9px;color:#D97706;"></i>
+                                N° CNI
+                                <i class="fas fa-lock ms-1" style="font-size:9px;color:#D97706;" title="Chiffré AES-256"></i>
+                                <span class="sensitive-badge ms-1">
+                                    <i class="fas fa-shield-halved" style="font-size:9px;"></i> AES-256
+                                </span>
                             </span>
                             <span class="info-value">
-                                <span x-show="!revealed.adresse" class="masked-value">
-                                    {{ $agent->adresse ? '●●●●●●●●●●' : '—' }}
+                                <span x-show="!revealed.cni" class="masked-value">
+                                    {{ $agent->cni ? $agent->cni_masque : '—' }}
                                 </span>
-                                <span x-show="revealed.adresse" class="sensitive-revealed">
-                                    {{ $agent->adresse ?? '—' }}
+                                <span x-show="revealed.cni" class="sensitive-revealed">
+                                    {{ $agent->cni ?? '—' }}
                                 </span>
-                                @if($agent->adresse)
+                                @if($agent->cni)
                                 <button type="button" class="btn-decrypt-show"
-                                        :class="{ 'revealed': revealed.adresse }"
-                                        @click="toggleReveal('adresse')">
-                                    <i class="fas" :class="revealed.adresse ? 'fa-eye-slash' : 'fa-key'"></i>
-                                    <span x-text="revealed.adresse ? 'Masquer' : 'Déchiffrer'"></span>
+                                        :class="{ 'revealed': revealed.cni }"
+                                        @click="toggleReveal('cni')">
+                                    <i class="fas" :class="revealed.cni ? 'fa-eye-slash' : 'fa-key'"></i>
+                                    <span x-text="revealed.cni ? 'Masquer' : 'Déchiffrer'"></span>
                                 </button>
                                 @endif
                             </span>
                         </div>
                         <div class="info-row">
-                            <span class="info-label">
-                                N° Assurance
-                                <i class="fas fa-lock ms-1" style="font-size:9px;color:#D97706;"></i>
-                            </span>
-                            <span class="info-value">
-                                <span x-show="!revealed.assurance" class="masked-value">
-                                    {{ $agent->numero_assurance ? '●●●●●●●●' : '—' }}
-                                </span>
-                                <span x-show="revealed.assurance" class="sensitive-revealed">
-                                    {{ $agent->numero_assurance ?? '—' }}
-                                </span>
-                                @if($agent->numero_assurance)
-                                <button type="button" class="btn-decrypt-show"
-                                        :class="{ 'revealed': revealed.assurance }"
-                                        @click="toggleReveal('assurance')">
-                                    <i class="fas" :class="revealed.assurance ? 'fa-eye-slash' : 'fa-key'"></i>
-                                    <span x-text="revealed.assurance ? 'Masquer' : 'Déchiffrer'"></span>
-                                </button>
-                                @endif
+                            <span class="info-label">Religion</span>
+                            <span class="info-value" style="font-style:{{ $agent->religion ? 'normal' : 'italic' }};color:{{ $agent->religion ? '' : 'var(--theme-text-muted)' }};">
+                                {{ $agent->religion ?? 'Non renseignée' }}
                             </span>
                         </div>
                     </div>
@@ -846,54 +819,45 @@
                     </div>
                     <div class="info-panel-body">
                         <div class="row">
-                            <div class="col-md-3 col-6">
+                            <div class="col-md-4 col-6">
                                 <div class="info-row">
-                                    <span class="info-label">Fonction</span>
-                                    <span class="info-value">{{ $agent->fonction ?? '—' }}</span>
+                                    <span class="info-label">Famille d'emploi</span>
+                                    <span class="info-value">{{ $agent->famille_d_emploi ? str_replace('_',' ',$agent->famille_d_emploi) : '—' }}</span>
                                 </div>
                             </div>
-                            <div class="col-md-3 col-6">
-                                <div class="info-row">
-                                    <span class="info-label">Grade</span>
-                                    <span class="info-value" style="font-weight:700;color:#0A4D8C;">{{ $agent->grade ?? '—' }}</span>
-                                </div>
-                            </div>
-                            <div class="col-md-3 col-6">
+                            <div class="col-md-4 col-6">
                                 <div class="info-row">
                                     <span class="info-label">Catégorie CSP</span>
                                     <span class="info-value" style="font-size:13px;">{{ str_replace('_',' ',$agent->categorie_cp ?? '—') }}</span>
                                 </div>
                             </div>
-                            <div class="col-md-3 col-6">
+                            <div class="col-md-4 col-6">
                                 <div class="info-row">
-                                    <span class="info-label">Recrutement</span>
-                                    <span class="info-value">{{ $agent->date_recrutement?->format('d/m/Y') ?? '—' }}</span>
+                                    <span class="info-label">Statut contrat</span>
+                                    <span class="info-value">
+                                        @php
+                                            $sc2 = $agent->statut_agent ?? 'Actif';
+                                            $sc2Class = match($sc2) {
+                                                'Actif'         => 'bp-actif',
+                                                'En_congé'      => 'bp-conge',
+                                                'Suspendu'      => 'bp-suspendu',
+                                                default         => 'bp-retraite',
+                                            };
+                                        @endphp
+                                        <span class="badge-pill {{ $sc2Class }}">{{ $sc2 === 'En_congé' ? 'En congé' : $sc2 }}</span>
+                                    </span>
                                 </div>
                             </div>
-                            <div class="col-md-3 col-6">
+                            <div class="col-md-4 col-6">
                                 <div class="info-row">
                                     <span class="info-label">Service</span>
                                     <span class="info-value">{{ $agent->service?->nom_service ?? '—' }}</span>
                                 </div>
                             </div>
-                            <div class="col-md-3 col-6">
+                            <div class="col-md-4 col-6">
                                 <div class="info-row">
                                     <span class="info-label">Division</span>
                                     <span class="info-value">{{ $agent->division?->nom_division ?? '—' }}</span>
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="info-row">
-                                    <span class="info-label">Ancienneté</span>
-                                    <span class="info-value">
-                                        @if($agent->date_recrutement)
-                                            <strong style="color:#0A4D8C;">{{ $agent->date_recrutement->diffInYears(now()) }} an(s)</strong>
-                                            <span style="color:var(--theme-text-muted);font-size:12px;margin-left:6px;">
-                                                depuis {{ $agent->date_recrutement->format('d/m/Y') }}
-                                            </span>
-                                        @else —
-                                        @endif
-                                    </span>
                                 </div>
                             </div>
                         </div>
@@ -1086,7 +1050,7 @@
 function showAgentData() {
     return {
         tab: 'profil',
-        revealed: { telephone: false, adresse: false, assurance: false },
+        revealed: { telephone: false, cni: false },
         toggleReveal(field) { this.revealed[field] = !this.revealed[field]; }
     };
 }

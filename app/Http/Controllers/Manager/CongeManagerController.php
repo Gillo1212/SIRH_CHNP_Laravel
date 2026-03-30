@@ -4,6 +4,9 @@ namespace App\Http\Controllers\Manager;
 
 use App\Http\Controllers\Controller;
 use App\Models\Demande;
+use App\Models\User;
+use App\Notifications\CongeRejeteNotification;
+use App\Notifications\CongeValideManagerNotification;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -70,6 +73,15 @@ class CongeManagerController extends Controller
         $nomAgent = $demande->agent->nom_complet ?? 'l\'agent';
         $nbJours  = $demande->conge->nbres_jours ?? '';
 
+        // Notifier les AgentRH (hors transaction)
+        try {
+            User::role(['AgentRH', 'DRH'])->each(
+                fn(User $rh) => $rh->notify(new CongeValideManagerNotification($demande))
+            );
+        } catch (\Throwable $e) {
+            \Log::warning('Notification congé RH échouée : ' . $e->getMessage());
+        }
+
         return back()->with('success', "La demande de congé de {$nomAgent} ({$nbJours} jour(s)) a été validée et transmise au service RH.");
     }
 
@@ -102,6 +114,15 @@ class CongeManagerController extends Controller
         ]);
 
         $nomAgent = $demande->agent->nom_complet ?? 'l\'agent';
+
+        // Notifier l'agent (hors transaction)
+        try {
+            if ($demande->agent->user) {
+                $demande->agent->user->notify(new CongeRejeteNotification($demande, 'le Manager'));
+            }
+        } catch (\Throwable $e) {
+            \Log::warning('Notification rejet congé agent échouée : ' . $e->getMessage());
+        }
 
         return back()->with('success', "La demande de congé de {$nomAgent} a été rejetée.");
     }

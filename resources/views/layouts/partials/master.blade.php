@@ -1,13 +1,7 @@
 {{--
-╔═══════════════════════════════════════════════════════════════════════════════╗
-║  SIRH SÉCURISÉ - LAYOUT MASTER                                                ║
-║  Centre Hospitalier National de Pikine (CHNP) - Sénégal                       ║
-╠═══════════════════════════════════════════════════════════════════════════════╣
-║  Layout principal de l'application                                             ║
-║  Conforme à la Charte Graphique Officielle v2.0                               ║
-║                                                                                ║
-║  Piliers: 🔐 Sécurité | 🏥 Professionnalisme | 👥 RH | ⚙️ Modernité          ║
-╚═══════════════════════════════════════════════════════════════════════════════╝
+
+  SIRH SÉCURISÉ - LAYOUT Principale                                             
+                   
 --}}
 <!DOCTYPE html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
@@ -42,6 +36,9 @@
 
     {{-- Font Awesome Icons --}}
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+    {{-- Remix Icons --}}
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/remixicon@4.2.0/fonts/remixicon.css">
 
     {{-- ═══════════════════════════════════════════════════════════════════════
          STYLES PERSONNALISÉS - Charte Graphique SIRH CHNP
@@ -708,6 +705,96 @@
         @keyframes skeleton-shimmer {
             0% { background-position: 200% 0; }
             100% { background-position: -200% 0; }
+        }
+        /* ═════════════════════════════════════════════════════════════════════
+           FILTER BAR — Standard harmonisé tous modules
+           ═════════════════════════════════════════════════════════════════════ */
+        .filter-bar {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 1rem 1.25rem;
+            background: #f8f9fa;
+            border-radius: 0.625rem;
+            margin-bottom: 1rem;
+            border: 1px solid var(--sirh-gray-200);
+        }
+        .filter-bar .form-control,
+        .filter-bar .form-select {
+            border: 1px solid #e2e8f0;
+            border-radius: 0.375rem;
+            height: 42px;
+            font-size: 13px;
+            color: var(--sirh-gray-700);
+        }
+        .filter-bar .form-control:focus,
+        .filter-bar .form-select:focus {
+            border-color: var(--sirh-primary);
+            box-shadow: 0 0 0 3px rgba(10,77,140,.12);
+        }
+        .filter-bar .input-group {
+            flex: 1;
+            min-width: 200px;
+        }
+        .filter-bar .input-group .input-group-text {
+            background: #fff;
+            border: 1px solid #e2e8f0;
+            border-right: none;
+            border-radius: 0.375rem 0 0 0.375rem;
+            color: var(--sirh-gray-500);
+            height: 42px;
+        }
+        .filter-bar .input-group .form-control {
+            border-left: none;
+            border-radius: 0 0.375rem 0.375rem 0;
+        }
+        .filter-bar .filter-select {
+            min-width: 160px;
+            max-width: 220px;
+        }
+        .filter-bar .btn-filter {
+            background: var(--sirh-primary);
+            border: none;
+            color: #fff;
+            padding: 0.5rem 1.25rem;
+            height: 42px;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            border-radius: 0.375rem;
+            font-size: 13px;
+            font-weight: 600;
+            white-space: nowrap;
+            transition: background 200ms;
+        }
+        .filter-bar .btn-filter:hover {
+            background: var(--sirh-primary-dark);
+            color: #fff;
+        }
+        .filter-bar .btn-reset {
+            background: #f1f5f9;
+            border: 1px solid #e2e8f0;
+            color: var(--sirh-gray-500);
+            width: 42px;
+            height: 42px;
+            padding: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 0.375rem;
+            transition: all 200ms;
+        }
+        .filter-bar .btn-reset:hover {
+            background: #e2e8f0;
+            color: var(--sirh-danger);
+        }
+        @media (max-width: 768px) {
+            .filter-bar { flex-direction: column; align-items: stretch; }
+            .filter-bar .input-group { min-width: 100%; }
+            .filter-bar .filter-select { min-width: 100%; max-width: 100%; }
+            .filter-bar .filter-actions { display: flex; gap: 0.5rem; }
+            .filter-bar .filter-actions .btn-filter { flex: 1; justify-content: center; }
         }
     </style>
 

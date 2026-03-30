@@ -24,7 +24,7 @@ class AgentService
      * Workflow : RH crée le dossier → Admin reçoit notification → Admin crée le compte.
      * Intégrité CID : transaction DB atomique
      */
-    public function creerAgent(array $data, ?UploadedFile $photo = null): Agent
+    public function creerAgent(array $data, ?UploadedFile $photo = null): Agent // $photo ignoré (colonne supprimée)
     {
         // Détecter le workflow avant la transaction
         $userId = !empty($data['user_id']) ? (int) $data['user_id'] : null;
@@ -32,37 +32,30 @@ class AgentService
         // Transaction : uniquement les écritures DB (Intégrité CID)
         $agent = DB::transaction(function () use ($data, $photo, $userId) {
 
-            // 1. Générer le matricule
-            $matricule = $this->repo->nextMatricule();
-
-            // 2. Traiter la photo
-            $photoPath = $this->sauvegarderPhoto($photo);
-
-            // 3. Créer l'agent (champs sensibles chiffrés via casts)
+            // 1. Créer l'agent (champs sensibles chiffrés via casts)
             $agent = $this->repo->create([
-                'user_id'            => $userId,
-                'matricule'          => $matricule,
-                'nom'                => strtoupper(trim($data['nom'])),
-                'prenom'             => ucwords(strtolower(trim($data['prenom']))),
-                'date_naissance'     => $data['date_naissance'],
-                'lieu_naissance'     => $data['lieu_naissance'],
-                'sexe'               => $data['sexe'],
-                'situation_familiale'=> $data['situation_familiale'] ?? null,
-                'nationalite'        => $data['nationalite'] ?? 'Sénégalaise',
-                'adresse'            => $data['adresse'] ?? null,       // Auto-chiffré AES-256
-                'telephone'          => $data['telephone'] ?? null,     // Auto-chiffré AES-256
-                'email'              => $data['email'] ?? null,
-                'date_recrutement'   => $data['date_recrutement'],
-                'fonction'           => $data['fonction'] ?? null,
-                'grade'              => $data['grade'] ?? null,
-                'categorie_cp'       => $data['categorie_cp'] ?? null,
-                'numero_assurance'   => $data['numero_assurance'] ?? null, // Auto-chiffré AES-256
-                'statut'             => 'Actif',
-                // Workflow RH-first : en attente de création du compte par Admin
-                'account_pending'    => $userId ? false : true,
-                'photo'              => $photoPath,
-                'id_service'         => $data['id_service'] ?? null,
-                'id_division'        => $data['id_division'] ?? null,
+                'user_id'             => $userId,
+                'matricule'           => strtoupper(trim($data['matricule'])),
+                'nom'                 => strtoupper(trim($data['nom'])),
+                'prenom'              => ucwords(strtolower(trim($data['prenom']))),
+                'date_naissance'      => $data['date_naissance'],
+                'lieu_naissance'      => $data['lieu_naissance'] ?? null,
+                'sexe'                => $data['sexe'],
+                'situation_familiale' => $data['situation_familiale'] ?? null,
+                'nationalite'         => $data['nationalite'] ?? null,
+                'adresse'             => $data['adresse'] ?? null,        // Auto-chiffré AES-256
+                'telephone'           => $data['telephone'] ?? null,      // Auto-chiffré AES-256
+                'email'               => $data['email'] ?? null,
+                'cni'                 => $data['cni'] ?? null,            // Auto-chiffré AES-256
+                'religion'            => $data['religion'] ?? null,
+                'date_prise_service'  => $data['date_prise_service'] ?? null,
+                'fontion'             => $data['fontion'] ?? null,
+                'grade'               => $data['grade'] ?? null,
+                'categorie_cp'        => $data['categorie_cp'] ?? null,
+                'famille_d_emploi'    => $data['famille_d_emploi'] ?? null,
+                'statut_agent'        => $data['statut_agent'] ?? 'Actif',
+                'id_service'          => $data['id_service'] ?? null,
+                'id_division'         => $data['id_division'] ?? null,
             ]);
 
             // 4. Synchroniser la famille
@@ -123,43 +116,35 @@ class AgentService
      * Modifier un agent
      * Intégrité CID : transaction DB atomique
      */
-    public function modifierAgent(int $id, array $data, ?UploadedFile $photo = null): Agent
+    public function modifierAgent(int $id, array $data, ?UploadedFile $photo = null): Agent // $photo ignoré (colonne supprimée)
     {
-        return DB::transaction(function () use ($id, $data, $photo) {
+        return DB::transaction(function () use ($id, $data) {
 
             $agent = $this->repo->findById($id);
 
-            // Traiter la nouvelle photo si fournie
-            $photoPath = $agent->photo;
-            if ($photo) {
-                // Supprimer l'ancienne
-                if ($photoPath) {
-                    Storage::disk('public')->delete($photoPath);
-                }
-                $photoPath = $this->sauvegarderPhoto($photo);
-            }
-
             // Mettre à jour l'agent
             $agent = $this->repo->update($id, [
-                'nom'                => strtoupper(trim($data['nom'])),
-                'prenom'             => ucwords(strtolower(trim($data['prenom']))),
-                'date_naissance'     => $data['date_naissance'],
-                'lieu_naissance'     => $data['lieu_naissance'],
-                'sexe'               => $data['sexe'],
-                'situation_familiale'=> $data['situation_familiale'] ?? null,
-                'nationalite'        => $data['nationalite'] ?? 'Sénégalaise',
-                'adresse'            => $data['adresse'] ?? null,
-                'telephone'          => $data['telephone'] ?? null,
-                'email'              => $data['email'] ?? null,
-                'date_recrutement'   => $data['date_recrutement'],
-                'fonction'           => $data['fonction'] ?? null,
-                'grade'              => $data['grade'] ?? null,
-                'categorie_cp'       => $data['categorie_cp'] ?? null,
-                'numero_assurance'   => $data['numero_assurance'] ?? null,
-                'statut'             => $data['statut'],
-                'photo'              => $photoPath,
-                'id_service'         => $data['id_service'] ?? null,
-                'id_division'        => $data['id_division'] ?? null,
+                'matricule'           => strtoupper(trim($data['matricule'])),
+                'nom'                 => strtoupper(trim($data['nom'])),
+                'prenom'              => ucwords(strtolower(trim($data['prenom']))),
+                'date_naissance'      => $data['date_naissance'],
+                'lieu_naissance'      => $data['lieu_naissance'] ?? null,
+                'sexe'                => $data['sexe'],
+                'situation_familiale' => $data['situation_familiale'] ?? null,
+                'nationalite'         => $data['nationalite'] ?? null,
+                'adresse'             => $data['adresse'] ?? null,        // Auto-chiffré AES-256
+                'telephone'           => $data['telephone'] ?? null,      // Auto-chiffré AES-256
+                'email'               => $data['email'] ?? null,
+                'cni'                 => $data['cni'] ?? null,            // Auto-chiffré AES-256
+                'religion'            => $data['religion'] ?? null,
+                'date_prise_service'  => $data['date_prise_service'] ?? null,
+                'fontion'             => $data['fontion'] ?? null,
+                'grade'               => $data['grade'] ?? null,
+                'categorie_cp'        => $data['categorie_cp'] ?? null,
+                'famille_d_emploi'    => $data['famille_d_emploi'] ?? null,
+                'statut_agent'        => $data['statut_agent'],
+                'id_service'          => $data['id_service'] ?? null,
+                'id_division'         => $data['id_division'] ?? null,
             ]);
 
             // Synchroniser la famille

@@ -24,7 +24,7 @@
                     <div style="font-size:16px;font-weight:700;">{{ $agent->prenom }} {{ $agent->nom }}</div>
                     <div style="font-size:13px;" class="text-muted">
                         <code>{{ $agent->matricule }}</code>
-                        &nbsp;·&nbsp;{{ $agent->fonction ?? '—' }}
+                        &nbsp;·&nbsp;{{ str_replace('_',' ',$agent->famille_d_emploi ?? '—') ?? '—' }}
                         &nbsp;·&nbsp;{{ $agent->service?->nom_service ?? '—' }}
                     </div>
                 </div>

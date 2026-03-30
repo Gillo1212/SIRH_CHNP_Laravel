@@ -83,6 +83,28 @@ class Absence extends Model
         return $query->where('type_absence', 'Injustifiée');
     }
 
+    /**
+     * Filtrer les absences par service (via demande → agent)
+     */
+    public function scopeForService($query, int $serviceId)
+    {
+        return $query->whereHas('demande.agent', function ($q) use ($serviceId) {
+            $q->where('id_service', $serviceId);
+        });
+    }
+
+    /**
+     * Filtrer les absences du service d'un manager
+     */
+    public function scopeForManager($query, int $userId)
+    {
+        $service = \App\Models\Service::where('id_agent_manager', $userId)->first();
+        if (!$service) {
+            return $query->whereRaw('1 = 0');
+        }
+        return $query->forService($service->id_service);
+    }
+
     // =====================================================
     // ACCESSORS
     // =====================================================
@@ -95,5 +117,29 @@ class Absence extends Model
     public function getEstInjustifieeAttribute()
     {
         return $this->type_absence === 'Injustifiée';
+    }
+
+    /**
+     * Accès rapide au commentaire (stocké dans demande.motif_refus)
+     */
+    public function getCommentaireAttribute(): ?string
+    {
+        return $this->demande?->motif_refus;
+    }
+
+    /**
+     * Filtrer par période
+     */
+    public function scopeForPeriode($query, $debut, $fin)
+    {
+        return $query->whereBetween('date_absence', [$debut, $fin]);
+    }
+
+    /**
+     * Filtrer par agent
+     */
+    public function scopeForAgent($query, int $agentId)
+    {
+        return $query->whereHas('demande', fn($q) => $q->where('id_agent', $agentId));
     }
 }

@@ -1,7 +1,6 @@
 
 {{-- ══════════════════════════════════════════════════════════════
-     HEADER - Thème sombre : overrides spécifiques aux dropdowns
-     (chargé en body après themes.css pour avoir la priorité)
+     HEADER 
      ══════════════════════════════════════════════════════════════ --}}
 <style>
 /* ── HOVER ÉTATS (remplacement onmouseover) ────────────────── */
@@ -259,14 +258,17 @@
                         @endif
                     </h3>
                     @if($unreadCount > 0)
-                        <button type="button" class="hov-notif-read-link">Tout lire</button>
+                        <form method="POST" action="{{ route('notifications.mark-all-read') }}" id="markAllReadForm">
+                            @csrf
+                            <button type="submit" class="hov-notif-read-link">Tout lire</button>
+                        </form>
                     @endif
                 </div>
 
                 {{-- Liste des Notifications --}}
                 <div class="notif-scroll-area" style="max-height: 320px; overflow-y: auto;">
                     @forelse($allNotifications as $notification)
-                        <a href="{{ $notification->data['url'] ?? '#' }}"
+                        <a href="{{ route('notifications.read', $notification->id) }}"
                            class="hov-notif-item {{ $notification->read_at ? '' : 'notif-unread' }}"
                            style="{{ $notification->read_at ? '' : 'background: #EFF6FF;' }}"
                         >
@@ -302,7 +304,7 @@
 
                 {{-- Footer --}}
                 @if($totalNotifications > 0)
-                    <a href="#" class="hov-notif-footer">
+                    <a href="{{ route('notifications.index') }}" class="hov-notif-footer">
                         Voir toutes les notifications
                         <i class="fas fa-arrow-right" style="font-size: 0.75rem;"></i>
                     </a>
@@ -368,17 +370,13 @@
             >
                 {{-- Avatar --}}
                 <div style="position: relative;">
-                    @if(auth()->user()->agent && auth()->user()->agent->photo)
-                        <img 
-                            src="{{ asset('storage/' . auth()->user()->agent->photo) }}" 
-                            alt="Avatar"
-                            style="width: 36px; height: 36px; border-radius: 50%; object-fit: cover; border: 2px solid #E5E7EB;"
-                        >
-                    @else
                         <div style="width: 36px; height: 36px; border-radius: 50%; background: linear-gradient(135deg, #0A4D8C, #1565C0); display: flex; align-items: center; justify-content: center; color: white; font-weight: 600; font-size: 0.875rem;">
-                            {{ strtoupper(substr(auth()->user()->login ?? 'U', 0, 1)) }}
+                            @if(auth()->user()->agent)
+                                {{ strtoupper(substr(auth()->user()->agent->prenom ?? '', 0, 1) . substr(auth()->user()->agent->nom ?? '', 0, 1)) ?: strtoupper(substr(auth()->user()->login ?? 'U', 0, 1)) }}
+                            @else
+                                {{ strtoupper(substr(auth()->user()->login ?? 'U', 0, 1)) }}
+                            @endif
                         </div>
-                    @endif
                     {{-- Indicateur en ligne --}}
                     <span class="online-indicator" style="position: absolute; bottom: 0; right: 0; width: 10px; height: 10px; background: #3fb950; border-radius: 50%; border: 2px solid white; animation: pulse-green 2s infinite;"></span>
                 </div>

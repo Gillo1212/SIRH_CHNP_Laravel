@@ -15,6 +15,17 @@ class Agent extends Model
 
     protected $primaryKey = 'id_agent';
 
+    /**
+     * Familles d'emploi disponibles.
+     */
+    public const FAMILLES_EMPLOI = [
+        'Corps_Médical',
+        'Corps_Paramédical',
+        'Corps_Administratif',
+        'Corps_Technique',
+        'Corps_de_Soutien',
+    ];
+
     protected $fillable = [
         'user_id',
         'matricule',
@@ -25,15 +36,17 @@ class Agent extends Model
         'sexe',
         'situation_familiale',
         'nationalite',
-        'adresse',        // AES-256
-        'telephone',      // AES-256
+        'adresse',            // AES-256
+        'telephone',          // AES-256
         'email',
-        'date_recrutement',
-        'fonction',
+        'cni',                // AES-256 — Carte Nationale d'Identité
+        'religion',
+        'date_prise_service',
+        'fontion',
         'grade',
         'categorie_cp',
-        'numero_assurance', // AES-256
-        'statut',
+        'famille_d_emploi',
+        'statut_agent',
         'account_pending',
         'photo',
         'id_service',
@@ -43,12 +56,12 @@ class Agent extends Model
     protected function casts(): array
     {
         return [
-            'adresse'          => 'encrypted', // Confidentialité CID
-            'telephone'        => 'encrypted', // Confidentialité CID
-            'numero_assurance' => 'encrypted', // Confidentialité CID
+            'adresse'           => 'encrypted', // Confidentialité CID
+            'telephone'         => 'encrypted', // Confidentialité CID
+            'cni'               => 'encrypted', // Confidentialité CID — CNI sensible
+            'date_naissance'    => 'date',
+            'date_prise_service'=> 'date',
             'account_pending'   => 'boolean',
-            'date_naissance'   => 'date',
-            'date_recrutement' => 'date',
         ];
     }
 
@@ -123,32 +136,35 @@ class Agent extends Model
     }
 
     /**
-     * Téléphone masqué pour affichage (Confidentialité)
+     * Téléphone masqué pour affichage (Confidentialité CID).
+     * Affiche les 4 premiers et 2 derniers chiffres.
      */
     public function getTelephoneMasqueAttribute(): string
     {
         $tel = $this->telephone;
         if (!$tel) return '—';
-        // Affiche les 2 premiers et 2 derniers chiffres
         return substr($tel, 0, 4) . str_repeat('X', max(0, strlen($tel) - 6)) . substr($tel, -2);
     }
 
     /**
-     * Adresse masquée pour affichage (Confidentialité)
+     * CNI masquée pour affichage (Confidentialité CID).
+     * Affiche les 2 premiers + XXXXX + 2 derniers caractères.
      */
+    public function getCniMasqueAttribute(): string
+    {
+        $cni = $this->cni;
+        if (!$cni) return '—';
+        if (strlen($cni) <= 4) return str_repeat('X', strlen($cni));
+        return substr($cni, 0, 2) . 'XXXXX' . substr($cni, -2);
+    }
+
     /**
-     * Route pour les notifications email (requis par Notifiable)
+     * Route pour les notifications (requis par Notifiable).
+     * L'email est désormais uniquement sur la table users.
      */
     public function routeNotificationForMail(): ?string
     {
-        return $this->email;
-    }
-
-    public function getAdresseMasqueeAttribute(): string
-    {
-        $addr = $this->adresse;
-        if (!$addr) return '—';
-        return substr($addr, 0, 15) . '...';
+        return $this->email ?? $this->user?->email ?? null;
     }
 
     // =====================================================
@@ -157,12 +173,24 @@ class Agent extends Model
 
     public function scopeActif($query)
     {
-        return $query->where('statut', 'Actif');
+        return $query->where('statut_agent', 'Actif');
     }
 
     public function scopeDuService($query, int $serviceId)
     {
         return $query->where('id_service', $serviceId);
+    }
+
+    /**
+     * Filtrer les agents gérés par un manager (son service).
+     */
+    public function scopeForManager($query, int $userId)
+    {
+        $service = \App\Models\Service::where('id_agent_manager', $userId)->first();
+        if (!$service) {
+            return $query->whereRaw('1 = 0');
+        }
+        return $query->where('id_service', $service->id_service);
     }
 
     public function scopeRecherche($query, ?string $terme)
@@ -173,7 +201,7 @@ class Agent extends Model
             $q->where('nom', 'like', "%{$terme}%")
               ->orWhere('prenom', 'like', "%{$terme}%")
               ->orWhere('matricule', 'like', "%{$terme}%")
-              ->orWhere('fonction', 'like', "%{$terme}%");
+              ->orWhere('famille_d_emploi', 'like', "%{$terme}%");
         });
     }
 
@@ -184,7 +212,7 @@ class Agent extends Model
     public function getActivitylogOptions(): LogOptions
     {
         return LogOptions::defaults()
-            ->logOnly(['matricule', 'nom', 'prenom', 'statut', 'id_service', 'fonction'])
+            ->logOnly(['matricule', 'nom', 'prenom', 'statut_agent', 'id_service', 'famille_d_emploi', 'fontion'])
             ->logOnlyDirty()
             ->dontSubmitEmptyLogs()
             ->useLogName('agents');

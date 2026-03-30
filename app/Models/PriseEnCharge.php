@@ -16,13 +16,17 @@ class PriseEnCharge extends Model
         'id_demande',
         'raison_medical',
         'ayant_droit',
+        'type_prise',
+        'exceptionnelle',
+        'validee_par',
         'date_edition',
     ];
 
     protected function casts(): array
     {
         return [
-            'date_edition' => 'date',
+            'date_edition'   => 'date',
+            'exceptionnelle' => 'boolean',
         ];
     }
 
@@ -35,37 +39,34 @@ class PriseEnCharge extends Model
         return $this->belongsTo(Demande::class, 'id_demande', 'id_demande');
     }
 
-    /**
-     * Accès direct à l'agent via la demande
-     */
     public function agent()
     {
         return $this->hasOneThrough(
-            User::class,
+            Agent::class,
             Demande::class,
             'id_demande',
-            'id',
+            'id_agent',
             'id_demande',
             'id_agent'
         );
+    }
+
+    public function validePar()
+    {
+        return $this->belongsTo(User::class, 'validee_par', 'id');
     }
 
     // =====================================================
     // ACCESSORS
     // =====================================================
 
-    public function getEstPourAgentAttribute()
+    public function getStatutDemAttribute(): string
     {
-        return strtolower($this->ayant_droit) === 'agent';
+        return $this->demande?->statut_demande ?? 'En_attente';
     }
 
-    public function getEstPourConjointAttribute()
+    public function getBeneficiaireLibelleAttribute(): string
     {
-        return str_contains(strtolower($this->ayant_droit), 'conjoint');
-    }
-
-    public function getEstPourEnfantAttribute()
-    {
-        return str_contains(strtolower($this->ayant_droit), 'enfant');
+        return ucfirst($this->ayant_droit ?? 'Agent');
     }
 }

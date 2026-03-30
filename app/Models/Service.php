@@ -86,4 +86,36 @@ class Service extends Model
     {
         return $query->where('type_service', 'Administratif');
     }
+
+    /**
+     * Service(s) gérés par cet utilisateur (manager)
+     */
+    public function scopeForManager($query, int $userId)
+    {
+        return $query->where('id_agent_manager', $userId);
+    }
+
+    // =====================================================
+    // MÉTHODES STATISTIQUES
+    // =====================================================
+
+    public function getActiveAgentsCountAttribute(): int
+    {
+        return $this->agents()->where('statut_agent', 'Actif')->count();
+    }
+
+    public function getPendingLeavesCountAttribute(): int
+    {
+        return \App\Models\Demande::where('type_demande', 'Conge')
+            ->where('statut_demande', 'En_attente')
+            ->whereHas('agent', fn($q) => $q->where('id_service', $this->id_service))
+            ->count();
+    }
+
+    public function getCurrentMonthAbsencesCountAttribute(): int
+    {
+        return \App\Models\Absence::whereHas('demande.agent', fn($q) => $q->where('id_service', $this->id_service))
+            ->whereHas('demande', fn($q) => $q->whereMonth('created_at', now()->month))
+            ->count();
+    }
 }

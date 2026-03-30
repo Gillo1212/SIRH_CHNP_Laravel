@@ -47,7 +47,7 @@
 <div class="d-flex align-items-center justify-content-between mb-4 flex-wrap gap-3">
     <div>
         <h4 class="mb-0 fw-bold" style="color:#111827;">
-            Bonjour, {{ Auth::user()->agent->prenom ?? 'Administrateur' }} 👋
+            Bonjour, {{ Auth::user()->agent->prenom ?? 'Administrateur' }} 
         </h4>
         <p class="mb-0 text-muted" style="font-size:13.5px;">
             {{ now()->isoFormat('dddd D MMMM YYYY') }} — Administration Système
@@ -153,18 +153,13 @@
                     Voir tout <i class="fas fa-arrow-right ms-1"></i>
                 </a>
             </div>
-            @php
-                try {
-                    $logs = \App\Models\LogAudit::latest('date_evenement')->limit(5)->get();
-                } catch(\Exception $e) { $logs = collect(); }
-            @endphp
-            @forelse($logs as $log)
+            @forelse($recentLogs as $log)
                 <div class="alert-item">
                     <div class="alert-dot" style="background:#0A4D8C;"></div>
                     <div class="flex-1">
                         <div style="font-size:13px;font-weight:500;color:#111827;">{{ $log->action ?? 'Événement système' }}</div>
                         <div style="font-size:12px;color:#9CA3AF;">
-                            {{ $log->utilisateur ?? 'Système' }} — {{ optional($log->date_evenement)->diffForHumans() ?? '' }}
+                            {{ $log->utilisateur?->login ?? 'Système' }} — {{ optional($log->date_evenement)->diffForHumans() ?? '' }}
                         </div>
                     </div>
                 </div>
@@ -192,12 +187,7 @@
                     Voir tout <i class="fas fa-arrow-right ms-1"></i>
                 </a>
             </div>
-            @php
-                try {
-                    $recentUsers = \App\Models\User::whereNotNull('derniere_connexion')->orderByDesc('derniere_connexion')->limit(5)->get();
-                } catch(\Exception $e) { $recentUsers = collect(); }
-                $roleColors = ['AdminSystème'=>'#DC2626','DRH'=>'#7C3AED','AgentRH'=>'#059669','Manager'=>'#D97706','Agent'=>'#0A4D8C'];
-            @endphp
+            @php $roleColors = ['AdminSystème'=>'#DC2626','DRH'=>'#7C3AED','AgentRH'=>'#059669','Manager'=>'#D97706','Agent'=>'#0A4D8C']; @endphp
             @forelse($recentUsers as $user)
                 @php $role = $user->getRoleNames()->first() ?? 'Agent'; @endphp
                 <div class="alert-item">
@@ -235,11 +225,11 @@
 <div style="background:linear-gradient(135deg,#EFF6FF 0%,#E0F2FE 100%);border:1px solid #BFDBFE;border-radius:12px;padding:20px;margin-top:4px;">
     <div class="fw-600 mb-3" style="color:#0A4D8C;">Actions rapides</div>
     <div class="d-flex flex-wrap gap-2">
-        <a href="#" class="action-btn action-btn-primary"><i class="fas fa-user-plus"></i> Créer un utilisateur</a>
-        <a href="#" class="action-btn action-btn-outline"><i class="fas fa-user-shield"></i> Gérer les rôles</a>
-        <a href="#" class="action-btn action-btn-outline"><i class="fas fa-clipboard-list"></i> Audit trail</a>
-        <a href="#" class="action-btn action-btn-outline"><i class="fas fa-cogs"></i> Paramètres système</a>
-        <a href="#" class="action-btn action-btn-outline"><i class="fas fa-database"></i> Sauvegarde</a>
+        <a href="{{ route('admin.accounts.index') }}" class="action-btn action-btn-primary"><i class="fas fa-user-plus"></i> Gérer les comptes</a>
+        <a href="{{ route('admin.roles.index') }}" class="action-btn action-btn-outline"><i class="fas fa-user-shield"></i> Gérer les rôles</a>
+        <a href="{{ route('admin.permissions.index') }}" class="action-btn action-btn-outline"><i class="fas fa-key"></i> Permissions</a>
+        <a href="{{ route('admin.settings.index') }}" class="action-btn action-btn-outline"><i class="fas fa-cogs"></i> Paramètres</a>
+        <a href="{{ route('admin.backups.index') }}" class="action-btn action-btn-outline"><i class="fas fa-database"></i> Sauvegardes</a>
     </div>
 </div>
 
@@ -255,8 +245,8 @@ document.addEventListener('DOMContentLoaded', function () {
     new Chart(document.getElementById('chartRoles'), {
         type: 'doughnut',
         data: {
-            labels: ['AdminSystème','DRH','AgentRH','Manager','Agent'],
-            datasets: [{ data: [1,1,1,1,{{ $totalUsers - 4 }}], backgroundColor: [colors.red,colors.purple,colors.green,colors.amber,colors.primary], borderWidth: 2, borderColor: '#fff' }]
+            labels: @json($rolesLabels),
+            datasets: [{ data: @json($rolesData), backgroundColor: [colors.red,colors.purple,colors.green,colors.amber,colors.primary,'#0D9488'], borderWidth: 2, borderColor: '#fff' }]
         },
         options: {
             responsive: true, cutout: '62%',
@@ -268,10 +258,9 @@ document.addEventListener('DOMContentLoaded', function () {
     new Chart(document.getElementById('chartActivite'), {
         type: 'bar',
         data: {
-            labels: ['Lun','Mar','Mer','Jeu','Ven','Sam','Dim'],
+            labels: @json($activiteLabels),
             datasets: [
-                { label: 'Connexions', data: [28,35,42,38,45,12,8], backgroundColor: 'rgba(10,77,140,0.15)', borderColor: colors.primary, borderWidth: 1.5, borderRadius: 4 },
-                { label: 'Actions',    data: [85,102,95,88,110,30,20], backgroundColor: 'rgba(5,150,105,0.12)', borderColor: colors.green, borderWidth: 1.5, borderRadius: 4 }
+                { label: 'Événements audit', data: @json($activiteData), backgroundColor: 'rgba(10,77,140,0.15)', borderColor: colors.primary, borderWidth: 1.5, borderRadius: 4 }
             ]
         },
         options: {

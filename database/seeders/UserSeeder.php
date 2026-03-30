@@ -11,7 +11,6 @@ use Illuminate\Support\Facades\DB;
 class UserSeeder extends Seeder
 {
     private const DEFAULT_PASSWORD = 'Password123!';
-    private const DEFAULT_NATIONALITY = 'Sénégalaise';
 
     public function run(): void
     {
@@ -32,15 +31,13 @@ class UserSeeder extends Seeder
             'nom'              => 'DIOP',
             'prenom'           => 'Amadou',
             'date_naissance'   => '1980-05-15',
-            'lieu_naissance'   => 'Dakar',
             'sexe'             => 'M',
-            'nationalite'      => self::DEFAULT_NATIONALITY,
-            'email'            => 'amadou.diop@chnp.sn',
-            'date_recrutement' => '2010-01-15',
-            'fonction'         => 'Administrateur Système',
-            'grade'            => 'A1',
+            'telephone'        => null,
+            'cni'              => null,
+            'religion'         => null,
             'categorie_cp'     => 'Cadre_Superieur',
-            'statut'           => 'Actif',
+            'famille_d_emploi' => 'Corps_Administratif',
+            'statut_agent'     => 'Actif',
             'id_service'       => 17,
         ]);
 
@@ -61,15 +58,13 @@ class UserSeeder extends Seeder
             'nom'              => 'SARR',
             'prenom'           => 'Fatou',
             'date_naissance'   => '1985-03-20',
-            'lieu_naissance'   => 'Thiès',
             'sexe'             => 'F',
-            'nationalite'      => self::DEFAULT_NATIONALITY,
-            'email'            => 'fatou.sarr@chnp.sn',
-            'date_recrutement' => '2012-06-01',
-            'fonction'         => 'Responsable RH',
-            'grade'            => 'A2',
+            'telephone'        => null,
+            'cni'              => null,
+            'religion'         => null,
             'categorie_cp'     => 'Cadre_Superieur',
-            'statut'           => 'Actif',
+            'famille_d_emploi' => 'Corps_Administratif',
+            'statut_agent'     => 'Actif',
             'id_service'       => 10,
         ]);
 
@@ -84,21 +79,19 @@ class UserSeeder extends Seeder
         ]);
         $manager->assignRole('Manager');
 
-        $managerAgent = Agent::create([
+        Agent::create([
             'user_id'          => $manager->id,
             'matricule'        => 'CHNP-00003',
             'nom'              => 'NDIAYE',
             'prenom'           => 'Moussa',
             'date_naissance'   => '1978-11-10',
-            'lieu_naissance'   => 'Saint-Louis',
             'sexe'             => 'M',
-            'nationalite'      => self::DEFAULT_NATIONALITY,
-            'email'            => 'moussa.ndiaye@chnp.sn',
-            'date_recrutement' => '2008-09-15',
-            'fonction'         => 'Chef de Service Pédiatrie',
-            'grade'            => 'P1',
+            'telephone'        => null,
+            'cni'              => null,
+            'religion'         => null,
             'categorie_cp'     => 'Cadre_Superieur',
-            'statut'           => 'Actif',
+            'famille_d_emploi' => 'Corps_Médical',
+            'statut_agent'     => 'Actif',
             'id_service'       => 1,
         ]);
 
@@ -123,15 +116,13 @@ class UserSeeder extends Seeder
             'nom'              => 'FALL',
             'prenom'           => 'Aïssatou',
             'date_naissance'   => '1992-07-25',
-            'lieu_naissance'   => 'Kaolack',
             'sexe'             => 'F',
-            'nationalite'      => self::DEFAULT_NATIONALITY,
-            'email'            => 'aissatou.fall@chnp.sn',
-            'date_recrutement' => '2018-03-01',
-            'fonction'         => 'Infirmière',
-            'grade'            => 'IDE',
+            'telephone'        => null,
+            'cni'              => null,
+            'religion'         => null,
             'categorie_cp'     => 'Technicien_Superieur',
-            'statut'           => 'Actif',
+            'famille_d_emploi' => 'Corps_Paramédical',
+            'statut_agent'     => 'Actif',
             'id_service'       => 1,
         ]);
 
@@ -152,26 +143,24 @@ class UserSeeder extends Seeder
             'nom'              => 'DIALLO',
             'prenom'           => 'Ibrahima',
             'date_naissance'   => '1975-09-12',
-            'lieu_naissance'   => 'Ziguinchor',
             'sexe'             => 'M',
-            'nationalite'      => self::DEFAULT_NATIONALITY,
-            'email'            => 'drh@chnp.sn',
-            'date_recrutement' => '2005-04-01',
-            'fonction'         => 'Directeur des Ressources Humaines',
-            'grade'            => 'A1',
+            'telephone'        => null,
+            'cni'              => null,
+            'religion'         => null,
             'categorie_cp'     => 'Cadre_Superieur',
-            'statut'           => 'Actif',
+            'famille_d_emploi' => 'Corps_Administratif',
+            'statut_agent'     => 'Actif',
             'id_service'       => 10,
         ]);
 
         // 6-11. Agents supplémentaires pour tests
         $agentsData = [
-            ['nom' => 'SY',     'prenom' => 'Ousmane', 'sexe' => 'M', 'service' => 1],
-            ['nom' => 'CISSE',  'prenom' => 'Mariama', 'sexe' => 'F', 'service' => 2],
-            ['nom' => 'BA',     'prenom' => 'Ibrahima','sexe' => 'M', 'service' => 5],
-            ['nom' => 'DIALLO', 'prenom' => 'Khady',   'sexe' => 'F', 'service' => 3],
-            ['nom' => 'GUEYE',  'prenom' => 'Cheikh',  'sexe' => 'M', 'service' => 8],
-            ['nom' => 'SOW',    'prenom' => 'Aminata', 'sexe' => 'F', 'service' => 10],
+            ['nom' => 'SY',     'prenom' => 'Ousmane', 'sexe' => 'M', 'service' => 1,  'famille' => 'Corps_Médical'],
+            ['nom' => 'CISSE',  'prenom' => 'Mariama', 'sexe' => 'F', 'service' => 2,  'famille' => 'Corps_Paramédical'],
+            ['nom' => 'BA',     'prenom' => 'Ibrahima','sexe' => 'M', 'service' => 5,  'famille' => 'Corps_Paramédical'],
+            ['nom' => 'DIALLO', 'prenom' => 'Khady',   'sexe' => 'F', 'service' => 3,  'famille' => 'Corps_de_Soutien'],
+            ['nom' => 'GUEYE',  'prenom' => 'Cheikh',  'sexe' => 'M', 'service' => 8,  'famille' => 'Corps_Technique'],
+            ['nom' => 'SOW',    'prenom' => 'Aminata', 'sexe' => 'F', 'service' => 10, 'famille' => 'Corps_Administratif'],
         ];
 
         foreach ($agentsData as $index => $data) {
@@ -191,13 +180,13 @@ class UserSeeder extends Seeder
                 'nom'              => $data['nom'],
                 'prenom'           => $data['prenom'],
                 'date_naissance'   => '1990-01-01',
-                'lieu_naissance'   => 'Dakar',
                 'sexe'             => $data['sexe'],
-                'nationalite'      => self::DEFAULT_NATIONALITY,
-                'email'            => strtolower($data['prenom']) . '.' . strtolower($data['nom']) . '@chnp.sn',
-                'date_recrutement' => '2020-01-01',
-                'fonction'         => 'Agent',
-                'statut'           => 'Actif',
+                'telephone'        => null,
+                'cni'              => null,
+                'religion'         => null,
+                'categorie_cp'     => 'Agent_Administratif',
+                'famille_d_emploi' => $data['famille'],
+                'statut_agent'     => 'Actif',
                 'id_service'       => $data['service'],
             ]);
         }

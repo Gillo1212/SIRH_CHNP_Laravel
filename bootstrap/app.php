@@ -15,10 +15,12 @@ return Application::configure(basePath: dirname(__DIR__))
             \App\Http\Middleware\SetLocale::class,
         ]);
         $middleware->alias([
-            'check.account.locked' => \App\Http\Middleware\CheckAccountLocked::class,
-            'role' => \Spatie\Permission\Middleware\RoleMiddleware::class,
-            'permission' => \Spatie\Permission\Middleware\PermissionMiddleware::class,
-            'role_or_permission' => \Spatie\Permission\Middleware\RoleOrPermissionMiddleware::class,
+            'check.account.locked'  => \App\Http\Middleware\CheckAccountLocked::class,
+            'manager.service'       => \App\Http\Middleware\EnsureManagerService::class,
+            'agent.profile'         => \App\Http\Middleware\EnsureHasAgentProfile::class,
+            'role'                  => \Spatie\Permission\Middleware\RoleMiddleware::class,
+            'permission'            => \Spatie\Permission\Middleware\PermissionMiddleware::class,
+            'role_or_permission'    => \Spatie\Permission\Middleware\RoleOrPermissionMiddleware::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions) {

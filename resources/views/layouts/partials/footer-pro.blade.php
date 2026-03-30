@@ -46,7 +46,7 @@
              PARTIE DROITE - Liens
              ═══════════════════════════════════════════════════════════════════ --}}
         <div style="display: flex; align-items: center; gap: 1rem;">
-            <a href="{{ Route::has('privacy') ? route('privacy') : '#' }}" style="font-size: 0.75rem; color: #6B7280; text-decoration: none; transition: color 150ms;"
+            <a href="{{ route('politique-confidentialite') }}" style="font-size: 0.75rem; color: #6B7280; text-decoration: none; transition: color 150ms;"
                onmouseover="this.style.color='#1565C0'"
                onmouseout="this.style.color='#6B7280'">
                 Politique de confidentialité
@@ -54,7 +54,7 @@
 
             <span style="color: #D1D5DB;">|</span>
 
-            <a href="{{ Route::has('support') ? route('support') : '#' }}" style="font-size: 0.75rem; color: #6B7280; text-decoration: none; transition: color 150ms;"
+            <a href="{{ route('support.index') }}" style="font-size: 0.75rem; color: #6B7280; text-decoration: none; transition: color 150ms;"
                onmouseover="this.style.color='#1565C0'"
                onmouseout="this.style.color='#6B7280'">
                 Support
@@ -62,7 +62,7 @@
 
             <span style="color: #D1D5DB;">|</span>
 
-            <a href="#" style="font-size: 0.75rem; color: #6B7280; text-decoration: none; transition: color 150ms;"
+            <a href="{{ route('aide.index') }}" style="font-size: 0.75rem; color: #6B7280; text-decoration: none; transition: color 150ms;"
                onmouseover="this.style.color='#1565C0'"
                onmouseout="this.style.color='#6B7280'">
                 Aide

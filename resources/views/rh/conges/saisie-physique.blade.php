@@ -11,6 +11,11 @@
 
 @push('styles')
 <style>
+.action-btn { display:inline-flex;align-items:center;gap:8px;padding:9px 16px;border-radius:8px;font-size:13px;font-weight:500;text-decoration:none;border:none;cursor:pointer;transition:all 180ms;white-space:nowrap; }
+.action-btn-amber { background:#D97706;color:#fff; }
+.action-btn-amber:hover { background:#B45309;color:#fff; }
+.action-btn-outline { background:var(--theme-panel-bg);color:var(--theme-text);border:1px solid var(--theme-border); }
+.action-btn-outline:hover { background:var(--sirh-primary-hover);color:#0A4D8C;border-color:#BFDBFE; }
 .form-label-custom { font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--theme-text-muted);margin-bottom:5px; }
 .form-control-custom, .form-select-custom {
     border-radius:8px;font-size:13px;padding:10px 14px;
@@ -26,13 +31,6 @@
 
 @section('content')
 <div class="container-fluid px-4 py-4">
-
-    @if(session('error'))
-        <div class="alert alert-danger alert-dismissible d-flex align-items-center gap-2 mb-4" style="border-radius:10px;border-left:4px solid #EF4444;">
-            <i class="fas fa-exclamation-circle"></i><span>{{ session('error') }}</span>
-            <button type="button" class="btn-close ms-auto" data-bs-dismiss="alert"></button>
-        </div>
-    @endif
 
     <div class="row justify-content-center">
         <div class="col-lg-8">
@@ -128,10 +126,10 @@
 
                     {{-- Boutons --}}
                     <div class="d-flex gap-3">
-                        <button type="submit" class="btn btn-primary d-flex align-items-center gap-2" style="background:#D97706;border:none;border-radius:8px;padding:10px 24px;">
+                        <button type="submit" class="action-btn action-btn-amber">
                             <i class="fas fa-check-double"></i> Enregistrer et approuver
                         </button>
-                        <a href="{{ route('rh.conges.index') }}" class="btn d-flex align-items-center gap-2" style="background:var(--theme-bg-secondary);border:1px solid var(--theme-border);border-radius:8px;padding:10px 20px;color:var(--theme-text);">
+                        <a href="{{ route('rh.conges.index') }}" class="action-btn action-btn-outline">
                             <i class="fas fa-arrow-left"></i> Retour
                         </a>
                     </div>
@@ -162,6 +160,16 @@ function calculerJours() {
     } else {
         divCalc.classList.add('d-none');
     }
+}
+@if(session('error'))
+    document.addEventListener('DOMContentLoaded', () => showToast(@json(session('error')), 'error'));
+@endif
+function showToast(message, type) {
+    const cfg = { success:{bg:'#10B981',icon:'fa-check-circle'}, error:{bg:'#EF4444',icon:'fa-exclamation-circle'} };
+    const c = cfg[type] || cfg.success;
+    const id = 'toast-' + Date.now();
+    document.body.insertAdjacentHTML('beforeend', `<div id="${id}" style="position:fixed;top:22px;right:22px;z-index:10000;background:${c.bg};color:#fff;border-radius:12px;padding:14px 20px;display:flex;align-items:center;gap:12px;box-shadow:0 8px 28px rgba(0,0,0,.18);font-size:14px;font-weight:500;max-width:400px;animation:toastIn .3s ease;"><i class="fas ${c.icon}" style="font-size:18px;flex-shrink:0;"></i><span>${message}</span><button onclick="document.getElementById('${id}').remove()" style="background:none;border:none;color:#fff;font-size:20px;cursor:pointer;margin-left:auto;padding:0 0 0 8px;line-height:1;">×</button></div>`);
+    setTimeout(() => document.getElementById(id)?.remove(), 4500);
 }
 document.getElementById('date_debut').addEventListener('change', function() {
     const fin = document.getElementById('date_fin');

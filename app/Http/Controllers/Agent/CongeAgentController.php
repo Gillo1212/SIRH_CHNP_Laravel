@@ -5,8 +5,10 @@ namespace App\Http\Controllers\Agent;
 use App\Http\Controllers\Controller;
 use App\Models\Demande;
 use App\Models\Conge;
+use App\Models\Service;
 use App\Models\SoldeConge;
 use App\Models\TypeConge;
+use App\Notifications\CongeDemandeNotification;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -144,6 +146,17 @@ class CongeAgentController extends Controller
                 'nbres_jours'   => $nbJours,
             ]);
         });
+
+        // Notifier le manager du service (hors transaction)
+        try {
+            $demande->load('conge');
+            $service = Service::where('id_service', $agent->id_service)->first();
+            if ($service && $service->manager) {
+                $service->manager->notify(new CongeDemandeNotification($demande));
+            }
+        } catch (\Throwable $e) {
+            \Log::warning('Notification congé manager échouée : ' . $e->getMessage());
+        }
 
         return redirect()->route('agent.conges.index')
             ->with('success', "Votre demande de congé ({$nbJours} jour(s)) a été soumise avec succès. Elle est en attente de validation.");

@@ -4,6 +4,8 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use App\Models\Agent;
+use App\Models\Service;
 
 class Division extends Model
 {
@@ -29,10 +31,27 @@ class Division extends Model
     }
 
     /**
-     * Agents affectés à cette division
+     * Agents affectés à cette division (via services)
      */
     public function agents()
     {
-        return $this->hasMany(User::class, 'id_division', 'id_division');
+        return $this->hasManyThrough(
+            Agent::class,
+            Service::class,
+            'id_division',  // FK sur services → divisions
+            'id_service',   // FK sur agents → services
+            'id_division',  // PK locale sur divisions
+            'id_service'    // PK locale sur services
+        );
+    }
+
+    public function getTotalAgentsCountAttribute(): int
+    {
+        return $this->agents()->count();
+    }
+
+    public function getServicesCountAttribute(): int
+    {
+        return $this->services()->count();
     }
 }

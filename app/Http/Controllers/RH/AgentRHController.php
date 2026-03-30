@@ -9,6 +9,7 @@ use App\Models\Agent;
 use App\Models\Division;
 use App\Models\Service;
 use App\Exports\AgentsExport;
+use App\Exports\ExcelExport;
 use App\Services\AgentService;
 use App\Repositories\Contracts\AgentRepositoryInterface;
 use Illuminate\Http\Request;
@@ -38,14 +39,12 @@ class AgentRHController extends Controller
         // Statistiques rapides pour le bandeau
         $stats = [
             'total'    => Agent::count(),
-            'actifs'   => Agent::where('statut', 'Actif')->count(),
-            'en_conge' => Agent::where('statut', 'En_congé')->count(),
-            'suspendus'=> Agent::where('statut', 'Suspendu')->count(),
+            'actifs'   => Agent::where('statut_agent', 'Actif')->count(),
+            'en_conge' => Agent::where('statut_agent', 'En_congé')->count(),
+            'suspendus'=> Agent::where('statut_agent', 'Suspendu')->count(),
         ];
 
-        $prochainMatricule = $this->repo->nextMatricule();
-
-        return view('rh.agents.index', compact('agents', 'filters', 'services', 'divisions', 'stats', 'prochainMatricule'));
+        return view('rh.agents.index', compact('agents', 'filters', 'services', 'divisions', 'stats'));
     }
 
     /**
@@ -64,9 +63,8 @@ class AgentRHController extends Controller
 
         $services          = Service::orderBy('nom_service')->get(['id_service', 'nom_service']);
         $divisions         = Division::orderBy('nom_division')->get(['id_division', 'nom_division']);
-        $prochainMatricule = $this->repo->nextMatricule();
 
-        return view('rh.agents.comptes-a-completer', compact('comptes', 'services', 'divisions', 'prochainMatricule'));
+        return view('rh.agents.comptes-a-completer', compact('comptes', 'services', 'divisions'));
     }
 
     /**
@@ -78,9 +76,8 @@ class AgentRHController extends Controller
 
         $services  = Service::orderBy('nom_service')->get(['id_service', 'nom_service']);
         $divisions = Division::orderBy('nom_division')->get(['id_division', 'nom_division']);
-        $prochainMatricule = $this->repo->nextMatricule();
 
-        return view('rh.agents.create', compact('services', 'divisions', 'prochainMatricule'));
+        return view('rh.agents.create', compact('services', 'divisions'));
     }
 
     /**
@@ -190,6 +187,69 @@ class AgentRHController extends Controller
     {
         Gate::authorize('export', Agent::class);
 
-        return (new AgentsExport($request->only(['statut', 'service'])))->download();
+        return (new AgentsExport($request->only(['statut_agent', 'service'])))->download();
+    }
+
+    /**
+     * Export Excel des agents (SpreadsheetML — sans dépendance externe)
+     * Confidentialité CID : sans champs sensibles
+     */
+    public function exportExcel(Request $request)
+    {
+        Gate::authorize('export', Agent::class);
+
+        $query = Agent::with(['service:id_service,nom_service', 'division:id_division,nom_division', 'contratActif'])
+            ->select('id_agent', 'matricule', 'nom', 'prenom', 'sexe',
+                     'date_naissance', 'date_prise_service', 'famille_d_emploi',
+                     'categorie_cp', 'statut_agent', 'fontion', 'grade', 'id_service', 'id_division');
+
+        if ($v = $request->recherche) {
+            $query->where(fn($q) => $q
+                ->where('nom', 'like', "%{$v}%")
+                ->orWhere('prenom', 'like', "%{$v}%")
+                ->orWhere('matricule', 'like', "%{$v}%")
+                ->orWhere('fontion', 'like', "%{$v}%")
+            );
+        }
+        if ($v = $request->service) {
+            $query->where('id_service', $v);
+        }
+        if ($v = $request->statut) {
+            $query->where('statut_agent', $v);
+        }
+        if ($v = $request->sexe) {
+            $query->where('sexe', $v);
+        }
+
+        $agents = $query->orderBy('nom')->orderBy('prenom')->get();
+
+        $export = new ExcelExport('Personnel CHNP');
+        $export->setHeaders([
+            'Matricule', 'Nom', 'Prénom', 'Sexe', 'Date naissance',
+            'Prise de service', 'Fonction', 'Grade', 'Catégorie CSP',
+            "Famille d'emploi", 'Statut', 'Service', 'Division', 'Type contrat',
+        ]);
+
+        foreach ($agents as $agent) {
+            $export->addRow([
+                $agent->matricule,
+                $agent->nom,
+                $agent->prenom,
+                $agent->sexe === 'M' ? 'Masculin' : 'Féminin',
+                $agent->date_naissance?->format('d/m/Y') ?? '—',
+                $agent->date_prise_service?->format('d/m/Y') ?? '—',
+                $agent->fontion ?? '—',
+                $agent->grade ?? '—',
+                str_replace('_', ' ', $agent->categorie_cp ?? '—'),
+                $agent->famille_d_emploi ? str_replace('_', ' ', $agent->famille_d_emploi) : '—',
+                $agent->statut_agent ?? '—',
+                $agent->service?->nom_service ?? '—',
+                $agent->division?->nom_division ?? '—',
+                $agent->contratActif?->type_contrat ?? '—',
+            ]);
+        }
+
+        $filename = 'agents_chnp_' . now()->format('Y-m-d');
+        return $export->download($filename);
     }
 }

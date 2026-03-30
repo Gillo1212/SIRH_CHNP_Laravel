@@ -1,9 +1,5 @@
 {{--
-╔══════════════════════════════════════════════════════════════════╗
-║  SIRH CHNP - Sidebar Minimaliste                                  ║
-║  Style : blanc, épuré, inspiré StarCode                          ║
-║  Fonctions : collapse, sous-menus, tooltips, badges, RBAC        ║
-╚══════════════════════════════════════════════════════════════════╝
+   Sidebar
 --}}
 
 <style>
@@ -539,27 +535,11 @@
             <div class="sb-section-title">Sécurité</div>
 
             {{-- Logs d'Audit --}}
-            <div x-data="{ open: {{ request()->routeIs('admin.audit.*') ? 'true' : 'false' }} }">
-                <button @click="open = !open" class="sb-item w-100 border-0 text-start {{ request()->routeIs('admin.audit.*') ? 'active' : '' }}" style="background: transparent;">
-                    <span class="sb-icon"><i class="fas fa-clipboard-list"></i></span>
-                    <span class="sb-label">Logs d'Audit</span>
-                    @php
-                        try { $auditCount = \App\Models\LogAudit::whereDate('date_evenement', today())->count(); }
-                        catch (\Exception $e) { $auditCount = 0; }
-                    @endphp
-                    @if($auditCount > 0)
-                        <span class="sb-badge">{{ $auditCount }}</span>
-                    @endif
-                    <i class="fas fa-chevron-right sb-chevron" :class="{ 'sb-open': open }"></i>
-                    <span class="sb-tooltip">Logs d'Audit</span>
-                </button>
-                <div class="sb-submenu" x-show="open" x-transition:enter="transition ease-out duration-150" x-transition:enter-start="opacity-0" x-transition:enter-end="opacity-100" x-transition:leave="transition ease-in duration-100" x-transition:leave-start="opacity-100" x-transition:leave-end="opacity-0">
-                    <a href="#" class="sb-subitem">Journal complet</a>
-                    <a href="#" class="sb-subitem">Connexions</a>
-                    <a href="#" class="sb-subitem">Tentatives échouées</a>
-                    <a href="#" class="sb-subitem">Export audit</a>
-                </div>
-            </div>
+            <a href="{{ route('admin.audit.index') }}" class="sb-item {{ request()->routeIs('admin.audit.*') ? 'active' : '' }}">
+                <span class="sb-icon"><i class="fas fa-clipboard-list"></i></span>
+                <span class="sb-label">Logs d'Audit</span>
+                <span class="sb-tooltip">Logs d'Audit</span>
+            </a>
 
             <div class="sb-section-title">Paramètres</div>
 
@@ -572,8 +552,8 @@
                     <span class="sb-tooltip">Paramètres</span>
                 </button>
                 <div class="sb-submenu" x-show="open" x-transition:enter="transition ease-out duration-150" x-transition:enter-start="opacity-0" x-transition:enter-end="opacity-100" x-transition:leave="transition ease-in duration-100" x-transition:leave-start="opacity-100" x-transition:leave-end="opacity-0">
-                    <a href="#" class="sb-subitem">Configuration</a>
-                    <a href="#" class="sb-subitem">Notifications</a>
+                    <a href="{{ route('admin.settings.index') }}" class="sb-subitem {{ request()->routeIs('admin.settings.index') ? 'active' : '' }}">Configuration</a>
+                    <a href="{{ route('admin.settings.notifications') }}" class="sb-subitem {{ request()->routeIs('admin.settings.notifications') ? 'active' : '' }}">Notifications</a>
                 </div>
             </div>
 
@@ -586,8 +566,7 @@
                     <span class="sb-tooltip">Sauvegardes</span>
                 </button>
                 <div class="sb-submenu" x-show="open" x-transition:enter="transition ease-out duration-150" x-transition:enter-start="opacity-0" x-transition:enter-end="opacity-100" x-transition:leave="transition ease-in duration-100" x-transition:leave-start="opacity-100" x-transition:leave-end="opacity-0">
-                    <a href="#" class="sb-subitem">Backup manuel</a>
-                    <a href="#" class="sb-subitem">Historique</a>
+                    <a href="{{ route('admin.backups.index') }}" class="sb-subitem {{ request()->routeIs('admin.backups.index') ? 'active' : '' }}">Gestion des sauvegardes</a>
                 </div>
             </div>
 
@@ -631,57 +610,31 @@
             </div>
 
             {{-- Contrats --}}
-            <div x-data="{ open: {{ request()->routeIs('rh.contrats.*') ? 'true' : 'false' }} }">
-                <button @click="open = !open" class="sb-item w-100 border-0 text-start {{ request()->routeIs('rh.contrats.*') ? 'active' : '' }}" style="background: transparent;">
-                    <span class="sb-icon"><i class="fas fa-file-contract"></i></span>
-                    <span class="sb-label">Contrats</span>
-                    @php
-                        try {
-                            $contratsExpiring = \App\Models\Contrat::where('date_fin', '<=', now()->addDays(60))
-                                ->where('date_fin', '>=', now())
-                                ->where('statut_contrat', 'Actif')->count();
-                        } catch (\Exception $e) { $contratsExpiring = 0; }
-                    @endphp
-                    @if($contratsExpiring > 0)
-                        <span class="sb-badge">{{ $contratsExpiring }}</span>
-                    @endif
-                    <i class="fas fa-chevron-right sb-chevron" :class="{ 'sb-open': open }"></i>
-                    <span class="sb-tooltip">Contrats</span>
-                </button>
-                <div class="sb-submenu" x-show="open" x-transition:enter="transition ease-out duration-150" x-transition:enter-start="opacity-0" x-transition:enter-end="opacity-100" x-transition:leave="transition ease-in duration-100" x-transition:leave-start="opacity-100" x-transition:leave-end="opacity-0">
-                    <a href="{{ route('rh.contrats.index') }}" class="sb-subitem {{ request()->routeIs('rh.contrats.index') ? 'active' : '' }}">Liste des contrats</a>
-                    <a href="{{ route('rh.contrats.expiring') }}" class="sb-subitem {{ request()->routeIs('rh.contrats.expiring') ? 'active' : '' }}">
-                        Contrats expirants
-                        @if($contratsExpiring > 0)
-                            <span class="sb-badge" style="margin-left: auto; position: static;">{{ $contratsExpiring }}</span>
-                        @endif
-                    </a>
-                    <a href="{{ route('rh.contrats.create') }}" class="sb-subitem {{ request()->routeIs('rh.contrats.create') ? 'active' : '' }}">Nouveau contrat</a>
-                </div>
-            </div>
+            @php
+                try { $contratsExpiring = \App\Models\Contrat::where('date_fin','<=',now()->addDays(60))->where('date_fin','>=',now())->where('statut_contrat','Actif')->count(); }
+                catch (\Exception $e) { $contratsExpiring = 0; }
+            @endphp
+            <a href="{{ route('rh.contrats.index') }}" class="sb-item {{ request()->routeIs('rh.contrats.*') ? 'active' : '' }}">
+                <span class="sb-icon"><i class="fas fa-file-contract"></i></span>
+                <span class="sb-label">Contrats</span>
+                @if($contratsExpiring > 0)
+                    <span class="sb-badge">{{ $contratsExpiring }}</span>
+                @endif
+                <span class="sb-tooltip">Contrats</span>
+            </a>
 
             {{-- Mouvements --}}
-            <div x-data="{ open: {{ request()->routeIs('rh.mouvements.*') ? 'true' : 'false' }} }">
-                <button @click="open = !open" class="sb-item w-100 border-0 text-start {{ request()->routeIs('rh.mouvements.*') ? 'active' : '' }}" style="background: transparent;">
-                    <span class="sb-icon"><i class="fas fa-exchange-alt"></i></span>
-                    <span class="sb-label">Mouvements</span>
-                    <i class="fas fa-chevron-right sb-chevron" :class="{ 'sb-open': open }"></i>
-                    <span class="sb-tooltip">Mouvements</span>
-                </button>
-                <div class="sb-submenu" x-show="open" x-transition:enter="transition ease-out duration-150" x-transition:enter-start="opacity-0" x-transition:enter-end="opacity-100" x-transition:leave="transition ease-in duration-100" x-transition:leave-start="opacity-100" x-transition:leave-end="opacity-0">
-                    <a href="{{ route('rh.mouvements.index') }}" class="sb-subitem {{ request()->routeIs('rh.mouvements.index') ? 'active' : '' }}">Tous les mouvements</a>
-                    <a href="{{ route('rh.mouvements.affectations') }}" class="sb-subitem {{ request()->routeIs('rh.mouvements.affectations') ? 'active' : '' }}">Affectations</a>
-                    <a href="{{ route('rh.mouvements.mutations') }}" class="sb-subitem {{ request()->routeIs('rh.mouvements.mutations') ? 'active' : '' }}">Mutations</a>
-                    <a href="{{ route('rh.mouvements.retours') }}" class="sb-subitem {{ request()->routeIs('rh.mouvements.retours') ? 'active' : '' }}">Retours / Réintégrations</a>
-                    <a href="{{ route('rh.mouvements.departs') }}" class="sb-subitem {{ request()->routeIs('rh.mouvements.departs') ? 'active' : '' }}">Départs</a>
-                </div>
-            </div>
+            <a href="{{ route('rh.mouvements.index') }}" class="sb-item {{ request()->routeIs('rh.mouvements.*') ? 'active' : '' }}">
+                <span class="sb-icon"><i class="fas fa-exchange-alt"></i></span>
+                <span class="sb-label">Mouvements</span>
+                <span class="sb-tooltip">Mouvements</span>
+            </a>
 
             <div class="sb-section-title">Congés & Absences</div>
 
             {{-- Congés RH --}}
-            <div x-data="{ open: {{ request()->routeIs('rh.conges.*') || request()->routeIs('rh.conge-physique') ? 'true' : 'false' }} }">
-                <button @click="open = !open" class="sb-item w-100 border-0 text-start {{ request()->routeIs('rh.conges.*') || request()->routeIs('rh.conge-physique') ? 'active' : '' }}" style="background: transparent;">
+            <div x-data="{ open: {{ request()->routeIs('rh.conges.*') ? 'true' : 'false' }} }">
+                <button @click="open = !open" class="sb-item w-100 border-0 text-start {{ request()->routeIs('rh.conges.*') ? 'active' : '' }}" style="background: transparent;">
                     <span class="sb-icon"><i class="fas fa-umbrella-beach"></i></span>
                     <span class="sb-label">Congés</span>
                     @php
@@ -703,25 +656,17 @@
                             <span class="sb-badge" style="margin-left: auto; position: static;">{{ $pendingLeaves }}</span>
                         @endif
                     </a>
-                    <a href="{{ route('rh.conge-physique') }}" class="sb-subitem {{ request()->routeIs('rh.conge-physique') ? 'active' : '' }}">Saisie physique</a>
                     <a href="{{ route('rh.conges.index') }}" class="sb-subitem {{ request()->routeIs('rh.conges.index') ? 'active' : '' }}">Historique complet</a>
                     <a href="{{ route('rh.conges.soldes') }}" class="sb-subitem {{ request()->routeIs('rh.conges.soldes') ? 'active' : '' }}">Gestion des soldes</a>
                 </div>
             </div>
 
             {{-- Absences RH --}}
-            <div x-data="{ open: {{ request()->routeIs('rh.absences.*') ? 'true' : 'false' }} }">
-                <button @click="open = !open" class="sb-item w-100 border-0 text-start {{ request()->routeIs('rh.absences.*') ? 'active' : '' }}" style="background: transparent;">
-                    <span class="sb-icon"><i class="fas fa-user-clock"></i></span>
-                    <span class="sb-label">Absences</span>
-                    <i class="fas fa-chevron-right sb-chevron" :class="{ 'sb-open': open }"></i>
-                    <span class="sb-tooltip">Absences</span>
-                </button>
-                <div class="sb-submenu" x-show="open" x-transition:enter="transition ease-out duration-150" x-transition:enter-start="opacity-0" x-transition:enter-end="opacity-100" x-transition:leave="transition ease-in duration-100" x-transition:leave-start="opacity-100" x-transition:leave-end="opacity-0">
-                    <a href="{{ route('rh.absences.create') }}" class="sb-subitem {{ request()->routeIs('rh.absences.create') ? 'active' : '' }}">Enregistrer absence</a>
-                    <a href="{{ route('rh.absences.index') }}" class="sb-subitem {{ request()->routeIs('rh.absences.index') ? 'active' : '' }}">Historique</a>
-                </div>
-            </div>
+            <a href="{{ route('rh.absences.index') }}" class="sb-item {{ request()->routeIs('rh.absences.*') ? 'active' : '' }}">
+                <span class="sb-icon"><i class="fas fa-user-clock"></i></span>
+                <span class="sb-label">Absences</span>
+                <span class="sb-tooltip">Absences</span>
+            </a>
 
             <div class="sb-section-title">Demandes à Traiter</div>
 
@@ -729,9 +674,9 @@
             <div x-data="{ open: {{ request()->routeIs('rh.demandes-docs.*') || request()->routeIs('documents-admin.*') ? 'true' : 'false' }} }">
                 <button @click="open = !open" class="sb-item w-100 border-0 text-start {{ request()->routeIs('rh.demandes-docs.*') || request()->routeIs('documents-admin.*') ? 'active' : '' }}" style="background: transparent;">
                     <span class="sb-icon"><i class="fas fa-file-alt"></i></span>
-                    <span class="sb-label">Documents admin.</span>
+                    <span class="sb-label">Administratif</span>
                     <i class="fas fa-chevron-right sb-chevron" :class="{ 'sb-open': open }"></i>
-                    <span class="sb-tooltip">Documents admin.</span>
+                    <span class="sb-tooltip">Administratif</span>
                 </button>
                 <div class="sb-submenu" x-show="open" x-transition:enter="transition ease-out duration-150" x-transition:enter-start="opacity-0" x-transition:enter-end="opacity-100" x-transition:leave="transition ease-in duration-100" x-transition:leave-start="opacity-100" x-transition:leave-end="opacity-0">
                     <a href="{{ route('rh.demandes-docs.pending') }}" class="sb-subitem {{ request()->routeIs('rh.demandes-docs.pending') ? 'active' : '' }}">Demandes en attente</a>
@@ -771,71 +716,53 @@
                 </div>
             </div>
 
-            <div class="sb-section-title">Documents</div>
+            <div class="sb-section-title">GED & Archives</div>
 
-            {{-- GED --}}
-            <div x-data="{ open: {{ request()->routeIs('rh.documents.*') ? 'true' : 'false' }} }">
-                <button @click="open = !open" class="sb-item w-100 border-0 text-start {{ request()->routeIs('rh.documents.*') ? 'active' : '' }}" style="background: transparent;">
-                    <span class="sb-icon"><i class="fas fa-archive"></i></span>
-                    <span class="sb-label">GED (Archives)</span>
+            {{-- GED avec sous-menu --}}
+            <div x-data="{ open: {{ request()->routeIs('rh.ged.*') || request()->routeIs('rh.documents.*') ? 'true' : 'false' }} }">
+                <button @click="open = !open" class="sb-item w-100 border-0 text-start {{ request()->routeIs('rh.ged.*') || request()->routeIs('rh.documents.*') ? 'active' : '' }}" style="background: transparent;">
+                    <span class="sb-icon"><i class="fas fa-folder-open"> </i></span>
+                    <span class="sb-label">GED</span>
                     <i class="fas fa-chevron-right sb-chevron" :class="{ 'sb-open': open }"></i>
-                    <span class="sb-tooltip">GED</span>
+                    <span class="sb-tooltip">GED Archives</span>
                 </button>
                 <div class="sb-submenu" x-show="open" x-transition:enter="transition ease-out duration-150" x-transition:enter-start="opacity-0" x-transition:enter-end="opacity-100" x-transition:leave="transition ease-in duration-100" x-transition:leave-start="opacity-100" x-transition:leave-end="opacity-0">
-                    <a href="{{ route('rh.documents.index') }}" class="sb-subitem {{ request()->routeIs('rh.documents.index') ? 'active' : '' }}">Tous les documents</a>
-                    <a href="{{ route('rh.documents.create') }}" class="sb-subitem {{ request()->routeIs('rh.documents.create') ? 'active' : '' }}">Uploader document</a>
-                    <a href="#" class="sb-subitem">Recherche</a>
+                    <a href="{{ route('rh.ged.index') }}" class="sb-subitem {{ request()->routeIs('rh.ged.index') ? 'active' : '' }}">
+                        <i class="ri-dashboard-line me-1"></i> Tableau de bord
+                    </a>
+                    <a href="{{ route('rh.ged.dossiers') }}" class="sb-subitem {{ request()->routeIs('rh.ged.dossiers') || request()->routeIs('rh.ged.dossier.*') ? 'active' : '' }}">
+                        <i class="ri-folder-3-line me-1"></i> Dossiers agents
+                    </a>
+                    <a href="{{ route('rh.ged.etageres') }}" class="sb-subitem {{ request()->routeIs('rh.ged.etageres') ? 'active' : '' }}">
+                        <i class="ri-archive-drawer-line me-1"></i> Étagères
+                    </a>
                 </div>
             </div>
 
             <div class="sb-section-title">Organisation</div>
 
             {{-- Services --}}
-            <div x-data="{ open: {{ request()->routeIs('rh.services.*') ? 'true' : 'false' }} }">
-                <button @click="open = !open" class="sb-item w-100 border-0 text-start {{ request()->routeIs('rh.services.*') ? 'active' : '' }}" style="background: transparent;">
-                    <span class="sb-icon"><i class="fas fa-sitemap"></i></span>
-                    <span class="sb-label">Services</span>
-                    <i class="fas fa-chevron-right sb-chevron" :class="{ 'sb-open': open }"></i>
-                    <span class="sb-tooltip">Services</span>
-                </button>
-                <div class="sb-submenu" x-show="open" x-transition:enter="transition ease-out duration-150" x-transition:enter-start="opacity-0" x-transition:enter-end="opacity-100" x-transition:leave="transition ease-in duration-100" x-transition:leave-start="opacity-100" x-transition:leave-end="opacity-0">
-                    <a href="{{ route('rh.services.index') }}" class="sb-subitem {{ request()->routeIs('rh.services.index') ? 'active' : '' }}">Liste des services</a>
-                    <a href="{{ route('rh.services.create') }}" class="sb-subitem {{ request()->routeIs('rh.services.create') ? 'active' : '' }}">Nouveau service</a>
-                    <a href="#" class="sb-subitem">Assigner manager</a>
-                </div>
-            </div>
+            <a href="{{ route('rh.services.index') }}" class="sb-item {{ request()->routeIs('rh.services.*') ? 'active' : '' }}">
+                <span class="sb-icon"><i class="fas fa-sitemap"></i></span>
+                <span class="sb-label">Services</span>
+                <span class="sb-tooltip">Services</span>
+            </a>
 
             {{-- Divisions --}}
-            <div x-data="{ open: {{ request()->routeIs('rh.divisions.*') ? 'true' : 'false' }} }">
-                <button @click="open = !open" class="sb-item w-100 border-0 text-start {{ request()->routeIs('rh.divisions.*') ? 'active' : '' }}" style="background: transparent;">
-                    <span class="sb-icon"><i class="fas fa-building"></i></span>
-                    <span class="sb-label">Divisions</span>
-                    <i class="fas fa-chevron-right sb-chevron" :class="{ 'sb-open': open }"></i>
-                    <span class="sb-tooltip">Divisions</span>
-                </button>
-                <div class="sb-submenu" x-show="open" x-transition:enter="transition ease-out duration-150" x-transition:enter-start="opacity-0" x-transition:enter-end="opacity-100" x-transition:leave="transition ease-in duration-100" x-transition:leave-start="opacity-100" x-transition:leave-end="opacity-0">
-                    <a href="{{ route('rh.divisions.index') }}" class="sb-subitem {{ request()->routeIs('rh.divisions.index') ? 'active' : '' }}">Liste des divisions</a>
-                    <a href="{{ route('rh.divisions.create') }}" class="sb-subitem {{ request()->routeIs('rh.divisions.create') ? 'active' : '' }}">Nouvelle division</a>
-                </div>
-            </div>
+            <a href="{{ route('rh.divisions.index') }}" class="sb-item {{ request()->routeIs('rh.divisions.*') ? 'active' : '' }}">
+                <span class="sb-icon"><i class="fas fa-building"></i></span>
+                <span class="sb-label">Divisions</span>
+                <span class="sb-tooltip">Divisions</span>
+            </a>
 
             <div class="sb-section-title">Rapports</div>
 
             {{-- Rapports --}}
-            <div x-data="{ open: {{ request()->routeIs('rh.rapports.*') ? 'true' : 'false' }} }">
-                <button @click="open = !open" class="sb-item w-100 border-0 text-start {{ request()->routeIs('rh.rapports.*') ? 'active' : '' }}" style="background: transparent;">
-                    <span class="sb-icon"><i class="fas fa-chart-bar"></i></span>
-                    <span class="sb-label">Rapports</span>
-                    <i class="fas fa-chevron-right sb-chevron" :class="{ 'sb-open': open }"></i>
-                    <span class="sb-tooltip">Rapports</span>
-                </button>
-                <div class="sb-submenu" x-show="open" x-transition:enter="transition ease-out duration-150" x-transition:enter-start="opacity-0" x-transition:enter-end="opacity-100" x-transition:leave="transition ease-in duration-100" x-transition:leave-start="opacity-100" x-transition:leave-end="opacity-0">
-                    <a href="{{ route('rh.rapports.mensuel') }}" class="sb-subitem {{ request()->routeIs('rh.rapports.mensuel') ? 'active' : '' }}">Rapport mensuel</a>
-                    <a href="{{ route('rh.rapports.effectifs') }}" class="sb-subitem {{ request()->routeIs('rh.rapports.effectifs') ? 'active' : '' }}">Effectifs</a>
-                    <a href="{{ route('rh.rapports.stats') }}" class="sb-subitem {{ request()->routeIs('rh.rapports.stats') ? 'active' : '' }}">Statistiques</a>
-                    <a href="{{ route('rh.rapports.export') }}" class="sb-subitem {{ request()->routeIs('rh.rapports.export') ? 'active' : '' }}">Export Excel/PDF</a>
-                </div>
-            </div>
+            <a href="{{ route('rh.rapports.index') }}" class="sb-item {{ request()->routeIs('rh.rapports.*') ? 'active' : '' }}">
+                <span class="sb-icon"><i class="fas fa-chart-bar"></i></span>
+                <span class="sb-label">Rapports</span>
+                <span class="sb-tooltip">Rapports</span>
+            </a>
 
         @endhasrole
 
@@ -935,34 +862,18 @@
             </div>
 
             {{-- Contrats (DRH) --}}
-            <div x-data="{ open: {{ request()->routeIs('rh.contrats.*') ? 'true' : 'false' }} }">
-                <button @click="open = !open" class="sb-item w-100 border-0 text-start {{ request()->routeIs('rh.contrats.*') ? 'active' : '' }}" style="background: transparent;">
-                    <span class="sb-icon"><i class="fas fa-file-contract"></i></span>
-                    <span class="sb-label">Contrats</span>
-                    <i class="fas fa-chevron-right sb-chevron" :class="{ 'sb-open': open }"></i>
-                    <span class="sb-tooltip">Contrats</span>
-                </button>
-                <div class="sb-submenu" x-show="open" x-transition:enter="transition ease-out duration-150" x-transition:enter-start="opacity-0" x-transition:enter-end="opacity-100" x-transition:leave="transition ease-in duration-100" x-transition:leave-start="opacity-100" x-transition:leave-end="opacity-0">
-                    <a href="{{ route('rh.contrats.index') }}" class="sb-subitem {{ request()->routeIs('rh.contrats.index') ? 'active' : '' }}">Liste des contrats</a>
-                    <a href="{{ route('rh.contrats.expiring') }}" class="sb-subitem {{ request()->routeIs('rh.contrats.expiring') ? 'active' : '' }}">Contrats expirants</a>
-                </div>
-            </div>
+            <a href="{{ route('rh.contrats.index') }}" class="sb-item {{ request()->routeIs('rh.contrats.*') ? 'active' : '' }}">
+                <span class="sb-icon"><i class="fas fa-file-contract"></i></span>
+                <span class="sb-label">Contrats</span>
+                <span class="sb-tooltip">Contrats</span>
+            </a>
 
             {{-- Mouvements (DRH) --}}
-            <div x-data="{ open: {{ request()->routeIs('rh.mouvements.*') ? 'true' : 'false' }} }">
-                <button @click="open = !open" class="sb-item w-100 border-0 text-start {{ request()->routeIs('rh.mouvements.*') ? 'active' : '' }}" style="background: transparent;">
-                    <span class="sb-icon"><i class="fas fa-people-arrows"></i></span>
-                    <span class="sb-label">Mouvements</span>
-                    <i class="fas fa-chevron-right sb-chevron" :class="{ 'sb-open': open }"></i>
-                    <span class="sb-tooltip">Mouvements</span>
-                </button>
-                <div class="sb-submenu" x-show="open" x-transition:enter="transition ease-out duration-150" x-transition:enter-start="opacity-0" x-transition:enter-end="opacity-100" x-transition:leave="transition ease-in duration-100" x-transition:leave-start="opacity-100" x-transition:leave-end="opacity-0">
-                    <a href="{{ route('rh.mouvements.index') }}" class="sb-subitem {{ request()->routeIs('rh.mouvements.index') ? 'active' : '' }}">Tous les mouvements</a>
-                    <a href="{{ route('rh.mouvements.affectations') }}" class="sb-subitem {{ request()->routeIs('rh.mouvements.affectations') ? 'active' : '' }}">Affectations</a>
-                    <a href="{{ route('rh.mouvements.mutations') }}" class="sb-subitem {{ request()->routeIs('rh.mouvements.mutations') ? 'active' : '' }}">Mutations</a>
-                    <a href="{{ route('rh.mouvements.departs') }}" class="sb-subitem {{ request()->routeIs('rh.mouvements.departs') ? 'active' : '' }}">Départs</a>
-                </div>
-            </div>
+            <a href="{{ route('rh.mouvements.index') }}" class="sb-item {{ request()->routeIs('rh.mouvements.*') ? 'active' : '' }}">
+                <span class="sb-icon"><i class="fas fa-people-arrows"></i></span>
+                <span class="sb-label">Mouvements</span>
+                <span class="sb-tooltip">Mouvements</span>
+            </a>
 
             <div class="sb-section-title">Congés & Absences</div>
 
@@ -990,9 +901,9 @@
             <div x-data="{ open: {{ request()->routeIs('rh.demandes-docs.*') || request()->routeIs('documents-admin.*') ? 'true' : 'false' }} }">
                 <button @click="open = !open" class="sb-item w-100 border-0 text-start {{ request()->routeIs('rh.demandes-docs.*') || request()->routeIs('documents-admin.*') ? 'active' : '' }}" style="background: transparent;">
                     <span class="sb-icon"><i class="fas fa-file-alt"></i></span>
-                    <span class="sb-label">Documents admin.</span>
+                    <span class="sb-label">Administratif</span>
                     <i class="fas fa-chevron-right sb-chevron" :class="{ 'sb-open': open }"></i>
-                    <span class="sb-tooltip">Documents admin.</span>
+                    <span class="sb-tooltip">Administratif</span>
                 </button>
                 <div class="sb-submenu" x-show="open" x-transition:enter="transition ease-out duration-150" x-transition:enter-start="opacity-0" x-transition:enter-end="opacity-100" x-transition:leave="transition ease-in duration-100" x-transition:leave-start="opacity-100" x-transition:leave-end="opacity-0">
                     <a href="{{ route('rh.demandes-docs.pending') }}" class="sb-subitem">Demandes en attente</a>
@@ -1022,29 +933,35 @@
                 </div>
             </div>
 
-            <div class="sb-section-title">Documents</div>
+            <div class="sb-section-title">GED & Archives</div>
 
-            <a href="{{ route('rh.documents.index') }}" class="sb-item {{ request()->routeIs('rh.documents.*') ? 'active' : '' }}">
-                <span class="sb-icon"><i class="fas fa-archive"></i></span>
-                <span class="sb-label">GED (Archives)</span>
-                <span class="sb-tooltip">GED</span>
-            </a>
+            <div x-data="{ open: {{ request()->routeIs('rh.ged.*') || request()->routeIs('rh.documents.*') ? 'true' : 'false' }} }">
+                <button @click="open = !open" class="sb-item w-100 border-0 text-start {{ request()->routeIs('rh.ged.*') || request()->routeIs('rh.documents.*') ? 'active' : '' }}" style="background: transparent;">
+                    <span class="sb-icon"><i class="fas fa-folder-open"></i></span>
+                    <span class="sb-label">GED</span>
+                    <i class="fas fa-chevron-right sb-chevron" :class="{ 'sb-open': open }"></i>
+                    <span class="sb-tooltip">GED Archives</span>
+                </button>
+                <div class="sb-submenu" x-show="open" x-transition:enter="transition ease-out duration-150" x-transition:enter-start="opacity-0" x-transition:enter-end="opacity-100" x-transition:leave="transition ease-in duration-100" x-transition:leave-start="opacity-100" x-transition:leave-end="opacity-0">
+                    <a href="{{ route('rh.ged.index') }}" class="sb-subitem {{ request()->routeIs('rh.ged.index') ? 'active' : '' }}">
+                        <i class="ri-dashboard-line me-1"></i> Tableau de bord
+                    </a>
+                    <a href="{{ route('rh.ged.dossiers') }}" class="sb-subitem {{ request()->routeIs('rh.ged.dossiers') || request()->routeIs('rh.ged.dossier.*') ? 'active' : '' }}">
+                        <i class="ri-folder-3-line me-1"></i> Dossiers agents
+                    </a>
+                    <a href="{{ route('rh.ged.etageres') }}" class="sb-subitem {{ request()->routeIs('rh.ged.etageres') ? 'active' : '' }}">
+                        <i class="ri-archive-drawer-line me-1"></i> Étagères
+                    </a>
+                </div>
+            </div>
 
             <div class="sb-section-title">Organisation</div>
 
-            <div x-data="{ open: {{ request()->routeIs('rh.services.*') ? 'true' : 'false' }} }">
-                <button @click="open = !open" class="sb-item w-100 border-0 text-start {{ request()->routeIs('rh.services.*') ? 'active' : '' }}" style="background: transparent;">
-                    <span class="sb-icon"><i class="fas fa-sitemap"></i></span>
-                    <span class="sb-label">Services</span>
-                    <i class="fas fa-chevron-right sb-chevron" :class="{ 'sb-open': open }"></i>
-                    <span class="sb-tooltip">Services</span>
-                </button>
-                <div class="sb-submenu" x-show="open" x-transition:enter="transition ease-out duration-150" x-transition:enter-start="opacity-0" x-transition:enter-end="opacity-100" x-transition:leave="transition ease-in duration-100" x-transition:leave-start="opacity-100" x-transition:leave-end="opacity-0">
-                    <a href="{{ route('rh.services.index') }}" class="sb-subitem">Liste des services</a>
-                    <a href="{{ route('rh.services.create') }}" class="sb-subitem">Nouveau service</a>
-                    <a href="#" class="sb-subitem">Assigner manager</a>
-                </div>
-            </div>
+            <a href="{{ route('rh.services.index') }}" class="sb-item {{ request()->routeIs('rh.services.*') ? 'active' : '' }}">
+                <span class="sb-icon"><i class="fas fa-sitemap"></i></span>
+                <span class="sb-label">Services</span>
+                <span class="sb-tooltip">Services</span>
+            </a>
 
             <a href="{{ route('rh.divisions.index') }}" class="sb-item {{ request()->routeIs('rh.divisions.*') ? 'active' : '' }}">
                 <span class="sb-icon"><i class="fas fa-building"></i></span>
@@ -1079,7 +996,7 @@
                 </button>
                 <div class="sb-submenu" x-show="open" x-transition:enter="transition ease-out duration-150" x-transition:enter-start="opacity-0" x-transition:enter-end="opacity-100" x-transition:leave="transition ease-in duration-100" x-transition:leave-start="opacity-100" x-transition:leave-end="opacity-0">
                     <a href="{{ route('drh.rapports.export') }}" class="sb-subitem {{ request()->routeIs('drh.rapports.export') ? 'active' : '' }}">Export consolidé</a>
-                    <a href="{{ route('drh.decisions.index') }}" class="sb-subitem {{ request()->routeIs('drh.decisions.*') ? 'active' : '' }}">Historique décisions</a>
+                    <a href="{{ route('drh.validations.decisions') }}" class="sb-subitem {{ request()->routeIs('drh.validations.decisions') ? 'active' : '' }}">Historique décisions</a>
                 </div>
             </div>
 
@@ -1130,18 +1047,11 @@
             </a>
 
             {{-- Absences Équipe --}}
-            <div x-data="{ open: {{ request()->routeIs('manager.absences.*') ? 'true' : 'false' }} }">
-                <button @click="open = !open" class="sb-item w-100 border-0 text-start {{ request()->routeIs('manager.absences.*') ? 'active' : '' }}" style="background: transparent;">
-                    <span class="sb-icon"><i class="fas fa-user-minus"></i></span>
-                    <span class="sb-label">Absences équipe</span>
-                    <i class="fas fa-chevron-right sb-chevron" :class="{ 'sb-open': open }"></i>
-                    <span class="sb-tooltip">Absences</span>
-                </button>
-                <div class="sb-submenu" x-show="open" x-transition:enter="transition ease-out duration-150" x-transition:enter-start="opacity-0" x-transition:enter-end="opacity-100" x-transition:leave="transition ease-in duration-100" x-transition:leave-start="opacity-100" x-transition:leave-end="opacity-0">
-                    <a href="{{ route('manager.absences.create') }}" class="sb-subitem {{ request()->routeIs('manager.absences.create') ? 'active' : '' }}">Enregistrer absence</a>
-                    <a href="{{ route('manager.absences.index') }}" class="sb-subitem {{ request()->routeIs('manager.absences.index') ? 'active' : '' }}">Historique</a>
-                </div>
-            </div>
+            <a href="{{ route('manager.absences.index') }}" class="sb-item {{ request()->routeIs('manager.absences.*') ? 'active' : '' }}">
+                <span class="sb-icon"><i class="fas fa-user-minus"></i></span>
+                <span class="sb-label">Absences équipe</span>
+                <span class="sb-tooltip">Absences équipe</span>
+            </a>
 
             <div class="sb-section-title">Planification</div>
 
@@ -1154,9 +1064,7 @@
                     <span class="sb-tooltip">Plannings</span>
                 </button>
                 <div class="sb-submenu" x-show="open" x-transition:enter="transition ease-out duration-150" x-transition:enter-start="opacity-0" x-transition:enter-end="opacity-100" x-transition:leave="transition ease-in duration-100" x-transition:leave-start="opacity-100" x-transition:leave-end="opacity-0">
-                    <a href="{{ route('manager.planning.create') }}" class="sb-subitem {{ request()->routeIs('manager.planning.create') ? 'active' : '' }}">Créer planning mensuel</a>
-                    <a href="{{ route('manager.planning.index') }}" class="sb-subitem {{ request()->routeIs('manager.planning.index') ? 'active' : '' }}">Planning en cours</a>
-                    <a href="#" class="sb-subitem">Transmettre à RH</a>
+                    <a href="{{ route('manager.planning.index') }}" class="sb-subitem {{ request()->routeIs('manager.planning.*') ? 'active' : '' }}">Mes plannings</a>
                 </div>
             </div>
 
@@ -1177,8 +1085,8 @@
 
             <div class="sb-section-title">Mon Dossier</div>
 
-            <div x-data="{ open: {{ request()->routeIs('agent.profil') || request()->routeIs('agent.famille') ? 'true' : 'false' }} }">
-                <button @click="open = !open" class="sb-item w-100 border-0 text-start {{ request()->routeIs('agent.profil') || request()->routeIs('agent.famille') ? 'active' : '' }}" style="background: transparent;">
+            <div x-data="{ open: {{ request()->routeIs('agent.profil') || request()->routeIs('agent.famille') || request()->routeIs('agent.mon-contrat') ? 'true' : 'false' }} }">
+                <button @click="open = !open" class="sb-item w-100 border-0 text-start {{ request()->routeIs('agent.profil') || request()->routeIs('agent.famille') || request()->routeIs('agent.mon-contrat') ? 'active' : '' }}" style="background: transparent;">
                     <span class="sb-icon"><i class="fas fa-id-card"></i></span>
                     <span class="sb-label">Mon dossier</span>
                     <i class="fas fa-chevron-right sb-chevron" :class="{ 'sb-open': open }"></i>
@@ -1187,55 +1095,39 @@
                 <div class="sb-submenu" x-show="open" x-transition:enter="transition ease-out duration-150" x-transition:enter-start="opacity-0" x-transition:enter-end="opacity-100" x-transition:leave="transition ease-in duration-100" x-transition:leave-start="opacity-100" x-transition:leave-end="opacity-0">
                     <a href="{{ route('agent.profil') }}" class="sb-subitem {{ request()->routeIs('agent.profil') ? 'active' : '' }}">Informations personnelles</a>
                     <a href="{{ route('agent.famille') }}" class="sb-subitem {{ request()->routeIs('agent.famille') ? 'active' : '' }}">Ma famille</a>
+                    <a href="{{ route('agent.mon-contrat') }}" class="sb-subitem {{ request()->routeIs('agent.mon-contrat') ? 'active' : '' }}">Mon contrat</a>
                 </div>
             </div>
 
             <div class="sb-section-title">Mes Demandes</div>
 
             {{-- Documents Administratifs --}}
-            <div x-data="{ open: {{ request()->routeIs('agent.docs.*') ? 'true' : 'false' }} }">
-                <button @click="open = !open" class="sb-item w-100 border-0 text-start {{ request()->routeIs('agent.docs.*') ? 'active' : '' }}" style="background: transparent;">
-                    <span class="sb-icon"><i class="fas fa-file-alt"></i></span>
-                    <span class="sb-label">Documents admin.</span>
-                    <i class="fas fa-chevron-right sb-chevron" :class="{ 'sb-open': open }"></i>
-                    <span class="sb-tooltip">Documents admin.</span>
-                </button>
-                <div class="sb-submenu" x-show="open" x-transition:enter="transition ease-out duration-150" x-transition:enter-start="opacity-0" x-transition:enter-end="opacity-100" x-transition:leave="transition ease-in duration-100" x-transition:leave-start="opacity-100" x-transition:leave-end="opacity-0">
-                    <a href="{{ route('agent.docs.create') }}" class="sb-subitem {{ request()->routeIs('agent.docs.create') ? 'active' : '' }}">Nouvelle demande</a>
-                    <a href="{{ route('agent.docs.index') }}" class="sb-subitem {{ request()->routeIs('agent.docs.index') ? 'active' : '' }}">Mes demandes</a>
-                </div>
-            </div>
+            <a href="{{ route('agent.docs.index') }}" class="sb-item {{ request()->routeIs('agent.docs.*') ? 'active' : '' }}">
+                <span class="sb-icon"><i class="fas fa-file-alt"></i></span>
+                <span class="sb-label">Administratif</span>
+                <span class="sb-tooltip">Administratif</span>
+            </a>
 
             {{-- Prises en charge --}}
-            <div x-data="{ open: {{ request()->routeIs('agent.pec.*') ? 'true' : 'false' }} }">
-                <button @click="open = !open" class="sb-item w-100 border-0 text-start {{ request()->routeIs('agent.pec.*') ? 'active' : '' }}" style="background: transparent;">
-                    <span class="sb-icon"><i class="fas fa-heartbeat"></i></span>
-                    <span class="sb-label">Prises en charge</span>
-                    <i class="fas fa-chevron-right sb-chevron" :class="{ 'sb-open': open }"></i>
-                    <span class="sb-tooltip">Prises en charge</span>
-                </button>
-                <div class="sb-submenu" x-show="open" x-transition:enter="transition ease-out duration-150" x-transition:enter-start="opacity-0" x-transition:enter-end="opacity-100" x-transition:leave="transition ease-in duration-100" x-transition:leave-start="opacity-100" x-transition:leave-end="opacity-0">
-                    <a href="{{ route('agent.pec.create', ['beneficiaire' => 'agent']) }}" class="sb-subitem">Nouvelle demande</a>
-                    <a href="{{ route('agent.pec.create', ['beneficiaire' => 'conjoint']) }}" class="sb-subitem">Pour mon conjoint</a>
-                    <a href="{{ route('agent.pec.create', ['beneficiaire' => 'enfant']) }}" class="sb-subitem">Pour un enfant</a>
-                    <a href="{{ route('agent.pec.index') }}" class="sb-subitem {{ request()->routeIs('agent.pec.index') ? 'active' : '' }}">Mes demandes</a>
-                </div>
-            </div>
+            <a href="{{ route('agent.pec.index') }}" class="sb-item {{ request()->routeIs('agent.pec.*') ? 'active' : '' }}">
+                <span class="sb-icon"><i class="fas fa-heartbeat"></i></span>
+                <span class="sb-label">Prises en charge</span>
+                <span class="sb-tooltip">Prises en charge</span>
+            </a>
 
-            <div class="sb-section-title">Congés</div>
+            <div class="sb-section-title">Congés & Absences</div>
 
-            <div x-data="{ open: {{ request()->routeIs('agent.conges.*') ? 'true' : 'false' }} }">
-                <button @click="open = !open" class="sb-item w-100 border-0 text-start {{ request()->routeIs('agent.conges.*') ? 'active' : '' }}" style="background: transparent;">
-                    <span class="sb-icon"><i class="fas fa-umbrella-beach"></i></span>
-                    <span class="sb-label">Mes congés</span>
-                    <i class="fas fa-chevron-right sb-chevron" :class="{ 'sb-open': open }"></i>
-                    <span class="sb-tooltip">Mes congés</span>
-                </button>
-                <div class="sb-submenu" x-show="open" x-transition:enter="transition ease-out duration-150" x-transition:enter-start="opacity-0" x-transition:enter-end="opacity-100" x-transition:leave="transition ease-in duration-100" x-transition:leave-start="opacity-100" x-transition:leave-end="opacity-0">
-                    <a href="{{ route('agent.conges.create') }}" class="sb-subitem {{ request()->routeIs('agent.conges.create') ? 'active' : '' }}">Nouvelle demande</a>
-                    <a href="{{ route('agent.conges.index') }}" class="sb-subitem {{ request()->routeIs('agent.conges.index') ? 'active' : '' }}">Solde et historique</a>
-                </div>
-            </div>
+            <a href="{{ route('agent.conges.index') }}" class="sb-item {{ request()->routeIs('agent.conges.*') ? 'active' : '' }}">
+                <span class="sb-icon"><i class="fas fa-umbrella-beach"></i></span>
+                <span class="sb-label">Mes congés</span>
+                <span class="sb-tooltip">Mes congés</span>
+            </a>
+
+            <a href="{{ route('agent.absences.index') }}" class="sb-item {{ request()->routeIs('agent.absences.*') ? 'active' : '' }}">
+                <span class="sb-icon"><i class="fas fa-user-clock"></i></span>
+                <span class="sb-label">Mes absences</span>
+                <span class="sb-tooltip">Mes absences</span>
+            </a>
 
             <div class="sb-section-title">Planning & Documents</div>
 
@@ -1245,13 +1137,77 @@
                 <span class="sb-tooltip">Mon planning</span>
             </a>
 
-            <a href="{{ route('agent.documents') }}" class="sb-item {{ request()->routeIs('agent.documents') ? 'active' : '' }}">
-                <span class="sb-icon"><i class="fas fa-folder-open"></i></span>
+            <a href="{{ route('agent.documents.index') }}" class="sb-item {{ request()->routeIs('agent.documents.*') ? 'active' : '' }}">
+                <span class="sb-icon"><i class="fas fa-folder-open"> </i></span>
                 <span class="sb-label">Mes documents</span>
                 <span class="sb-tooltip">Mes documents</span>
             </a>
 
         @endhasrole
+
+        {{-- ══════════════════════════════════════
+             MON ESPACE PERSONNEL
+             (Manager, AgentRH, DRH — aussi agents de l'hôpital)
+             ══════════════════════════════════════ --}}
+        @hasanyrole('Manager|AgentRH|DRH')
+
+            <div class="sb-divider" style="margin-top:12px;"></div>
+            <div class="sb-section-title" style="display:flex;align-items:center;gap:6px;">
+                <i class="fas fa-user-circle" style="font-size:10px;color:#0A4D8C;"></i>
+                Mon Espace Personnel
+            </div>
+
+            {{-- Tableau de bord personnel --}}
+            <a href="{{ route('agent.dashboard') }}" class="sb-item {{ request()->routeIs('agent.dashboard') ? 'active' : '' }}">
+                <span class="sb-icon"><i class="fas fa-home"></i></span>
+                <span class="sb-label">Mon tableau de bord</span>
+                <span class="sb-tooltip">Mon tableau de bord</span>
+            </a>
+
+            {{-- Mon Dossier --}}
+            <div x-data="{ open: {{ request()->routeIs('agent.profil') || request()->routeIs('agent.famille') || request()->routeIs('agent.mon-contrat') ? 'true' : 'false' }} }">
+                <button @click="open = !open" class="sb-item w-100 border-0 text-start {{ request()->routeIs('agent.profil') || request()->routeIs('agent.famille') || request()->routeIs('agent.mon-contrat') ? 'active' : '' }}" style="background: transparent;">
+                    <span class="sb-icon"><i class="fas fa-id-card"></i></span>
+                    <span class="sb-label">Mon dossier</span>
+                    <i class="fas fa-chevron-right sb-chevron" :class="{ 'sb-open': open }"></i>
+                    <span class="sb-tooltip">Mon dossier</span>
+                </button>
+                <div class="sb-submenu" x-show="open" x-transition:enter="transition ease-out duration-150" x-transition:enter-start="opacity-0" x-transition:enter-end="opacity-100" x-transition:leave="transition ease-in duration-100" x-transition:leave-start="opacity-100" x-transition:leave-end="opacity-0">
+                    <a href="{{ route('agent.profil') }}" class="sb-subitem {{ request()->routeIs('agent.profil') ? 'active' : '' }}">Informations personnelles</a>
+                    <a href="{{ route('agent.famille') }}" class="sb-subitem {{ request()->routeIs('agent.famille') ? 'active' : '' }}">Ma famille</a>
+                    <a href="{{ route('agent.mon-contrat') }}" class="sb-subitem {{ request()->routeIs('agent.mon-contrat') ? 'active' : '' }}">Mon contrat</a>
+                </div>
+            </div>
+
+            {{-- Mes Congés --}}
+            <a href="{{ route('agent.conges.index') }}" class="sb-item {{ request()->routeIs('agent.conges.*') ? 'active' : '' }}">
+                <span class="sb-icon"><i class="fas fa-umbrella-beach"></i></span>
+                <span class="sb-label">Mes congés</span>
+                <span class="sb-tooltip">Mes congés</span>
+            </a>
+
+            {{-- Mes Absences --}}
+            <a href="{{ route('agent.absences.index') }}" class="sb-item {{ request()->routeIs('agent.absences.*') ? 'active' : '' }}">
+                <span class="sb-icon"><i class="fas fa-user-clock"></i></span>
+                <span class="sb-label">Mes absences</span>
+                <span class="sb-tooltip">Mes absences</span>
+            </a>
+
+            {{-- Documents administratifs --}}
+            <a href="{{ route('agent.docs.index') }}" class="sb-item {{ request()->routeIs('agent.docs.*') ? 'active' : '' }}">
+                <span class="sb-icon"><i class="fas fa-file-alt"></i></span>
+                <span class="sb-label">Administratif.</span>
+                <span class="sb-tooltip">Administratif</span>
+            </a>
+
+            {{-- Prises en charge --}}
+            <a href="{{ route('agent.pec.index') }}" class="sb-item {{ request()->routeIs('agent.pec.*') ? 'active' : '' }}">
+                <span class="sb-icon"><i class="fas fa-heartbeat"></i></span>
+                <span class="sb-label">Prises en charge</span>
+                <span class="sb-tooltip">Prises en charge</span>
+            </a>
+
+        @endhasanyrole
 
         {{-- ══════════════════════════════════════
              SECTION COMMUNE (tous les rôles)
@@ -1263,7 +1219,7 @@
             catch (\Exception $e) { $unreadNotifications = 0; }
         @endphp
 
-        <a href="#" class="sb-item {{ request()->routeIs('notifications.*') ? 'active' : '' }}">
+        <a href="{{ route('notifications.index') }}" class="sb-item {{ request()->routeIs('notifications.*') ? 'active' : '' }}">
             <span class="sb-icon"><i class="fas fa-bell"></i></span>
             <span class="sb-label">Notifications</span>
             @if($unreadNotifications > 0)
@@ -1272,28 +1228,10 @@
             <span class="sb-tooltip">Notifications</span>
         </a>
 
-        <a href="{{ route('profile.edit') }}" class="sb-item {{ request()->routeIs('profile.*') ? 'active' : '' }}">
-            <span class="sb-icon"><i class="fas fa-user-cog"></i></span>
-            <span class="sb-label">Mon profil</span>
-            <span class="sb-tooltip">Mon profil</span>
-        </a>
-
-        <a href="{{ route('preferences.index') }}" class="sb-item {{ request()->routeIs('preferences.*') ? 'active' : '' }}">
-            <span class="sb-icon"><i class="fas fa-sliders-h"></i></span>
-            <span class="sb-label">Préférences</span>
-            <span class="sb-tooltip">Préférences</span>
-        </a>
-
         <a href="{{ route('aide.index') }}" class="sb-item {{ request()->routeIs('aide.*') ? 'active' : '' }}">
             <span class="sb-icon"><i class="fas fa-life-ring"></i></span>
             <span class="sb-label">Aide</span>
             <span class="sb-tooltip">Aide</span>
-        </a>
-
-        <a href="{{ route('support.index') }}" class="sb-item {{ request()->routeIs('support.*') ? 'active' : '' }}">
-            <span class="sb-icon"><i class="fas fa-headset"></i></span>
-            <span class="sb-label">Support</span>
-            <span class="sb-tooltip">Support</span>
         </a>
 
         {{-- ── Badge TRIADE CID ──────────────────────────────────── --}}

@@ -3,25 +3,57 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Models\User;
+use App\Models\Agent;
 use App\Models\LogAudit;
-use Illuminate\Http\Request;
+use App\Models\User;
+use Spatie\Permission\Models\Role;
 
 class AdminDashboardController extends Controller
 {
     public function index()
     {
-        // Statistiques pour le dashboard admin
-        $stats = [
-            'total_users' => User::count(),
-            'active_users' => User::compteActif()->count(),
-            'locked_users' => User::verouille()->count(),
-            'suspended_users' => User::suspendu()->count(),
-            'recent_logs' => LogAudit::with('utilisateur')->orderBy('date_evenement', 'desc')->take(10)->get(),
-            'roles_count' => \Spatie\Permission\Models\Role::count(),
-            'permissions_count' => \Spatie\Permission\Models\Permission::count(),
-        ];
+        // ── KPIs ──────────────────────────────────────────────────────
+        $totalUsers         = User::count();
+        $activeUsers        = User::compteActif()->count();
+        $lockedUsers        = User::verouille()->count();
+        $suspendedUsers     = User::suspendu()->count();
+        $totalAgents        = Agent::actif()->count();
+        $logsAujourdhui     = LogAudit::whereDate('date_evenement', today())->count();
+        $tentativesEchouees = User::where('tentatives_connexion', '>', 0)->count();
+        $rolesCount         = Role::count();
 
-        return view('admin.dashboard', compact('stats'));
+        // ── Graphique : Distribution des rôles ────────────────────────
+        $rolesRaw = Role::withCount('users')->get();
+        $rolesLabels = $rolesRaw->pluck('name')->toArray();
+        $rolesData   = $rolesRaw->pluck('users_count')->toArray();
+
+        // ── Graphique : Activité système 7 derniers jours ─────────────
+        $activiteLabels = [];
+        $activiteData   = [];
+        for ($i = 6; $i >= 0; $i--) {
+            $day              = now()->subDays($i);
+            $activiteLabels[] = $day->isoFormat('ddd D');
+            $activiteData[]   = LogAudit::whereDate('date_evenement', $day->toDateString())->count();
+        }
+
+        // ── Logs récents ──────────────────────────────────────────────
+        $recentLogs = LogAudit::with('utilisateur')
+            ->orderByDesc('date_evenement')
+            ->take(6)
+            ->get();
+
+        // ── Utilisateurs actifs récemment ─────────────────────────────
+        $recentUsers = User::whereNotNull('derniere_connexion')
+            ->orderByDesc('derniere_connexion')
+            ->with('roles')
+            ->take(6)
+            ->get();
+
+        return view('admin.dashboard', compact(
+            'totalUsers', 'activeUsers', 'lockedUsers', 'suspendedUsers',
+            'totalAgents', 'logsAujourdhui', 'tentativesEchouees', 'rolesCount',
+            'rolesLabels', 'rolesData', 'activiteLabels', 'activiteData',
+            'recentLogs', 'recentUsers'
+        ));
     }
 }

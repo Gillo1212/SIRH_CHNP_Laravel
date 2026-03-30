@@ -497,15 +497,22 @@ x-init="
         </div>
 
         {{-- ── Matricule ─────────────────────────────────── --}}
-        <div class="modal-matricule-badge">
-            <i class="fas fa-id-badge" style="color:#059669;font-size:18px;"></i>
-            <div>
-                <div style="font-size:11px;font-weight:700;color:#059669;text-transform:uppercase;letter-spacing:.05em;">
-                    Matricule attribué automatiquement
-                </div>
-                <div style="font-size:16px;font-weight:800;color:#065F46;font-family:monospace;">
-                    {{ $prochainMatricule }}
-                </div>
+        <div style="margin: 0 24px 16px;">
+            <label style="font-size:12px;font-weight:600;color:#374151;display:block;margin-bottom:4px;">
+                Matricule <span style="color:#EF4444;">*</span>
+            </label>
+            <div style="display:flex;align-items:center;gap:8px;">
+                <i class="fas fa-id-badge" style="color:#059669;font-size:16px;flex-shrink:0;"></i>
+                <input type="text" name="matricule"
+                       class="form-control @error('matricule') is-invalid @enderror"
+                       value="{{ old('matricule') }}" placeholder="CHNP-00001"
+                       style="text-transform:uppercase;font-weight:600;letter-spacing:.05em;font-size:13px;" required>
+            </div>
+            @error('matricule')
+                <div style="font-size:11px;color:#EF4444;margin-top:3px;">{{ $message }}</div>
+            @enderror
+            <div style="font-size:11px;color:#6B7280;margin-top:3px;">
+                <i class="fas fa-keyboard me-1"></i>Saisir le matricule manuellement — Format : CHNP-XXXXX
             </div>
         </div>
 
@@ -696,7 +703,7 @@ x-init="
                             </div>
                             <div class="col-md-4">
                                 <label class="form-label-sm">Fonction</label>
-                                <input type="text" name="fonction" class="form-input"
+                                <input type="text" name="fontion" class="form-input"
                                        value="{{ old('fonction') }}" placeholder="Infirmier chef">
                             </div>
                             <div class="col-md-4">

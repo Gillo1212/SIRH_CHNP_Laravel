@@ -44,14 +44,11 @@
                     {{-- Boutons d'action selon statut --}}
                     @if($statut === 'Validé')
                         <div class="d-flex gap-2">
-                            <form action="{{ route('rh.conges.approuver', $demande->id_demande) }}" method="POST">
-                                @csrf
-                                <button type="submit" class="btn btn-sm d-flex align-items-center gap-2"
-                                    style="background:#10B981;color:#fff;border:none;border-radius:8px;padding:8px 16px;"
-                                    onclick="return confirm('Approuver et déduire du solde ?')">
-                                    <i class="fas fa-check-double"></i> Approuver
-                                </button>
-                            </form>
+                            <button type="button" class="btn btn-sm d-flex align-items-center gap-2"
+                                style="background:#10B981;color:#fff;border:none;border-radius:8px;padding:8px 16px;"
+                                data-bs-toggle="modal" data-bs-target="#modalApprouverShow">
+                                <i class="fas fa-check-double"></i> Approuver
+                            </button>
                             <button type="button" class="btn btn-sm d-flex align-items-center gap-2"
                                 style="background:#FEE2E2;color:#991B1B;border:none;border-radius:8px;padding:8px 14px;"
                                 data-bs-toggle="modal" data-bs-target="#rejetModal">
@@ -79,16 +76,12 @@
                 </div>
                 <div class="card-body px-4 pb-4" style="background:var(--theme-panel-bg);">
                     <div class="d-flex align-items-center gap-3 mb-3">
-                        @if($agent->photo)
-                            <img src="{{ asset('storage/'.$agent->photo) }}" style="width:56px;height:56px;border-radius:50%;object-fit:cover;">
-                        @else
                             <div class="d-flex align-items-center justify-content-center fw-bold" style="width:56px;height:56px;border-radius:50%;background:#EFF6FF;color:#0A4D8C;font-size:18px;">
                                 {{ strtoupper(substr($agent->prenom ?? 'A', 0, 1) . substr($agent->nom ?? '', 0, 1)) }}
                             </div>
-                        @endif
                         <div>
                             <div class="fw-bold" style="color:var(--theme-text);">{{ $agent->nom_complet }}</div>
-                            <div class="text-muted small">{{ $agent->matricule }} — {{ $agent->fonction ?? '—' }}</div>
+                            <div class="text-muted small">{{ $agent->matricule }} — {{ str_replace('_', ' ', $agent->famille_d_emploi ?? '—') }}</div>
                             <div class="text-muted small">{{ $agent->service->nom_service ?? '—' }}</div>
                         </div>
                         <div class="ms-auto">
@@ -243,29 +236,59 @@
     </div>
 </div>
 
+{{-- Modal Approbation --}}
+<div class="modal fade" id="modalApprouverShow" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered modal-sm">
+        <div class="modal-content" style="border-radius:14px;border:1px solid var(--theme-border);background:var(--theme-panel-bg);">
+            <form action="{{ route('rh.conges.approuver', $demande->id_demande) }}" method="POST">
+                @csrf
+                <div class="modal-header border-0 px-4 pt-4 pb-0">
+                    <h6 class="modal-title fw-bold" style="color:var(--theme-text);">
+                        <i class="fas fa-check-double me-2" style="color:#10B981;"></i>Approuver le congé
+                    </h6>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body px-4 py-3">
+                    <p style="font-size:14px;color:var(--theme-text);margin:0;">
+                        Approuver le congé de <strong>{{ $agent->nom_complet }}</strong>
+                        ({{ $conge->nbres_jours }} jour(s)) ?
+                    </p>
+                    <p class="text-muted small mt-2 mb-0">Le solde sera automatiquement déduit.</p>
+                </div>
+                <div class="modal-footer border-0 px-4 pb-4 pt-2">
+                    <button type="button" class="btn btn-sm" style="background:var(--theme-bg-secondary);border:1px solid var(--theme-border);border-radius:8px;color:var(--theme-text);" data-bs-dismiss="modal">Annuler</button>
+                    <button type="submit" class="btn btn-sm d-flex align-items-center gap-2" style="background:#10B981;color:#fff;border:none;border-radius:8px;padding:8px 16px;">
+                        <i class="fas fa-check-double"></i> Confirmer
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
 {{-- Modal Rejet --}}
 <div class="modal fade" id="rejetModal" tabindex="-1">
     <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content" style="border-radius:14px;">
-            <div class="modal-header border-0">
-                <h6 class="modal-title fw-bold">
+        <div class="modal-content" style="border-radius:14px;border:1px solid var(--theme-border);background:var(--theme-panel-bg);">
+            <div class="modal-header border-0 px-4 pt-4 pb-0">
+                <h6 class="modal-title fw-bold" style="color:var(--theme-text);">
                     <i class="fas fa-times-circle me-2 text-danger"></i>Rejeter la demande
                 </h6>
                 <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
             </div>
             <form action="{{ route('rh.conges.rejeter', $demande->id_demande) }}" method="POST">
                 @csrf
-                <div class="modal-body px-4">
+                <div class="modal-body px-4 py-3">
                     <div class="mb-3">
-                        <label class="form-label fw-600 small">Motif du rejet <span class="text-danger">*</span></label>
-                        <textarea name="motif_refus" rows="3" class="form-control" style="border-radius:8px;font-size:13px;"
+                        <label class="form-label fw-600 small" style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--theme-text-muted);">Motif du rejet <span class="text-danger">*</span></label>
+                        <textarea name="motif_refus" rows="3" class="form-control" style="border-radius:8px;font-size:13px;border-color:var(--theme-border);background:var(--theme-panel-bg);color:var(--theme-text);"
                             placeholder="Expliquez le motif (minimum 10 caractères)…" required minlength="10"></textarea>
                     </div>
                 </div>
-                <div class="modal-footer border-0 pt-0">
-                    <button type="button" class="btn btn-sm btn-secondary" data-bs-dismiss="modal">Annuler</button>
-                    <button type="submit" class="btn btn-sm btn-danger">
-                        <i class="fas fa-times me-1"></i>Rejeter
+                <div class="modal-footer border-0 px-4 pb-4 pt-2">
+                    <button type="button" class="btn btn-sm" style="background:var(--theme-bg-secondary);border:1px solid var(--theme-border);border-radius:8px;color:var(--theme-text);" data-bs-dismiss="modal">Annuler</button>
+                    <button type="submit" class="btn btn-sm btn-danger d-flex align-items-center gap-2" style="border-radius:8px;">
+                        <i class="fas fa-times"></i> Rejeter
                     </button>
                 </div>
             </form>
