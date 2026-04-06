@@ -1,5 +1,5 @@
 @extends('layouts.master')
-@section('title', 'Indicateur Effectifs — DRH')
+@section('title', 'Indicateur Effectifs - DRH')
 @section('page-title', 'Indicateur : Effectifs')
 
 @section('breadcrumb')
@@ -31,9 +31,9 @@
     <div class="d-flex align-items-center justify-content-between mb-4 flex-wrap gap-3">
         <div>
             <h4 class="mb-1 fw-bold" style="color:var(--theme-text);">
-                <i class="fas fa-users me-2" style="color:#0A4D8C;"></i>Indicateur — Effectifs
+                <i class="fas fa-users me-2" style="color:#0A4D8C;"></i>Indicateur - Effectifs
             </h4>
-            <p class="mb-0 text-muted" style="font-size:13.5px;">Vue détaillée des effectifs du CHNP — {{ now()->isoFormat('MMMM YYYY') }}</p>
+            <p class="mb-0 text-muted" style="font-size:13.5px;">Vue détaillée des effectifs du CHNP - {{ now()->isoFormat('MMMM YYYY') }}</p>
         </div>
         <div class="d-flex gap-2">
             <a href="{{ route('drh.dashboard') }}" class="btn btn-outline-secondary btn-sm">
@@ -119,7 +119,7 @@
                     @foreach($parService as $svc)
                     <tr>
                         <td class="py-2 px-3 border-0 fw-600">{{ $svc->nom_service }}</td>
-                        <td class="py-2 px-3 border-0 text-muted">{{ $svc->divisions_count ?? '—' }}</td>
+                        <td class="py-2 px-3 border-0 text-muted">{{ $svc->divisions_count ?? '-' }}</td>
                         <td class="py-2 px-3 border-0 text-center">
                             <span style="font-weight:700;color:#0A4D8C;">{{ $svc->actifs_count }}</span>
                         </td>

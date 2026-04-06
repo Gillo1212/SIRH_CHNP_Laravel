@@ -27,7 +27,7 @@ class ServiceController extends Controller
         $services = Service::with([
             'manager.agent',
             'major.agent',
-            'agents' => fn($q) => $q->orderBy('nom')->select('id_agent', 'id_service', 'nom', 'prenom', 'matricule', 'fontion', 'statut_agent'),
+            'agents' => fn($q) => $q->orderBy('nom')->select('id_agent', 'id_service', 'nom', 'prenom', 'matricule', 'fonction', 'statut_agent'),
         ])
             ->withCount(['agents', 'divisions'])
             ->orderBy('nom_service')
@@ -43,7 +43,7 @@ class ServiceController extends Controller
         $managers  = User::role('Manager')->with('agent')->get();
         $majors    = User::role('Major')->with('agent')->get();
         $allAgents = Agent::orderBy('nom')
-            ->select('id_agent', 'id_service', 'nom', 'prenom', 'matricule', 'fontion')
+            ->select('id_agent', 'id_service', 'nom', 'prenom', 'matricule', 'fonction')
             ->get();
 
         return view('rh.services.index', compact('services', 'totaux', 'managers', 'majors', 'allAgents'));

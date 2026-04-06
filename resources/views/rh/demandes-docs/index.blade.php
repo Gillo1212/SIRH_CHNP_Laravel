@@ -90,7 +90,7 @@
                         <tr style="border-bottom:1px solid #F3F4F6;">
                             <td class="py-3 px-4 border-0 text-muted">#{{ $dem->id }}</td>
                             <td class="py-3 px-4 border-0">
-                                <div style="font-weight:600;color:var(--theme-text);">{{ $dem->agent?->nom_complet ?? '—' }}</div>
+                                <div style="font-weight:600;color:var(--theme-text);">{{ $dem->agent?->nom_complet ?? '-' }}</div>
                                 <div style="font-size:11px;color:#9CA3AF;">{{ $dem->agent?->matricule }}</div>
                             </td>
                             <td class="py-3 px-4 border-0">{{ $dem->libelleType }}</td>

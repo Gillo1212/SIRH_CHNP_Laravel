@@ -1,6 +1,6 @@
 @extends('layouts.master')
 
-@section('title', 'Modifier le Compte — ' . $user->login)
+@section('title', 'Modifier le Compte - ' . $user->login)
 @section('page-title', 'Modifier le Compte')
 
 @section('breadcrumb')
@@ -30,7 +30,7 @@
             <div class="card border-0 shadow-sm" style="border-radius:12px;">
                 <div class="card-header border-0 bg-white" style="padding:24px 28px 0;">
                     <h5 class="fw-700 mb-0" style="color:#111827;">
-                        <i class="fas fa-edit me-2" style="color:#0A4D8C;"></i>Modifier — {{ $user->login }}
+                        <i class="fas fa-edit me-2" style="color:#0A4D8C;"></i>Modifier - {{ $user->login }}
                     </h5>
                     <p class="text-muted mb-0 mt-1" style="font-size:13px;">
                         Compte créé le {{ $user->created_at->format('d/m/Y à H:i') }}

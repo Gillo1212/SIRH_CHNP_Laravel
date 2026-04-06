@@ -1,6 +1,6 @@
 @extends('layouts.master')
 
-@section('title', 'Bilan Social — DRH')
+@section('title', 'Bilan Social - DRH')
 @section('page-title', 'Bilan Social')
 
 @section('breadcrumb')
@@ -56,8 +56,43 @@
     border: none;
 }
 @media print {
+    /* Masquer TOUT */
+    body * {
+        visibility: hidden;
+    }
+
+    /* Afficher uniquement le contenu du bilan */
+    .bilan-content,
+    .bilan-content * {
+        visibility: visible !important;
+    }
+
+    /* Positionner en haut à gauche */
+    .bilan-content {
+        position: absolute !important;
+        left: 0 !important;
+        top: 0 !important;
+        width: 100% !important;
+        margin: 0 !important;
+        padding: 10mm 15mm !important;
+        background: white !important;
+    }
+
+    /* Reset body */
+    body {
+        margin: 0 !important;
+        padding: 0 !important;
+        background: white !important;
+    }
+
     .no-print { display: none !important; }
     .bilan-section { break-inside: avoid; }
+
+    /* Forcer les couleurs */
+    * {
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+    }
 }
 </style>
 @endpush
@@ -92,7 +127,7 @@
     <div>
         <h4 class="mb-0 fw-bold" style="color:#111827;">Bilan Social {{ $annee }}</h4>
         <p class="mb-0 text-muted" style="font-size:13.5px;">
-            Centre Hospitalier National de Pikine — Direction des Ressources Humaines
+            Centre Hospitalier National de Pikine - Direction des Ressources Humaines
         </p>
     </div>
     <div class="d-flex gap-2">
@@ -105,6 +140,7 @@
     </div>
 </div>
 
+<div class="bilan-content">
 {{-- Titre officiel (visible à l'impression) --}}
 <div style="text-align:center;margin-bottom:28px;display:none;" class="d-print-block">
     <div style="font-size:18px;font-weight:700;color:#0A4D8C;">CENTRE HOSPITALIER NATIONAL DE PIKINE</div>
@@ -159,7 +195,7 @@
     </div>
     <div class="bilan-row">
         <span style="color:#374151;">Ratio agents / service</span>
-        <span class="bilan-value">{{ $nServices > 0 ? round($effectifTotal/$nServices,1) : '—' }}</span>
+        <span class="bilan-value">{{ $nServices > 0 ? round($effectifTotal/$nServices,1) : '-' }}</span>
     </div>
 </div>
 
@@ -208,7 +244,7 @@
     </div>
     <div class="bilan-row">
         <span style="color:#374151;">Masse salariale annuelle</span>
-        <span class="bilan-value" style="color:#9CA3AF;">— XOF (module paie requis)</span>
+        <span class="bilan-value" style="color:#9CA3AF;">- XOF (module paie requis)</span>
     </div>
 </div>
 
@@ -226,5 +262,7 @@
         </div>
     </div>
 </div>
+
+</div>{{-- /.bilan-content --}}
 
 @endsection

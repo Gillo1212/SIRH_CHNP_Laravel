@@ -1,6 +1,6 @@
 @extends('layouts.master')
 
-@section('title', 'Suivi Budgétaire RH — DRH')
+@section('title', 'Suivi Budgétaire RH - DRH')
 @section('page-title', 'Suivi Budgétaire RH')
 
 @section('breadcrumb')
@@ -61,7 +61,7 @@
     <div>
         <h4 class="mb-0 fw-bold" style="color:#111827;">Suivi Budgétaire RH</h4>
         <p class="mb-0 text-muted" style="font-size:13.5px;">
-            Tableau de bord budgétaire de la Direction des Ressources Humaines — {{ now()->isoFormat('MMMM YYYY') }}
+            Tableau de bord budgétaire de la Direction des Ressources Humaines - {{ now()->isoFormat('MMMM YYYY') }}
         </p>
     </div>
     <a href="{{ route('drh.dashboard') }}" class="btn btn-secondary btn-sm">
@@ -95,14 +95,14 @@
     <div class="col-12 col-sm-6 col-xl-3">
         <div class="budget-card text-center">
             <div style="font-size:13px;font-weight:600;color:#6B7280;margin-bottom:8px;">Masse salariale estimée</div>
-            <div style="font-size:28px;font-weight:700;color:#111827;">— XOF</div>
+            <div style="font-size:28px;font-weight:700;color:#111827;">- XOF</div>
             <div style="font-size:12px;color:#9CA3AF;margin-top:4px;">Module paie requis</div>
         </div>
     </div>
     <div class="col-12 col-sm-6 col-xl-3">
         <div class="budget-card text-center">
             <div style="font-size:13px;font-weight:600;color:#6B7280;margin-bottom:8px;">Coût moyen / agent</div>
-            <div style="font-size:28px;font-weight:700;color:#111827;">— XOF</div>
+            <div style="font-size:28px;font-weight:700;color:#111827;">- XOF</div>
             <div style="font-size:12px;color:#9CA3AF;margin-top:4px;">Basé sur salaire de base</div>
         </div>
     </div>
@@ -171,7 +171,7 @@
             </div>
             <div style="margin-top:16px;padding:12px;background:#FEF3C7;border-radius:8px;font-size:12px;color:#92400E;">
                 <i class="fas fa-exclamation-triangle me-1"></i>
-                Données estimatives — connecter le module paie pour les chiffres réels.
+                Données estimatives - connecter le module paie pour les chiffres réels.
             </div>
         </div>
     </div>

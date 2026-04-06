@@ -24,7 +24,7 @@
                 <i class="fas fa-exclamation-triangle me-2" style="color:#DC2626;"></i>Tentatives échouées / Actions suspectes
             </h4>
             <p class="mb-0 text-muted" style="font-size:13.5px;">
-                Détection des menaces — <strong>Confidentialité & Intégrité CID</strong>
+                Détection des menaces - <strong>Confidentialité & Intégrité CID</strong>
             </p>
         </div>
         <div class="d-flex gap-2">
@@ -55,7 +55,7 @@
             @if($stats['today'] > 10)
             <div style="background:#FEF2F2;border:1px solid #FCA5A5;border-radius:10px;padding:14px 18px;">
                 <div style="font-size:11px;font-weight:700;text-transform:uppercase;color:#DC2626;">
-                    <i class="fas fa-exclamation-circle me-1"></i>Alerte — Activité suspecte détectée
+                    <i class="fas fa-exclamation-circle me-1"></i>Alerte - Activité suspecte détectée
                 </div>
                 <div style="font-size:12px;color:#991B1B;margin-top:4px;">
                     Plus de 10 échecs aujourd'hui. Vérifiez les tentatives de connexion.
@@ -118,7 +118,7 @@
                     <td class="py-2 px-3 border-0" style="white-space:nowrap;">
                         @if($log->causer)
                         <span style="font-weight:600;color:#DC2626;">
-                            {{ $log->causer->login ?? $log->causer->name ?? '—' }}
+                            {{ $log->causer->login ?? $log->causer->name ?? '-' }}
                         </span>
                         @else
                         <span style="color:var(--theme-text-muted);">
@@ -128,7 +128,7 @@
                     </td>
                     <td class="py-2 px-3 border-0">
                         <code style="font-size:10px;background:rgba(220,38,38,.07);color:#DC2626;padding:1px 6px;border-radius:4px;">
-                            {{ $log->log_name ?? '—' }}
+                            {{ $log->log_name ?? '-' }}
                         </code>
                     </td>
                     <td class="py-2 px-3 border-0" style="max-width:300px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:var(--theme-text);">
@@ -136,7 +136,7 @@
                     </td>
                     <td class="py-2 px-3 border-0">
                         <code style="font-size:10px;color:var(--theme-text-muted);">
-                            {{ $props['ip'] ?? '—' }}
+                            {{ $props['ip'] ?? '-' }}
                         </code>
                     </td>
                 </tr>
@@ -145,7 +145,7 @@
                     <td colspan="5" class="text-center py-5 border-0">
                         <i class="fas fa-check-circle mb-2 d-block" style="font-size:32px;color:#10B981;opacity:.6;"></i>
                         <div style="color:#065F46;font-weight:600;margin-bottom:4px;">Aucune tentative échouée enregistrée</div>
-                        <div class="text-muted" style="font-size:12px;">Le système est sécurisé — aucune anomalie détectée.</div>
+                        <div class="text-muted" style="font-size:12px;">Le système est sécurisé - aucune anomalie détectée.</div>
                     </td>
                 </tr>
                 @endforelse

@@ -54,11 +54,11 @@
                         @endphp
                         <tr style="border-bottom:1px solid #F3F4F6;">
                             <td class="py-3 px-4 border-0">
-                                <div style="font-weight:600;">{{ $pec->demande?->agent?->nom_complet ?? '—' }}</div>
+                                <div style="font-weight:600;">{{ $pec->demande?->agent?->nom_complet ?? '-' }}</div>
                                 <div style="font-size:11px;color:#9CA3AF;">{{ $pec->demande?->agent?->matricule }}</div>
                             </td>
-                            <td class="py-3 px-4 border-0 text-muted">{{ ucfirst($pec->ayant_droit ?? '—') }}</td>
-                            <td class="py-3 px-4 border-0">{{ $pec->type_prise ?? '—' }}</td>
+                            <td class="py-3 px-4 border-0 text-muted">{{ ucfirst($pec->ayant_droit ?? '-') }}</td>
+                            <td class="py-3 px-4 border-0">{{ $pec->type_prise ?? '-' }}</td>
                             <td class="py-3 px-4 border-0 text-muted">{{ $pec->created_at?->format('d/m/Y') }}</td>
                             <td class="py-3 px-4 border-0">
                                 <span style="padding:3px 10px;border-radius:20px;font-size:10px;font-weight:700;

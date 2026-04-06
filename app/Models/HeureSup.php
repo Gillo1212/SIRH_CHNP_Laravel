@@ -5,12 +5,29 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
+/**
+ * Modèle HeureSup
+ *
+ * Workflow :
+ *   Major déclare → RH vérifie la conformité
+ *
+ * Statuts :
+ *   Déclaré  → état initial, soumis par le Major
+ *   Conforme → RH a vérifié : aucune altération détectée
+ *   Anomalie → RH a détecté un écart, Major doit corriger
+ *
+ * La RH ne valide pas, elle vérifie. Elle ne supprime jamais une déclaration.
+ */
 class HeureSup extends Model
 {
     use HasFactory;
 
     protected $table = 'heures_sup';
     protected $primaryKey = 'id_hsup';
+
+    public const STATUT_DECLARE  = 'Déclaré';
+    public const STATUT_CONFORME = 'Conforme';
+    public const STATUT_ANOMALIE = 'Anomalie';
 
     protected $fillable = [
         'id_ligne',
@@ -19,14 +36,15 @@ class HeureSup extends Model
         'montant',
         'periode',
         'statut_hs',
+        'note_verification',
     ];
 
     protected function casts(): array
     {
         return [
             'nb_heures' => 'decimal:2',
-            'taux' => 'decimal:2',
-            'montant' => 'decimal:2',
+            'taux'      => 'decimal:2',
+            'montant'   => 'decimal:2',
         ];
     }
 
@@ -39,38 +57,23 @@ class HeureSup extends Model
         return $this->belongsTo(LignePlanning::class, 'id_ligne', 'id_ligne');
     }
 
-    /**
-     * Accès direct à l'agent
-     */
-    public function agent()
-    {
-        return $this->hasOneThrough(
-            User::class,
-            LignePlanning::class,
-            'id_ligne',
-            'id',
-            'id_ligne',
-            'id_agent'
-        );
-    }
-
     // =====================================================
     // SCOPES
     // =====================================================
 
-    public function scopeEnAttente($query)
+    public function scopeDeclare($query)
     {
-        return $query->where('statut_hs', 'En_attente');
+        return $query->where('statut_hs', self::STATUT_DECLARE);
     }
 
-    public function scopeValide($query)
+    public function scopeConforme($query)
     {
-        return $query->where('statut_hs', 'Validé');
+        return $query->where('statut_hs', self::STATUT_CONFORME);
     }
 
-    public function scopePaye($query)
+    public function scopeAnomalie($query)
     {
-        return $query->where('statut_hs', 'Payé');
+        return $query->where('statut_hs', self::STATUT_ANOMALIE);
     }
 
     public function scopeTrimestre($query)
@@ -79,31 +82,58 @@ class HeureSup extends Model
     }
 
     // =====================================================
-    // MÉTHODES
+    // ACCESSORS
     // =====================================================
 
     /**
-     * Valider les heures sup
+     * Dépassement attendu d'après la ligne de planning (durée réelle - 8h standard).
      */
-    public function valider()
+    public function getDepassementAttenduAttribute(): float
     {
-        $this->update(['statut_hs' => 'Validé']);
+        return max(0, ($this->lignePlanning?->nb_heures ?? 0) - 8.0);
     }
 
     /**
-     * Marquer comme payé
+     * Écart entre heures déclarées et dépassement attendu.
+     * Positif = le Major a déclaré plus que prévu (surestimation).
+     * Négatif = le Major a déclaré moins que prévu (sous-estimation).
      */
-    public function marquerPaye()
+    public function getEcartAttribute(): float
     {
-        $this->update(['statut_hs' => 'Payé']);
+        return round($this->nb_heures - $this->depassement_attendu, 2);
     }
 
     /**
-     * Recalculer le montant
+     * Indique si la déclaration est conforme au planning.
      */
-    public function recalculerMontant($tauxHoraire = 5000)
+    public function getEstConformeAttribute(): bool
     {
-        $montant = $this->nb_heures * $this->taux * $tauxHoraire;
-        $this->update(['montant' => $montant]);
+        return abs($this->ecart) < 0.01;
+    }
+
+    // =====================================================
+    // MÉTHODES MÉTIER
+    // =====================================================
+
+    /**
+     * Marquer conforme après vérification RH.
+     */
+    public function marquerConforme(): void
+    {
+        $this->update([
+            'statut_hs'          => self::STATUT_CONFORME,
+            'note_verification'  => null,
+        ]);
+    }
+
+    /**
+     * Signaler une anomalie (RH → Major doit corriger).
+     */
+    public function signalerAnomalie(string $note): void
+    {
+        $this->update([
+            'statut_hs'         => self::STATUT_ANOMALIE,
+            'note_verification' => $note,
+        ]);
     }
 }

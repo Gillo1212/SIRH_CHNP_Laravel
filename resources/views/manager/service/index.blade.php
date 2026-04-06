@@ -1,6 +1,6 @@
 @extends('layouts.master')
 
-@section('title', 'Mon Service — ' . $service->nom_service)
+@section('title', 'Mon Service - ' . $service->nom_service)
 @section('page-title', 'Mon Service')
 
 @section('breadcrumb')
@@ -184,7 +184,7 @@
         <div class="col-12 col-lg-6">
             <div class="card border-0 shadow-sm" style="border-radius:14px;">
                 <div class="card-header border-0 px-4 pt-4 pb-2 d-flex align-items-center justify-content-between">
-                    <h6 class="fw-bold mb-0"><i class="fas fa-user-minus me-2 text-danger"></i>Absences — Aujourd'hui</h6>
+                    <h6 class="fw-bold mb-0"><i class="fas fa-user-minus me-2 text-danger"></i>Absences - Aujourd'hui</h6>
                     <a href="{{ route('manager.absences.create') }}" class="btn btn-sm btn-outline-danger" style="border-radius:6px;font-size:12px;">
                         <i class="fas fa-plus me-1"></i>Enregistrer
                     </a>
@@ -196,7 +196,7 @@
                                 {{ strtoupper(substr($absence->demande->agent->prenom ?? 'A', 0, 1) . substr($absence->demande->agent->nom ?? '', 0, 1)) }}
                             </div>
                             <div class="flex-grow-1">
-                                <div class="fw-500 small">{{ $absence->demande->agent->nom_complet ?? '—' }}</div>
+                                <div class="fw-500 small">{{ $absence->demande->agent->nom_complet ?? '-' }}</div>
                                 <div class="text-muted" style="font-size:11px;">{{ $absence->type_absence }}</div>
                             </div>
                             <span class="badge {{ $absence->justifie ? 'bg-success' : 'bg-secondary' }}" style="font-size:10px;">

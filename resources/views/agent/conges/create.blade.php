@@ -46,11 +46,11 @@
                     </div>
                     <div>
                         <h5 class="fw-bold mb-0" style="color:var(--theme-text);">Demande de congé</h5>
-                        <p class="text-muted small mb-0">{{ $agent->nom_complet }} — {{ $agent->matricule }}</p>
+                        <p class="text-muted small mb-0">{{ $agent->nom_complet }} - {{ $agent->matricule }}</p>
                     </div>
                 </div>
 
-                <form action="{{ route('agent.conges.store') }}" method="POST" id="formConge">
+                <form action="{{ route('agent.conges.store') }}" method="POST" id="formConge" enctype="multipart/form-data">
                     @csrf
 
                     {{-- Type de congé --}}
@@ -63,12 +63,14 @@
                                     data-deductible="{{ $type->deductible ? '1' : '0' }}"
                                     data-solde="{{ $soldes->get($type->id_type_conge)?->solde_restant ?? 0 }}"
                                     data-max="{{ $type->nb_jours_droit }}"
+                                    data-maternite="{{ $type->est_maternite ? '1' : '0' }}"
+                                    data-rayonx="{{ $type->est_rayon_x ? '1' : '0' }}"
                                     {{ old('id_type_conge') == $type->id_type_conge ? 'selected' : '' }}>
                                     {{ $type->libelle }}
                                     @if($type->deductible)
-                                        ({{ $soldes->get($type->id_type_conge)?->solde_restant ?? 0 }} j disponibles)
+                                        - {{ $soldes->get($type->id_type_conge)?->solde_restant ?? 0 }} j disponibles sur {{ $type->nb_jours_droit }}
                                     @else
-                                        (non déductible)
+                                        - {{ $type->duree }}
                                     @endif
                                 </option>
                             @endforeach
@@ -81,7 +83,7 @@
                         <div id="solde-info" class="mt-2 d-none">
                             <span class="solde-badge" id="solde-badge" style="background:#D1FAE5;color:#065F46;">
                                 <i class="fas fa-calendar-check"></i>
-                                <span id="solde-text">—</span>
+                                <span id="solde-text">-</span>
                             </span>
                         </div>
                     </div>
@@ -115,8 +117,43 @@
                         <div class="d-flex align-items-center gap-2">
                             <i class="fas fa-calculator" style="color:#3B82F6;"></i>
                             <span style="color:#1E40AF;font-size:13px;">
-                                Durée calculée : <strong id="nb-jours-text">—</strong>
+                                Durée calculée : <strong id="nb-jours-text">-</strong>
                             </span>
+                        </div>
+                    </div>
+
+                    {{-- Bloc info Congé Administratif --}}
+                    <div class="mb-4 d-none" id="bloc-info-administratif">
+                        <div class="alert mb-0" style="border-radius:10px;background:#EFF6FF;border:1px solid #BFDBFE;font-size:12px;color:#1E40AF;">
+                            <i class="fas fa-info-circle me-1"></i>
+                            <strong>Congé Administratif :</strong> Droit annuel de 30 jours ouvrables.
+                            Le solde restant est déduit à l'approbation. Assurez-vous d'avoir un solde suffisant avant de soumettre.
+                        </div>
+                    </div>
+
+                    {{-- Bloc info + certificat Congé de Maternité --}}
+                    <div class="mb-4" id="bloc-certificat-medical" style="display:none;">
+                        <label class="form-label-custom">Certificat médical <span class="text-danger">*</span></label>
+                        <div class="alert mb-2" style="border-radius:10px;background:#F5F3FF;border:1px solid #DDD6FE;font-size:12px;color:#5B21B6;">
+                            <i class="fas fa-baby me-1"></i>
+                            <strong>Congé de Maternité - 14 semaines (98 jours) :</strong>
+                            Veuillez joindre le certificat médical de votre médecin confirmant la grossesse.
+                            Ce document est obligatoire pour l'ouverture du dossier.
+                        </div>
+                        <input type="file" name="justificatif" class="form-control form-control-custom @error('justificatif') is-invalid @enderror" accept=".pdf,.jpg,.jpeg,.png">
+                        @error('justificatif')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                        @enderror
+                        <div class="form-text">Formats acceptés : PDF, JPG, PNG. Taille max : 5 Mo</div>
+                    </div>
+
+                    {{-- Bloc info Congé Rayon X --}}
+                    <div class="mb-4 d-none" id="bloc-info-rayonx">
+                        <div class="alert mb-0" style="border-radius:10px;background:#FEF2F2;border:1px solid #FECACA;font-size:12px;color:#991B1B;">
+                            <i class="fas fa-radiation me-1"></i>
+                            <strong>Congé Rayon X - 22 jours :</strong>
+                            Congé accordé aux agents exposés aux rayonnements ionisants (radiologie, blocs opératoires, etc.).
+                            Non déductible du solde administratif. Accordé par le service RH selon votre profil de poste.
                         </div>
                     </div>
 
@@ -203,6 +240,15 @@ function updateSoldeInfo() {
     const text = document.getElementById('solde-text');
     const badge = document.getElementById('solde-badge');
 
+    const blocCertificat   = document.getElementById('bloc-certificat-medical');
+    const blocAdministratif = document.getElementById('bloc-info-administratif');
+    const blocRayonX       = document.getElementById('bloc-info-rayonx');
+
+    // Cacher tous les blocs spécifiques par défaut
+    blocCertificat.style.display = 'none';
+    blocAdministratif.classList.add('d-none');
+    blocRayonX.classList.add('d-none');
+
     if (opt && opt.value) {
         if (opt.dataset.deductible === '1') {
             const solde = parseInt(opt.dataset.solde || 0);
@@ -211,11 +257,19 @@ function updateSoldeInfo() {
             badge.style.background = solde > 0 ? '#D1FAE5' : '#FEE2E2';
             badge.style.color = solde > 0 ? '#065F46' : '#991B1B';
             div.classList.remove('d-none');
+            blocAdministratif.classList.remove('d-none');
         } else {
-            text.textContent = 'Congé non déductible du solde';
+            const max = parseInt(opt.dataset.max || 0);
+            text.textContent = `Congé non déductible - durée max : ${max} jour(s)`;
             badge.style.background = '#EFF6FF';
             badge.style.color = '#1E40AF';
             div.classList.remove('d-none');
+        }
+        // Blocs contextuels selon le type
+        if (opt.dataset.maternite === '1') {
+            blocCertificat.style.display = 'block';
+        } else if (opt.dataset.rayonx === '1') {
+            blocRayonX.classList.remove('d-none');
         }
         calculerJours();
     } else {

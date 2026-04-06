@@ -20,6 +20,7 @@ class Conge extends Model
         'date_fin',
         'nbres_jours',
         'date_approbation',
+        'justificatif_path',
     ];
 
     protected function casts(): array

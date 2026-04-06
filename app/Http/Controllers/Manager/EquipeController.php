@@ -66,7 +66,7 @@ class EquipeController extends Controller
         // Vérifier que l'agent appartient bien au service du manager
         $agent = Agent::where('id_service', $service->id_service)
             ->with([
-                'service.division',
+                'service.divisions',
                 'contratActif',
                 'demandes' => fn($q) => $q->latest()->take(10),
                 'demandes.conge',

@@ -1,6 +1,6 @@
 @extends('layouts.master')
 
-@section('title', 'Statistiques — ' . $service->nom_service)
+@section('title', 'Statistiques - ' . $service->nom_service)
 @section('page-title', 'Statistiques du Service')
 
 @section('breadcrumb')
@@ -15,7 +15,7 @@
     <div class="d-flex align-items-center justify-content-between mb-4">
         <div>
             <h4 class="fw-bold mb-0">{{ $service->nom_service }}</h4>
-            <p class="text-muted small mb-0">Statistiques RH — {{ now()->isoFormat('MMMM YYYY') }}</p>
+            <p class="text-muted small mb-0">Statistiques RH - {{ now()->isoFormat('MMMM YYYY') }}</p>
         </div>
         <a href="{{ route('manager.service.index') }}" class="btn btn-outline-secondary btn-sm" style="border-radius:8px;">
             <i class="fas fa-arrow-left me-1"></i>Retour
@@ -50,7 +50,7 @@
         <div class="col-12 col-lg-8">
             <div class="card border-0 shadow-sm" style="border-radius:14px;">
                 <div class="card-header border-0 px-4 pt-4 pb-2">
-                    <h6 class="fw-bold mb-0"><i class="fas fa-chart-bar me-2 text-primary"></i>Absences — 6 derniers mois</h6>
+                    <h6 class="fw-bold mb-0"><i class="fas fa-chart-bar me-2 text-primary"></i>Absences - 6 derniers mois</h6>
                 </div>
                 <div class="card-body px-4 pb-4">
                     <canvas id="chartAbsences" style="max-height:220px;"></canvas>
@@ -89,7 +89,7 @@
     <div class="card border-0 shadow-sm mt-4" style="border-radius:14px;">
         <div class="card-body p-4">
             <div class="d-flex align-items-center justify-content-between mb-2">
-                <h6 class="fw-bold mb-0"><i class="fas fa-chart-line me-2 text-primary"></i>Taux de présence — {{ now()->isoFormat('MMMM YYYY') }}</h6>
+                <h6 class="fw-bold mb-0"><i class="fas fa-chart-line me-2 text-primary"></i>Taux de présence - {{ now()->isoFormat('MMMM YYYY') }}</h6>
                 <span style="font-size:24px;font-weight:700;color:{{ $stats['attendance_rate'] >= 90 ? '#059669' : ($stats['attendance_rate'] >= 75 ? '#D97706' : '#DC2626') }};">
                     {{ $stats['attendance_rate'] }}%
                 </span>

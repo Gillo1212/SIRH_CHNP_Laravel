@@ -25,7 +25,7 @@
             <h4 class="mb-1 fw-bold" style="color:var(--theme-text);">
                 <i class="fas fa-chart-pie me-2" style="color:#7C3AED;"></i>Statistiques RH
             </h4>
-            <p class="mb-0 text-muted" style="font-size:13.5px;">Indicateurs clés — {{ now()->isoFormat('MMMM YYYY') }}</p>
+            <p class="mb-0 text-muted" style="font-size:13.5px;">Indicateurs clés - {{ now()->isoFormat('MMMM YYYY') }}</p>
         </div>
         <a href="{{ route('rh.rapports.index') }}" class="btn btn-outline-secondary btn-sm">
             <i class="fas fa-arrow-left me-1"></i>Rapports

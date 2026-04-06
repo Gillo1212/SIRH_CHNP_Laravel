@@ -50,21 +50,14 @@
             <h4 class="fw-bold mb-0" style="color:var(--theme-text);">Gestion des congés</h4>
             <p class="text-muted small mb-0">Historique de toutes les demandes de congé</p>
         </div>
-        <div class="d-flex gap-2 flex-wrap">
-            @if($stats['valides'] > 0)
-                <a href="{{ route('rh.conges.pending') }}" class="action-btn" style="background:#FEF3C7;color:#92400E;">
-                    <i class="fas fa-clock"></i>
-                    {{ $stats['valides'] }} en attente d'approbation
-                </a>
-            @endif
-            <a href="{{ route('rh.conge-physique') }}" class="action-btn action-btn-outline">
-                <i class="fas fa-pen-to-square"></i> Saisie physique
-            </a>
-            <a href="{{ route('rh.conges.soldes') }}" class="action-btn action-btn-primary">
-                <i class="fas fa-chart-bar"></i> Soldes
-            </a>
-        </div>
     </div>
+
+    {{-- Navigation --}}
+    @include('rh.conges._nav', [
+        'active'       => 'index',
+        'pendingCount' => \App\Models\Demande::where('type_demande','Conge')->where('statut_demande','Validé')->count(),
+        'enCoursCount' => \App\Models\Agent::where('statut_agent','En_Conge')->count(),
+    ])
 
     {{-- KPIs --}}
     <div class="row g-3 mb-4">
@@ -190,7 +183,7 @@
                                         <div class="text-muted" style="font-size:11px;">{{ $agent->matricule }}</div>
                                     </td>
                                     <td>
-                                        <span style="font-size:12px;color:var(--theme-text);">{{ $conge->typeConge->libelle ?? '—' }}</span>
+                                        <span style="font-size:12px;color:var(--theme-text);">{{ $conge->typeConge->libelle ?? '-' }}</span>
                                     </td>
                                     <td>
                                         @if($conge)
@@ -198,11 +191,11 @@
                                             <span class="text-muted"> → </span>
                                             <span style="font-size:12px;">{{ $conge->date_fin?->format('d/m/Y') }}</span>
                                         @else
-                                            <span class="text-muted">—</span>
+                                            <span class="text-muted">-</span>
                                         @endif
                                     </td>
                                     <td>
-                                        <strong style="color:#0A4D8C;">{{ $conge->nbres_jours ?? '—' }}j</strong>
+                                        <strong style="color:#0A4D8C;">{{ $conge->nbres_jours ?? '-' }}j</strong>
                                     </td>
                                     <td>
                                         <span style="font-size:12px;">{{ $demande->created_at->format('d/m/Y') }}</span>

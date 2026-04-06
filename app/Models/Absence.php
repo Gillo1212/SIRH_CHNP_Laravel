@@ -17,6 +17,7 @@ class Absence extends Model
         'date_absence',
         'type_absence',
         'justifie',
+        'justificatif_path',
     ];
 
     protected function casts(): array
@@ -34,14 +35,6 @@ class Absence extends Model
     public function demande()
     {
         return $this->belongsTo(Demande::class, 'id_demande', 'id_demande');
-    }
-
-    /**
-     * Pièces justificatives (composition)
-     */
-    public function piecesJustificatives()
-    {
-        return $this->hasMany(PieceJustificative::class, 'id_absence', 'id_absence');
     }
 
     /**

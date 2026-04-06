@@ -40,7 +40,7 @@
                         <option value="">Sélectionner un agent...</option>
                         @foreach($agents as $agent)
                         <option value="{{ $agent->id_agent }}" {{ old('agent_id') == $agent->id_agent ? 'selected' : '' }}>
-                            {{ $agent->nom_complet }} — {{ $agent->matricule }}
+                            {{ $agent->nom_complet }} - {{ $agent->matricule }}
                         </option>
                         @endforeach
                     </select>
@@ -86,15 +86,6 @@
                     @error('date_debut')<div class="invalid-feedback">{{ $message }}</div>@enderror
                 </div>
 
-                <div class="mb-4">
-                    <div class="form-check">
-                        <input class="form-check-input" type="checkbox" name="exceptionnelle" value="1" id="exceptionnelle"
-                            {{ old('exceptionnelle') ? 'checked' : '' }}>
-                        <label class="form-check-label" for="exceptionnelle" style="font-size:13px;">
-                            PEC exceptionnelle (nécessite validation DRH)
-                        </label>
-                    </div>
-                </div>
 
                 <div class="d-flex gap-2">
                     <button type="submit" class="btn btn-primary">

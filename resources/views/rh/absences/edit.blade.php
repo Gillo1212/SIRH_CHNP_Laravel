@@ -23,7 +23,7 @@
                 <h5 class="fw-bold mb-0">Modifier l'absence</h5>
                 @php $agent = $absence->demande->agent ?? null; @endphp
                 <p class="text-muted small mb-0">
-                    {{ $agent?->nom_complet ?? '—' }} &mdash; {{ $absence->date_absence->format('d/m/Y') }}
+                    {{ $agent?->nom_complet ?? '-' }} &mdash; {{ $absence->date_absence->format('d/m/Y') }}
                 </p>
             </div>
         </div>
@@ -45,8 +45,8 @@
                         {{ strtoupper(substr($agent?->prenom ?? 'A', 0, 1) . substr($agent?->nom ?? '', 0, 1)) }}
                     </div>
                     <div>
-                        <div class="fw-600" style="font-size:14px;">{{ $agent?->nom_complet ?? '—' }}</div>
-                        <div class="text-muted small">{{ $agent?->matricule }} &bull; {{ $agent?->service?->nom_service ?? '—' }}</div>
+                        <div class="fw-600" style="font-size:14px;">{{ $agent?->nom_complet ?? '-' }}</div>
+                        <div class="text-muted small">{{ $agent?->matricule }} &bull; {{ $agent?->service?->nom_service ?? '-' }}</div>
                     </div>
                     <div class="ms-auto">
                         <span class="badge bg-secondary" style="font-size:10px;">Agent non modifiable</span>
@@ -74,7 +74,7 @@
                         <select name="type_absence"
                                 class="form-select @error('type_absence') is-invalid @enderror"
                                 style="border-radius:8px;font-size:13px;" required>
-                            <option value="">— Choisir le type —</option>
+                            <option value="">- Choisir le type -</option>
                             @foreach([
                                 'Maladie'         => 'Maladie (certificat médical requis)',
                                 'Personnelle'     => 'Personnelle',
@@ -95,7 +95,7 @@
                                {{ old('justifie', $absence->justifie) ? 'checked' : '' }}>
                         <label class="form-check-label fw-600 small" for="justifie">
                             Absence justifiée
-                            <span class="text-muted fw-400 ms-1">— un document justificatif a été fourni par l'agent</span>
+                            <span class="text-muted fw-400 ms-1">- un document justificatif a été fourni par l'agent</span>
                         </label>
                     </div>
                 </div>

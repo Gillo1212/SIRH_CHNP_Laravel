@@ -379,7 +379,7 @@
                     <div class="col-md-4">
                         <div style="background:#ECFDF5;border:1px solid #A7F3D0;border-radius:10px;padding:14px;">
                             <div style="font-weight:700;color:#065F46;margin-bottom:8px;font-size:12px;">
-                                <i class="fas fa-lock me-1"></i> C — Confidentialité
+                                <i class="fas fa-lock me-1"></i> C - Confidentialité
                             </div>
                             <ul style="font-size:11px;color:#065F46;margin:0;padding-left:14px;line-height:1.8;">
                                 <li>Chiffrement AES-256 actif</li>
@@ -392,7 +392,7 @@
                     <div class="col-md-4">
                         <div style="background:#EFF6FF;border:1px solid #BFDBFE;border-radius:10px;padding:14px;">
                             <div style="font-weight:700;color:#1E40AF;margin-bottom:8px;font-size:12px;">
-                                <i class="fas fa-check-double me-1"></i> I — Intégrité
+                                <i class="fas fa-check-double me-1"></i> I - Intégrité
                             </div>
                             <ul style="font-size:11px;color:#1E40AF;margin:0;padding-left:14px;line-height:1.8;">
                                 <li>Audit log immuable (Spatie)</li>
@@ -405,7 +405,7 @@
                     <div class="col-md-4">
                         <div style="background:#FFFBEB;border:1px solid #FDE68A;border-radius:10px;padding:14px;">
                             <div style="font-weight:700;color:#92400E;margin-bottom:8px;font-size:12px;">
-                                <i class="fas fa-cloud me-1"></i> D — Disponibilité
+                                <i class="fas fa-cloud me-1"></i> D - Disponibilité
                             </div>
                             <ul style="font-size:11px;color:#92400E;margin:0;padding-left:14px;line-height:1.8;">
                                 <li>Sauvegardes automatiques</li>

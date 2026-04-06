@@ -1,6 +1,6 @@
 @extends('layouts.master')
 
-@section('title', 'Détail absence — Major')
+@section('title', 'Détail absence - Major')
 @section('page-title', 'Détail de l\'absence')
 
 @section('breadcrumb')

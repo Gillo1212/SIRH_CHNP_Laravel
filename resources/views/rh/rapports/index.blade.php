@@ -56,7 +56,7 @@
                 <i class="fas fa-chart-bar me-2" style="color:#0A4D8C;"></i>Rapports & Analyses
             </h4>
             <p class="mb-0" style="font-size:13px;color:#6B7280;">
-                {{ now()->isoFormat('dddd D MMMM YYYY') }} — Service des Ressources Humaines
+                {{ now()->isoFormat('dddd D MMMM YYYY') }} - Service des Ressources Humaines
             </p>
         </div>
         <div class="d-flex gap-2">

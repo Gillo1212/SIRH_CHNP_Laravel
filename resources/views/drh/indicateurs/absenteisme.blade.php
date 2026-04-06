@@ -1,5 +1,5 @@
 @extends('layouts.master')
-@section('title', 'Indicateur Absentéisme — DRH')
+@section('title', 'Indicateur Absentéisme - DRH')
 @section('page-title', 'Indicateur : Absentéisme')
 
 @section('breadcrumb')
@@ -25,7 +25,7 @@
     <div class="d-flex align-items-center justify-content-between mb-4 flex-wrap gap-3">
         <div>
             <h4 class="mb-1 fw-bold" style="color:var(--theme-text);">
-                <i class="fas fa-user-clock me-2" style="color:#EF4444;"></i>Indicateur — Absentéisme
+                <i class="fas fa-user-clock me-2" style="color:#EF4444;"></i>Indicateur - Absentéisme
             </h4>
             <p class="mb-0 text-muted" style="font-size:13.5px;">Suivi des absences par type, service et période</p>
         </div>

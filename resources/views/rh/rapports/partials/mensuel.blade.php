@@ -22,7 +22,7 @@
 
 {{-- KPIs --}}
 <div class="section-card mb-4">
-    <div class="section-title">Vue d'ensemble — {{ $moisLabel }}</div>
+    <div class="section-title">Vue d'ensemble - {{ $moisLabel }}</div>
     <div class="row g-0">
         <div class="col-4 border-end"><div class="kpi-stat"><div class="val" style="color:#EF4444;">{{ $statsMois['total_absences'] }}</div><div class="lbl">Absences</div></div></div>
         <div class="col-4 border-end"><div class="kpi-stat"><div class="val" style="color:#3B82F6;">{{ $statsMois['total_conges'] }}</div><div class="lbl">Congés</div></div></div>
@@ -58,8 +58,8 @@
                 @foreach($absences->take(20) as $abs)
                 @php $agent = $abs->demande?->agent; @endphp
                 <tr>
-                    <td class="py-2 px-3 border-0 fw-600">{{ $agent?->nom_complet ?? '—' }}</td>
-                    <td class="py-2 px-3 border-0 text-muted">{{ $agent?->service?->nom_service ?? '—' }}</td>
+                    <td class="py-2 px-3 border-0 fw-600">{{ $agent?->nom_complet ?? '-' }}</td>
+                    <td class="py-2 px-3 border-0 text-muted">{{ $agent?->service?->nom_service ?? '-' }}</td>
                     <td class="py-2 px-3 border-0">{{ $abs->date_absence?->format('d/m/Y') }}</td>
                     <td class="py-2 px-3 border-0">{{ $abs->type_absence }}</td>
                     <td class="py-2 px-3 border-0">
@@ -94,8 +94,8 @@
             <tbody>
                 @foreach($conges->take(20) as $d)
                 <tr>
-                    <td class="py-2 px-3 border-0 fw-600">{{ $d->agent?->nom_complet ?? '—' }}</td>
-                    <td class="py-2 px-3 border-0 text-muted">{{ $d->agent?->service?->nom_service ?? '—' }}</td>
+                    <td class="py-2 px-3 border-0 fw-600">{{ $d->agent?->nom_complet ?? '-' }}</td>
+                    <td class="py-2 px-3 border-0 text-muted">{{ $d->agent?->service?->nom_service ?? '-' }}</td>
                     <td class="py-2 px-3 border-0">{{ $d->created_at?->format('d/m/Y') }}</td>
                     <td class="py-2 px-3 border-0">
                         <span style="font-size:11px;padding:2px 8px;border-radius:20px;font-weight:600;background:#F3F4F6;color:#374151;">
@@ -127,9 +127,9 @@
             <tbody>
                 @foreach($mouvements as $mouv)
                 <tr>
-                    <td class="py-2 px-3 border-0 fw-600">{{ $mouv->agent?->nom_complet ?? '—' }}</td>
+                    <td class="py-2 px-3 border-0 fw-600">{{ $mouv->agent?->nom_complet ?? '-' }}</td>
                     <td class="py-2 px-3 border-0">{{ $mouv->type_mouvement }}</td>
-                    <td class="py-2 px-3 border-0 text-muted">{{ $mouv->agent?->service?->nom_service ?? '—' }}</td>
+                    <td class="py-2 px-3 border-0 text-muted">{{ $mouv->agent?->service?->nom_service ?? '-' }}</td>
                     <td class="py-2 px-3 border-0">
                         <span style="font-size:11px;padding:2px 8px;border-radius:20px;font-weight:600;background:#F3F4F6;color:#374151;">
                             {{ $mouv->statut }}

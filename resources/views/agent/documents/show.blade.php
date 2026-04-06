@@ -1,5 +1,5 @@
 @extends('layouts.master')
-@section('title', 'Document — ' . $document->titre)
+@section('title', 'Document - ' . $document->titre)
 @section('page-title', $document->titre)
 
 @section('breadcrumb')
@@ -130,7 +130,7 @@
                 </div>
                 <div class="mp-row">
                     <span class="ml">Date</span>
-                    <span class="mv">{{ $document->date_creation?->format('d/m/Y') ?? '—' }}</span>
+                    <span class="mv">{{ $document->date_creation?->format('d/m/Y') ?? '-' }}</span>
                 </div>
                 @if($document->taille_fichier)
                 <div class="mp-row">
@@ -175,7 +175,7 @@
             <div class="meta-panel" style="background:#F0F9FF;border-color:#BAE6FD;">
                 <div style="font-size:12px;color:#0369A1;line-height:1.7;">
                     <i class="ri-shield-check-line me-1" style="font-size:15px;"></i>
-                    <strong>Document protégé</strong> — Ce document est stocké de façon sécurisée dans votre dossier GED.
+                    <strong>Document protégé</strong> - Ce document est stocké de façon sécurisée dans votre dossier GED.
                     Toute consultation est tracée conformément à la politique CID du CHNP.
                 </div>
             </div>

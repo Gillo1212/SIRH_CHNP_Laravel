@@ -91,7 +91,7 @@
 }
 
 /* ══════════════════════════════════════════════════════════════
-   ORG CHART — ARBRE CSS
+   ORG CHART - ARBRE CSS
    ══════════════════════════════════════════════════════════════ */
 .org-root { text-align:center; }
 
@@ -377,7 +377,7 @@
 </div>
 
 {{-- ══════════════════════════════════════════════════════════════
-     MODAL — AJOUTER / MODIFIER UN NŒUD
+     MODAL - AJOUTER / MODIFIER UN NŒUD
      ══════════════════════════════════════════════════════════════ --}}
 <div class="modal fade" id="nodeModal" tabindex="-1" data-bs-backdrop="static">
     <div class="modal-dialog modal-dialog-centered" style="max-width:480px;">
@@ -434,7 +434,7 @@
 </div>
 
 {{-- ══════════════════════════════════════════════════════════════
-     MODAL — DÉPLACER UN NŒUD
+     MODAL - DÉPLACER UN NŒUD
      ══════════════════════════════════════════════════════════════ --}}
 <div class="modal fade" id="moveModal" tabindex="-1">
     <div class="modal-dialog modal-dialog-centered modal-sm">

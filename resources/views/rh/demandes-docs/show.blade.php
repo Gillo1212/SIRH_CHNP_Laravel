@@ -1,5 +1,5 @@
 @extends('layouts.master')
-@section('title', 'Demande #' . $demande->id . ' — ' . $demande->libelleType)
+@section('title', 'Demande #' . $demande->id . ' - ' . $demande->libelleType)
 @section('page-title', 'Détail demande document')
 
 @section('breadcrumb')
@@ -14,7 +14,7 @@
     <div class="d-flex align-items-center justify-content-between mb-4">
         <div>
             <h4 class="mb-1 fw-bold" style="color:var(--theme-text);">
-                <i class="fas fa-file-alt me-2" style="color:#0A4D8C;"></i>Demande #{{ $demande->id }} — {{ $demande->libelleType }}
+                <i class="fas fa-file-alt me-2" style="color:#0A4D8C;"></i>Demande #{{ $demande->id }} - {{ $demande->libelleType }}
             </h4>
         </div>
         <a href="{{ route('rh.demandes-docs.index') }}" class="btn btn-outline-secondary btn-sm">
@@ -38,12 +38,12 @@
                 <div class="row g-3">
                     <div class="col-6">
                         <div style="font-size:11px;font-weight:700;text-transform:uppercase;color:#9CA3AF;margin-bottom:3px;">Agent</div>
-                        <div style="font-size:14px;font-weight:600;color:var(--theme-text);">{{ $demande->agent?->nom_complet ?? '—' }}</div>
+                        <div style="font-size:14px;font-weight:600;color:var(--theme-text);">{{ $demande->agent?->nom_complet ?? '-' }}</div>
                         <div style="font-size:12px;color:#9CA3AF;">{{ $demande->agent?->matricule }}</div>
                     </div>
                     <div class="col-6">
                         <div style="font-size:11px;font-weight:700;text-transform:uppercase;color:#9CA3AF;margin-bottom:3px;">Service</div>
-                        <div style="font-size:13px;color:var(--theme-text);">{{ $demande->agent?->service?->nom_service ?? '—' }}</div>
+                        <div style="font-size:13px;color:var(--theme-text);">{{ $demande->agent?->service?->nom_service ?? '-' }}</div>
                     </div>
                     <div class="col-6">
                         <div style="font-size:11px;font-weight:700;text-transform:uppercase;color:#9CA3AF;margin-bottom:3px;">Type de document</div>
@@ -75,20 +75,10 @@
             <div style="background:#ECFDF5;border:1px solid #A7F3D0;border-radius:12px;padding:20px 24px;">
                 <div style="font-weight:600;color:#065F46;margin-bottom:12px;"><i class="fas fa-check-circle me-2"></i>Document prêt à être généré</div>
                 <div class="d-flex gap-2 flex-wrap">
-                    @php $agent = $demande->agent; @endphp
-                    @if($demande->type_document === 'attestation_travail')
-                    <a href="{{ route('documents-admin.attestation', $agent->id_agent) }}" class="btn btn-success btn-sm" target="_blank">
-                        <i class="fas fa-print me-1"></i>Générer l'attestation de travail
+                    <a href="{{ route('documents-admin.formulaire', ['agentId' => $demande->agent->id_agent, 'type' => $demande->type_document]) }}"
+                       class="btn btn-success btn-sm">
+                        <i class="fas fa-file-alt me-1"></i>Générer - {{ $demande->libelleType }}
                     </a>
-                    @elseif($demande->type_document === 'certificat_travail')
-                    <a href="{{ route('documents-admin.certificat', $agent->id_agent) }}" class="btn btn-success btn-sm" target="_blank">
-                        <i class="fas fa-print me-1"></i>Générer le certificat de travail
-                    </a>
-                    @elseif($demande->type_document === 'ordre_mission')
-                    <a href="{{ route('documents-admin.ordre-mission', $agent->id_agent) }}" class="btn btn-success btn-sm" target="_blank">
-                        <i class="fas fa-print me-1"></i>Générer l'ordre de mission
-                    </a>
-                    @endif
                 </div>
             </div>
             @endif

@@ -1,6 +1,6 @@
 @extends('layouts.master')
 
-@section('title', 'Dossier — '.$agent->nom_complet)
+@section('title', 'Dossier - '.$agent->nom_complet)
 @section('page-title', 'Dossier Agent')
 
 @section('breadcrumb')
@@ -665,7 +665,7 @@
                         </div>
                         <div class="info-row">
                             <span class="info-label">Date de naissance</span>
-                            <span class="info-value">{{ $agent->date_naissance?->format('d/m/Y') ?? '—' }}</span>
+                            <span class="info-value">{{ $agent->date_naissance?->format('d/m/Y') ?? '-' }}</span>
                         </div>
                         <div class="info-row">
                             <span class="info-label">Sexe</span>
@@ -717,10 +717,10 @@
                             </span>
                             <span class="info-value">
                                 <span x-show="!revealed.telephone" class="masked-value">
-                                    {{ $agent->telephone ? '●●● ●● ●●● ●●' : '—' }}
+                                    {{ $agent->telephone ? '●●● ●● ●●● ●●' : '-' }}
                                 </span>
                                 <span x-show="revealed.telephone" class="sensitive-revealed">
-                                    {{ $agent->telephone ?? '—' }}
+                                    {{ $agent->telephone ?? '-' }}
                                 </span>
                                 @if($agent->telephone)
                                 <button type="button" class="btn-decrypt-show"
@@ -742,10 +742,10 @@
                             </span>
                             <span class="info-value">
                                 <span x-show="!revealed.cni" class="masked-value">
-                                    {{ $agent->cni ? $agent->cni_masque : '—' }}
+                                    {{ $agent->cni ? $agent->cni_masque : '-' }}
                                 </span>
                                 <span x-show="revealed.cni" class="sensitive-revealed">
-                                    {{ $agent->cni ?? '—' }}
+                                    {{ $agent->cni ?? '-' }}
                                 </span>
                                 @if($agent->cni)
                                 <button type="button" class="btn-decrypt-show"
@@ -795,7 +795,7 @@
                         <div class="info-row">
                             <span class="info-label">Dernière connexion</span>
                             <span class="info-value" style="font-size:13px;">
-                                {{ $agent->user->derniere_connexion ? \Carbon\Carbon::parse($agent->user->derniere_connexion)->diffForHumans() : '—' }}
+                                {{ $agent->user->derniere_connexion ? \Carbon\Carbon::parse($agent->user->derniere_connexion)->diffForHumans() : '-' }}
                             </span>
                         </div>
                         @else
@@ -822,13 +822,13 @@
                             <div class="col-md-4 col-6">
                                 <div class="info-row">
                                     <span class="info-label">Famille d'emploi</span>
-                                    <span class="info-value">{{ $agent->famille_d_emploi ? str_replace('_',' ',$agent->famille_d_emploi) : '—' }}</span>
+                                    <span class="info-value">{{ $agent->famille_d_emploi ? str_replace('_',' ',$agent->famille_d_emploi) : '-' }}</span>
                                 </div>
                             </div>
                             <div class="col-md-4 col-6">
                                 <div class="info-row">
                                     <span class="info-label">Catégorie CSP</span>
-                                    <span class="info-value" style="font-size:13px;">{{ str_replace('_',' ',$agent->categorie_cp ?? '—') }}</span>
+                                    <span class="info-value" style="font-size:13px;">{{ str_replace('_',' ',$agent->categorie_cp ?? '-') }}</span>
                                 </div>
                             </div>
                             <div class="col-md-4 col-6">
@@ -851,13 +851,13 @@
                             <div class="col-md-4 col-6">
                                 <div class="info-row">
                                     <span class="info-label">Service</span>
-                                    <span class="info-value">{{ $agent->service?->nom_service ?? '—' }}</span>
+                                    <span class="info-value">{{ $agent->service?->nom_service ?? '-' }}</span>
                                 </div>
                             </div>
                             <div class="col-md-4 col-6">
                                 <div class="info-row">
                                     <span class="info-label">Division</span>
-                                    <span class="info-value">{{ $agent->division?->nom_division ?? '—' }}</span>
+                                    <span class="info-value">{{ $agent->division?->nom_division ?? '-' }}</span>
                                 </div>
                             </div>
                         </div>
@@ -980,7 +980,7 @@
                             <span>
                                 Du {{ $contrat->date_debut->format('d/m/Y') }}
                                 @if($contrat->date_fin) au {{ $contrat->date_fin->format('d/m/Y') }}
-                                @else (CDI — sans terme)
+                                @else (CDI - sans terme)
                                 @endif
                             </span>
                         </div>
@@ -1014,9 +1014,9 @@
                     <div class="timeline-dot"></div>
                     <div class="flex-grow-1">
                         <div class="d-flex align-items-center justify-content-between flex-wrap gap-2 mb-1">
-                            <strong style="font-size:14px;">{{ ucfirst($m->type ?? $m->type_mouvement ?? '—') }}</strong>
+                            <strong style="font-size:14px;">{{ ucfirst($m->type ?? $m->type_mouvement ?? '-') }}</strong>
                             <span style="font-size:13px;color:var(--theme-text-muted);">
-                                {{ isset($m->date_mouvement) ? $m->date_mouvement?->format('d/m/Y') : ($m->date_effet?->format('d/m/Y') ?? '—') }}
+                                {{ isset($m->date_mouvement) ? $m->date_mouvement?->format('d/m/Y') : ($m->date_effet?->format('d/m/Y') ?? '-') }}
                             </span>
                         </div>
                         @if(isset($m->service) && $m->service)

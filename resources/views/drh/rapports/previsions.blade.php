@@ -1,5 +1,5 @@
 @extends('layouts.master')
-@section('title', 'Prévisions départs — DRH')
+@section('title', 'Prévisions départs - DRH')
 @section('page-title', 'Prévisions des départs')
 
 @section('breadcrumb')
@@ -76,12 +76,12 @@
                     @php $age = $agent->date_naissance?->diffInYears(now()); @endphp
                     <tr>
                         <td class="py-2 px-3 border-0 fw-600">{{ $agent->nom_complet }}</td>
-                        <td class="py-2 px-3 border-0 text-muted">{{ $agent->service?->nom_service ?? '—' }}</td>
-                        <td class="py-2 px-3 border-0">{{ str_replace('_', ' ', $agent->famille_d_emploi ?? '—') }}</td>
+                        <td class="py-2 px-3 border-0 text-muted">{{ $agent->service?->nom_service ?? '-' }}</td>
+                        <td class="py-2 px-3 border-0">{{ str_replace('_', ' ', $agent->famille_d_emploi ?? '-') }}</td>
                         <td class="py-2 px-3 border-0 text-center">
                             <span style="font-weight:700;color:{{ $age >= 60 ? '#DC2626' : '#D97706' }};">{{ $age }} ans</span>
                         </td>
-                        <td class="py-2 px-3 border-0">{{ $agent->contratActif?->type_contrat ?? '—' }}</td>
+                        <td class="py-2 px-3 border-0">{{ $agent->contratActif?->type_contrat ?? '-' }}</td>
                     </tr>
                     @endforeach
                 </tbody>
@@ -109,8 +109,8 @@
                     @foreach($contratsExpirants as $c)
                     @php $jours = now()->diffInDays($c->date_fin, false); @endphp
                     <tr>
-                        <td class="py-2 px-3 border-0 fw-600">{{ $c->agent?->nom_complet ?? '—' }}</td>
-                        <td class="py-2 px-3 border-0 text-muted">{{ $c->agent?->service?->nom_service ?? '—' }}</td>
+                        <td class="py-2 px-3 border-0 fw-600">{{ $c->agent?->nom_complet ?? '-' }}</td>
+                        <td class="py-2 px-3 border-0 text-muted">{{ $c->agent?->service?->nom_service ?? '-' }}</td>
                         <td class="py-2 px-3 border-0">{{ $c->type_contrat }}</td>
                         <td class="py-2 px-3 border-0 text-center">{{ $c->date_fin?->format('d/m/Y') }}</td>
                         <td class="py-2 px-3 border-0 text-center">

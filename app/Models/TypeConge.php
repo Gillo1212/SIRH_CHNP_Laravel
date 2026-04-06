@@ -65,6 +65,11 @@ class TypeConge extends Model
 
     public function getEstMaterniteAttribute()
     {
-        return str_contains(strtolower($this->libelle), 'maternité');
+        return str_contains(strtolower($this->libelle), 'maternit');
+    }
+
+    public function getEstRayonXAttribute()
+    {
+        return str_contains(strtolower($this->libelle), 'rayon');
     }
 }

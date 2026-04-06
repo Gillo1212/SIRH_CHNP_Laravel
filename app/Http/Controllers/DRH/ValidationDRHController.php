@@ -5,7 +5,6 @@ namespace App\Http\Controllers\DRH;
 use App\Http\Controllers\Controller;
 use App\Models\Demande;
 use App\Models\Mouvement;
-use App\Models\PriseEnCharge;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
@@ -157,56 +156,4 @@ class ValidationDRHController extends Controller
             ->with('success', 'Mouvement rejeté et annulé.');
     }
 
-    // ──────────────────────────────────────────────────
-    // PEC EXCEPTIONNELLES
-    // ──────────────────────────────────────────────────
-    public function pecExceptionnelles()
-    {
-        $pecsEnAttente = PriseEnCharge::with(['demande.agent.service'])
-            ->where('exceptionnelle', true)
-            ->whereHas('demande', fn($q) => $q->where('statut_demande', 'Validé'))
-            ->latest()
-            ->paginate(10);
-
-        $stats = [
-            'en_attente'  => PriseEnCharge::where('exceptionnelle', true)
-                ->whereHas('demande', fn($q) => $q->where('statut_demande', 'Validé'))->count(),
-            'approuvees'  => PriseEnCharge::where('exceptionnelle', true)
-                ->whereHas('demande', fn($q) => $q->where('statut_demande', 'Approuvé'))->count(),
-        ];
-
-        return view('drh.validations.pec-exceptionnelles', compact('pecsEnAttente', 'stats'));
-    }
-
-    public function validerPEC(Request $request, $id)
-    {
-        $pec = PriseEnCharge::with('demande')->findOrFail($id);
-        $action = $request->input('action', 'approuver');
-
-        if ($action === 'approuver') {
-            DB::transaction(function () use ($pec) {
-                $pec->update(['validee_par' => Auth::id()]);
-                $pec->demande->update([
-                    'statut_demande'  => 'Approuvé',
-                    'date_traitement' => now(),
-                ]);
-            });
-            activity()->causedBy(Auth::user())->on($pec)->log('PEC exceptionnelle approuvée par DRH');
-            return back()->with('success', 'Prise en charge exceptionnelle approuvée par le DRH.');
-        }
-
-        if ($action === 'rejeter') {
-            DB::transaction(function () use ($pec, $request) {
-                $pec->demande->update([
-                    'statut_demande' => 'Rejeté',
-                    'motif_refus'    => $request->input('motif_rejet', 'Rejetée par DRH'),
-                    'date_traitement'=> now(),
-                ]);
-            });
-            activity()->causedBy(Auth::user())->on($pec)->log('PEC exceptionnelle rejetée par DRH');
-            return back()->with('success', 'Prise en charge rejetée.');
-        }
-
-        return back()->with('error', 'Action invalide.');
-    }
 }

@@ -11,7 +11,7 @@
 @push('styles')
 <style>
 /* ════════════════════════════════════════════════════════════
-   KPI CARDS — même style que le dashboard
+   KPI CARDS - même style que le dashboard
    ════════════════════════════════════════════════════════════ */
 .kpi-card {
     border-radius: 12px; padding: 20px 24px;
@@ -29,7 +29,7 @@
 .kpi-card.red::before    { background:#DC2626; }
 
 /* ════════════════════════════════════════════════════════════
-   ACTION BUTTONS — charte graphique
+   ACTION BUTTONS - charte graphique
    ════════════════════════════════════════════════════════════ */
 .action-btn {
     display:inline-flex;align-items:center;gap:8px;
@@ -46,7 +46,7 @@
 .action-btn-outline:hover { background:var(--sirh-primary-hover);color:#0A4D8C;border-color:#BFDBFE; }
 
 /* ════════════════════════════════════════════════════════════
-   FILTER — styles handled by master layout .filter-bar
+   FILTER - styles handled by master layout .filter-bar
    ════════════════════════════════════════════════════════════ */
 .input-group-text {
     background:var(--theme-bg-secondary);
@@ -166,32 +166,15 @@
 .view-toggle button.active { background:#0A4D8C;color:#fff; }
 
 /* ════════════════════════════════════════════════════════════
-   MODALS — Charte SIRH
+   MODALS - Charte SIRH (aligné module Contrat)
    ════════════════════════════════════════════════════════════ */
 .modal-content { border-radius:16px;border:none;box-shadow:0 20px 60px rgba(0,0,0,.18); }
-.modal-header-sirh {
-    padding:20px 24px 0;border:none;
-    display:flex;align-items:flex-start;justify-content:space-between;
-}
-.modal-header-sirh .modal-icon {
-    width:52px;height:52px;border-radius:14px;
-    display:flex;align-items:center;justify-content:center;font-size:22px;
-    margin-bottom:12px;
-}
-.modal-header-sirh h5 { font-size:17px;font-weight:700;margin-bottom:4px; }
-.modal-header-sirh p  { font-size:13px;color:var(--theme-text-muted);margin-bottom:0; }
-.modal-body-sirh {
-    padding: 20px 24px;
-    max-height: 420px;
-    overflow-y: auto;
-    scrollbar-width: thin;
-    scrollbar-color: #0A4D8C #E5E7EB;
-}
-.modal-body-sirh::-webkit-scrollbar { width: 8px; }
-.modal-body-sirh::-webkit-scrollbar-track { background: #E5E7EB; border-radius: 4px; }
-.modal-body-sirh::-webkit-scrollbar-thumb { background: #0A4D8C; border-radius: 4px; }
-.modal-body-sirh::-webkit-scrollbar-thumb:hover { background: #1565C0; }
-.modal-footer-sirh { padding:16px 24px 20px;border:none;gap:10px;justify-content:flex-end; }
+.modal-header-sirh  { background:linear-gradient(135deg,#0A4D8C 0%,#1565C0 100%);border:none; }
+.modal-header-danger { background:linear-gradient(135deg,#DC2626 0%,#EF4444 100%);border:none; }
+.modal-header-sirh .modal-title,
+.modal-header-danger .modal-title { color:#fff;font-size:15px;font-weight:600; }
+/* Empêcher le décalage du body quand le modal s'ouvre */
+body.modal-open { padding-right:0 !important; }
 
 /* Tabs dans modal */
 .modal-nav-tabs {
@@ -296,7 +279,7 @@
 @section('content')
 
 {{-- ═══════════════════════════════════════════════════════════
-     KPI CARDS — identique au dashboard RH
+     KPI CARDS - identique au dashboard RH
      ═══════════════════════════════════════════════════════════ --}}
 <div class="section-title">Tableau de bord du personnel</div> <br>
 <div class="row g-3 mb-4">
@@ -502,17 +485,17 @@
                             </div>
                         </div>
                     </td>
-                    <td class="d-none d-md-table-cell" style="color:var(--theme-text-muted);">{{ str_replace('_',' ',$agent->famille_d_emploi ?? '—') ?? '—' }}</td>
+                    <td class="d-none d-md-table-cell" style="color:var(--theme-text-muted);">{{ str_replace('_',' ',$agent->famille_d_emploi ?? '-') ?? '-' }}</td>
                     <td class="d-none d-lg-table-cell">
                         @if($agent->service)
                         <span style="font-size:12px;background:var(--theme-bg-secondary);padding:3px 9px;border-radius:6px;font-weight:500;">
                             {{ $agent->service->nom_service }}
                         </span>
-                        @else <span style="color:var(--theme-text-muted);">—</span>
+                        @else <span style="color:var(--theme-text-muted);">-</span>
                         @endif
                     </td>
                     <td class="d-none d-xl-table-cell" style="color:var(--theme-text-muted);font-size:12.5px;">
-                        {{ $agent->date_prise_service?->format('d/m/Y') ?? '—' }}
+                        {{ $agent->date_prise_service?->format('d/m/Y') ?? '-' }}
                     </td>
                     <td>
                         <span class="badge-pill {{ $bpClass }}">
@@ -619,7 +602,7 @@
             </div>
             <div style="font-size:14px;font-weight:700;">{{ $agent->prenom }} {{ $agent->nom }}</div>
             <div style="font-size:11.5px;color:var(--theme-text-muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%;">
-                {{ str_replace('_',' ',$agent->famille_d_emploi ?? '—') ?? 'Sans fonction' }}
+                {{ str_replace('_',' ',$agent->famille_d_emploi ?? '-') ?? 'Sans fonction' }}
             </div>
         </div>
         <div class="agent-card-body">
@@ -670,30 +653,26 @@
 
 
 {{-- ═══════════════════════════════════════════════════════════════════════
-     MODAL — CRÉER UN AGENT
+     MODAL - CRÉER UN AGENT
      ═══════════════════════════════════════════════════════════════════════ --}}
 @can('create', \App\Models\Agent::class)
 <div class="modal fade" id="modalAddAgent" tabindex="-1" aria-hidden="true" data-bs-backdrop="static">
-    <div class="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable">
-        <div class="modal-content">
+    <div class="modal-dialog modal-xl modal-dialog-centered">
+        <div class="modal-content" style="border-radius:16px;overflow:hidden;border:none;">
 
             {{-- ── EN-TÊTE ── --}}
-            <div class="modal-header-sirh">
-                <div>
-                    <div class="modal-icon" style="background:#EFF6FF;">
-                        <i class="fas fa-user-plus" style="color:#0A4D8C;"></i>
+            <div class="modal-header modal-header-sirh">
+                <div class="d-flex align-items-center gap-2">
+                    <div style="width:32px;height:32px;background:rgba(255,255,255,.15);border-radius:8px;display:flex;align-items:center;justify-content:center;">
+                        <i class="fas fa-user-plus text-white" style="font-size:14px;"></i>
                     </div>
                     @if(isset($compteACompleter) && $compteACompleter)
-                        <h5>Compléter le dossier agent</h5>
-                        <p>Compte : <strong>{{ $compteACompleter->login }}</strong> · {{ $compteACompleter->email }}</p>
+                        <h5 class="modal-title mb-0">Compléter le dossier - {{ $compteACompleter->login }}</h5>
                     @else
-                        <h5>Enregistrer un nouvel agent</h5>
-                        <p>Remplissez les informations du dossier RH. Les champs <span class="text-danger">*</span> sont obligatoires.</p>
+                        <h5 class="modal-title mb-0">Enregistrer un nouvel agent</h5>
                     @endif
                 </div>
-                <button type="button" class="btn-icon" data-bs-dismiss="modal" style="flex-shrink:0;">
-                    <i class="fas fa-xmark"></i>
-                </button>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
             </div>
 
             {{-- ── FORMULAIRE ── --}}
@@ -706,7 +685,7 @@
                 <input type="hidden" name="user_id" value="{{ $compteACompleter->id }}">
             @endif
 
-            <div class="modal-body modal-body-sirh">
+            <div class="modal-body p-4" style="background:var(--theme-panel-bg);">
 
                 {{-- Bannière compte à compléter --}}
                 @if(isset($compteACompleter) && $compteACompleter)
@@ -752,7 +731,7 @@
                             @click="tab='coordonnees'">
                         <i class="fas fa-lock me-1"></i> Coordonnées
                         <span style="font-size:9px;background:#FEE2E2;color:#991B1B;padding:1px 5px;border-radius:6px;margin-left:4px;">AES-256</span>
-                        @if($errors->hasAny(['telephone','email','adresse','numero_assurance','cni','religion']))
+                        @if($errors->hasAny(['telephone','email','adresse','cni','religion']))
                             <span style="width:7px;height:7px;border-radius:50%;background:#EF4444;display:inline-block;margin-left:4px;"></span>
                         @endif
                     </button>
@@ -760,7 +739,7 @@
                             :class="{ active: tab==='professionnel' }"
                             @click="tab='professionnel'">
                         <i class="fas fa-briefcase me-1"></i> Professionnel
-                        @if($errors->hasAny(['date_prise_service','fontion','grade','categorie_cp','famille_d_emploi','id_service','id_division']))
+                        @if($errors->hasAny(['date_prise_service','fonction','grade','categorie_cp','famille_d_emploi','id_service','id_division']))
                             <span style="width:7px;height:7px;border-radius:50%;background:#EF4444;display:inline-block;margin-left:4px;"></span>
                         @endif
                     </button>
@@ -775,7 +754,7 @@
                 </div>
 
                 {{-- ════════════════════════════════
-                     ONGLET 1 — IDENTITÉ
+                     ONGLET 1 - IDENTITÉ
                      ════════════════════════════════ --}}
                 <div x-show="tab==='identite'" x-transition>
 
@@ -798,13 +777,13 @@
                             <label class="form-label-sm">Matricule <span class="text-danger">*</span></label>
                             <input type="text" name="matricule"
                                    class="form-control-sirh @error('matricule') is-invalid @enderror"
-                                   value="{{ old('matricule') }}" placeholder="CHNP-00001"
+                                   value="{{ old('matricule') }}" placeholder="A1234"
                                    style="text-transform:uppercase;font-family:monospace;font-size:14px;font-weight:600;" required>
                             @error('matricule')
                                 <div class="text-danger" style="font-size:12px;margin-top:3px;">{{ $message }}</div>
                             @enderror
                             <div style="font-size:11px;color:var(--theme-text-muted);margin-top:3px;">
-                                <i class="fas fa-keyboard me-1"></i>Format : CHNP-XXXXX
+                                <i class="fas fa-keyboard me-1"></i>Format : XXXXX
                             </div>
                         </div>
                     </div>
@@ -844,7 +823,7 @@
                         <div class="col-md-4">
                             <label class="form-label-sm">Sexe <span class="text-danger">*</span></label>
                             <select name="sexe" class="form-select-sirh @error('sexe') is-invalid @enderror">
-                                <option value="">— Choisir —</option>
+                                <option value="">- Choisir -</option>
                                 <option value="M" @selected(old('sexe')==='M')>Masculin</option>
                                 <option value="F" @selected(old('sexe')==='F')>Féminin</option>
                             </select>
@@ -853,7 +832,7 @@
                         <div class="col-md-4">
                             <label class="form-label-sm">Situation familiale</label>
                             <select name="situation_familiale" class="form-select-sirh">
-                                <option value="">— Choisir —</option>
+                                <option value="">- Choisir -</option>
                                 @foreach(['Célibataire','Marié','Divorcé','Veuf'] as $sf)
                                 <option value="{{ $sf }}" @selected(old('situation_familiale')===$sf)>{{ $sf }}</option>
                                 @endforeach
@@ -873,14 +852,14 @@
                 </div>{{-- /tab identité --}}
 
                 {{-- ════════════════════════════════
-                     ONGLET 2 — COORDONNÉES (AES-256)
+                     ONGLET 2 - COORDONNÉES (AES-256)
                      ════════════════════════════════ --}}
                 <div x-show="tab==='coordonnees'" x-transition>
                     <div class="p-3 mb-4" style="background:#FFF7ED;border:1px solid #FED7AA;border-radius:10px;display:flex;align-items:flex-start;gap:10px;">
                         <i class="fas fa-shield-halved mt-1" style="color:#D97706;font-size:16px;flex-shrink:0;"></i>
                         <div style="font-size:12.5px;color:#92400E;">
                             <strong>Données protégées (Confidentialité CID) :</strong>
-                            Téléphone, adresse, CNI et n° assurance sont stockés <strong>chiffrés AES-256</strong> en base de données.
+                            Téléphone, adresse et CNI sont stockés <strong>chiffrés AES-256</strong> en base de données.
                             Seuls les agents RH et DRH peuvent y accéder.
                         </div>
                     </div>
@@ -908,13 +887,7 @@
                             <label class="form-label-sm">N° CNI</label>
                             <input type="text" name="cni" class="form-control-sirh"
                                    value="{{ old('cni') }}" placeholder="1 XXXXXXX XXXXX XX">
-                            <div class="hint-encrypted"><i class="fas fa-lock" style="font-size:9px;"></i> Carte Nationale d'Identité — chiffrée</div>
-                        </div>
-                        <div class="col-md-6 field-sensitive">
-                            <label class="form-label-sm">N° Assurance maladie</label>
-                            <input type="text" name="numero_assurance" class="form-control-sirh"
-                                   value="{{ old('numero_assurance') }}" placeholder="IPRES-XXXXXXXXX">
-                            <div class="hint-encrypted"><i class="fas fa-lock" style="font-size:9px;"></i> Stocké chiffré (AES-256)</div>
+                            <div class="hint-encrypted"><i class="fas fa-lock" style="font-size:9px;"></i> Carte Nationale d'Identité - chiffrée</div>
                         </div>
                         <div class="col-md-6">
                             <label class="form-label-sm">Religion</label>
@@ -922,26 +895,27 @@
                                    value="{{ old('religion') }}" placeholder="Islam, Christianisme…">
                             <div style="font-size:10.5px;color:#9CA3AF;margin-top:3px;display:flex;align-items:center;gap:4px;">
                                 <i class="fas fa-info-circle" style="font-size:9px;color:#D97706;"></i>
-                                Donnée personnelle sensible — accès restreint
+                                Donnée personnelle sensible - accès restreint
                             </div>
                         </div>
                     </div>
                 </div>{{-- /tab coordonnées --}}
 
                 {{-- ════════════════════════════════
-                     ONGLET 3 — PROFESSIONNEL
+                     ONGLET 3 - PROFESSIONNEL
                      ════════════════════════════════ --}}
                 <div x-show="tab==='professionnel'" x-transition>
                     <div class="row g-3">
                         <div class="col-md-4">
-                            <label class="form-label-sm">Date de prise de service</label>
-                            <input type="date" name="date_prise_service" class="form-control-sirh"
-                                   value="{{ old('date_prise_service') }}" max="{{ now()->format('Y-m-d') }}">
+                            <label class="form-label-sm">Date de prise de service <span class="text-danger">*</span></label>
+                            <input type="date" name="date_prise_service" class="form-control-sirh @error('date_prise_service') is-invalid @enderror"
+                                   value="{{ old('date_prise_service') }}" max="{{ now()->format('Y-m-d') }}" required>
+                            @error('date_prise_service') <div class="text-danger" style="font-size:12px;margin-top:3px;">{{ $message }}</div> @enderror
                         </div>
                         <div class="col-md-4">
                             <label class="form-label-sm">Fonction</label>
-                            <input type="text" name="fontion" class="form-control-sirh"
-                                   value="{{ old('fontion') }}" placeholder="Infirmier chef de poste">
+                            <input type="text" name="fonction" class="form-control-sirh"
+                                   value="{{ old('fonction') }}" placeholder="Infirmier chef de poste">
                         </div>
                         <div class="col-md-4">
                             <label class="form-label-sm">Grade</label>
@@ -951,7 +925,7 @@
                         <div class="col-md-6">
                             <label class="form-label-sm">Catégorie socio-professionnelle</label>
                             <select name="categorie_cp" class="form-select-sirh">
-                                <option value="">— Choisir —</option>
+                                <option value="">- Choisir -</option>
                                 @foreach([
                                     'Cadre_Superieur'      => 'Cadre Supérieur',
                                     'Cadre_Moyen'          => 'Cadre Moyen',
@@ -970,7 +944,7 @@
                         <div class="col-md-6">
                             <label class="form-label-sm">Famille d'emploi</label>
                             <select name="famille_d_emploi" class="form-select-sirh">
-                                <option value="">— Choisir —</option>
+                                <option value="">- Choisir -</option>
                                 <option value="Corps_Médical"       @selected(old('famille_d_emploi')==='Corps_Médical')>Corps Médical</option>
                                 <option value="Corps_Paramédical"   @selected(old('famille_d_emploi')==='Corps_Paramédical')>Corps Paramédical</option>
                                 <option value="Corps_Administratif" @selected(old('famille_d_emploi')==='Corps_Administratif')>Corps Administratif</option>
@@ -981,7 +955,7 @@
                         <div class="col-md-6">
                             <label class="form-label-sm">Service</label>
                             <select name="id_service" class="form-select-sirh">
-                                <option value="">— Aucun —</option>
+                                <option value="">- Aucun -</option>
                                 @foreach($services as $s)
                                 <option value="{{ $s->id_service }}" @selected(old('id_service')==$s->id_service)>{{ $s->nom_service }}</option>
                                 @endforeach
@@ -990,7 +964,7 @@
                         <div class="col-md-6">
                             <label class="form-label-sm">Division</label>
                             <select name="id_division" class="form-select-sirh">
-                                <option value="">— Aucune —</option>
+                                <option value="">- Aucune -</option>
                                 @foreach($divisions as $d)
                                 <option value="{{ $d->id_division }}" @selected(old('id_division')==$d->id_division)>{{ $d->nom_division }}</option>
                                 @endforeach
@@ -1001,7 +975,7 @@
                         <div class="col-12">
                             <div style="background:linear-gradient(135deg,#EFF6FF,#E0F2FE);border:1px solid #BFDBFE;border-radius:10px;padding:14px;">
                                 <div style="font-size:12px;font-weight:700;color:#1E40AF;margin-bottom:8px;">
-                                    <i class="fas fa-shield-alt me-1"></i> Triade CID — Garanties appliquées
+                                    <i class="fas fa-shield-alt me-1"></i> Triade CID - Garanties appliquées
                                 </div>
                                 <div class="row g-0" style="font-size:11.5px;color:#374151;">
                                     <div class="col-md-4 d-flex align-items-center gap-1 mb-1">
@@ -1020,7 +994,7 @@
                 </div>{{-- /tab professionnel --}}
 
                 {{-- ════════════════════════════════
-                     ONGLET 4 — FAMILLE
+                     ONGLET 4 - FAMILLE
                      ════════════════════════════════ --}}
                 <div x-show="tab==='famille'" x-transition>
 
@@ -1120,16 +1094,14 @@
             </div>{{-- /modal-body-sirh --}}
 
             {{-- ── PIED DU MODAL ── --}}
-            <div class="modal-footer-sirh d-flex">
-                <span style="font-size:12px;color:var(--theme-text-muted);flex:1;align-self:center;">
+            <div class="modal-footer" style="background:var(--theme-panel-bg);border-top:1px solid var(--theme-border);">
+                <span style="font-size:11.5px;color:var(--theme-text-muted);margin-right:auto;">
                     <i class="fas fa-shield-alt me-1" style="color:#059669;"></i>
                     Données chiffrées · Audit enregistré · Transaction atomique
                 </span>
-                <button type="button" class="action-btn action-btn-outline" data-bs-dismiss="modal">
-                    <i class="fas fa-xmark"></i> Annuler
-                </button>
+                <button type="button" class="action-btn action-btn-outline" data-bs-dismiss="modal">Annuler</button>
                 <button type="submit" class="action-btn action-btn-primary">
-                    <i class="fas fa-save"></i> Enregistrer l'agent
+                    <i class="fas fa-save me-1"></i>Enregistrer l'agent
                 </button>
             </div>
 
@@ -1140,30 +1112,30 @@
 @endcan
 
 {{-- ═══════════════════════════════════════════════════════════════════════
-     MODAL — CONFIRMATION ARCHIVE
+     MODAL - CONFIRMATION ARCHIVE
      ═══════════════════════════════════════════════════════════════════════ --}}
 <div class="modal fade" id="modalArchive" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered" style="max-width:400px;">
-        <div class="modal-content">
-            <div class="modal-header-sirh">
-                <div>
-                    <div class="modal-icon" style="background:#FEF2F2;">
-                        <i class="fas fa-triangle-exclamation" style="color:#DC2626;"></i>
+        <div class="modal-content" style="border-radius:16px;overflow:hidden;border:none;">
+            <div class="modal-header modal-header-danger">
+                <div class="d-flex align-items-center gap-2">
+                    <div style="width:32px;height:32px;background:rgba(255,255,255,.15);border-radius:8px;display:flex;align-items:center;justify-content:center;">
+                        <i class="fas fa-triangle-exclamation text-white" style="font-size:14px;"></i>
                     </div>
-                    <h5>Confirmer l'archivage</h5>
-                    <p>Archiver l'agent <strong id="agentNomArchive"></strong> ? Le compte sera désactivé. Cette action est réversible.</p>
+                    <h5 class="modal-title mb-0">Confirmer l'archivage</h5>
                 </div>
-                <button type="button" class="btn-icon" data-bs-dismiss="modal"><i class="fas fa-xmark"></i></button>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" style="filter:invert(1);"></button>
             </div>
-            <div class="modal-footer-sirh d-flex">
-                <button type="button" class="action-btn action-btn-outline flex-fill justify-content-center" data-bs-dismiss="modal">
-                    Annuler
-                </button>
-                <form id="formArchive" method="POST" class="flex-fill">
+            <div class="modal-body p-4" style="background:var(--theme-panel-bg);font-size:13.5px;">
+                Archiver l'agent <strong id="agentNomArchive"></strong> ?
+                Le compte sera désactivé. Cette action est réversible.
+            </div>
+            <div class="modal-footer" style="background:var(--theme-panel-bg);border-top:1px solid var(--theme-border);">
+                <button type="button" class="action-btn action-btn-outline" data-bs-dismiss="modal">Annuler</button>
+                <form id="formArchive" method="POST">
                     @csrf @method('DELETE')
-                    <button type="submit" class="action-btn w-100 justify-content-center"
-                            style="background:#DC2626;color:#fff;border-radius:8px;">
-                        <i class="fas fa-archive"></i> Archiver
+                    <button type="submit" class="action-btn" style="background:#DC2626;color:#fff;">
+                        <i class="fas fa-archive me-1"></i>Archiver
                     </button>
                 </form>
             </div>
@@ -1217,8 +1189,10 @@ document.addEventListener('DOMContentLoaded', () => {
     if (saved === 'cards') switchView('cards');
     /* Toasts */
     document.querySelectorAll('.toast').forEach(el => new bootstrap.Toast(el, { delay: 5500 }).show());
-    /* Rouvrir modal si erreur de validation */
+    /* Rouvrir modal si erreur de validation ou paramètre create=1 */
     @if($errors->any())
+        new bootstrap.Modal(document.getElementById('modalAddAgent')).show();
+    @elseif(request('create'))
         new bootstrap.Modal(document.getElementById('modalAddAgent')).show();
     @endif
 });

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Agent;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Agent\StorePECRequest;
 use App\Models\Demande;
 use App\Models\PriseEnCharge;
 use App\Models\User;
@@ -33,15 +34,16 @@ class PECAgentController extends Controller
         return view('agent.pec.create');
     }
 
-    public function store(Request $request)
+    public function store(StorePECRequest $request)
     {
-        $validated = $request->validate([
-            'ayant_droit'    => 'required|string|in:Agent,Conjoint,Enfant',
-            'type_prise'     => 'required|string',
-            'raison_medical' => 'required|string|max:1000',
-        ]);
+        $validated = $request->validated();
 
-        DB::transaction(function () use ($validated) {
+        $justificatifPath = null;
+        if ($request->hasFile('justificatif')) {
+            $justificatifPath = $request->file('justificatif')->store('pec-justificatifs', 'private');
+        }
+
+        DB::transaction(function () use ($validated, $justificatifPath) {
             $demande = Demande::create([
                 'id_agent'       => $this->agentId(),
                 'type_demande'   => 'PriseEnCharge',
@@ -49,11 +51,12 @@ class PECAgentController extends Controller
             ]);
 
             PriseEnCharge::create([
-                'id_demande'     => $demande->id_demande,
-                'raison_medical' => $validated['raison_medical'],
-                'ayant_droit'    => $validated['ayant_droit'],
-                'type_prise'     => $validated['type_prise'],
-                'date_edition'   => now()->toDateString(),
+                'id_demande'       => $demande->id_demande,
+                'raison_medical'   => $validated['raison_medical'],
+                'ayant_droit'      => $validated['ayant_droit'],
+                'type_prise'       => $validated['type_prise'],
+                'justificatif_path'=> $justificatifPath,
+                'date_edition'     => now()->toDateString(),
             ]);
         });
 
@@ -91,5 +94,15 @@ class PECAgentController extends Controller
 
         return redirect()->route('agent.pec.show', $id)
             ->with('info', 'Votre attestation est disponible. Contactez le service RH pour l\'obtenir en version imprimée.');
+    }
+
+    public function downloadJustificatif($id)
+    {
+        $pec = PriseEnCharge::whereHas('demande', fn($q) => $q->where('id_agent', $this->agentId()))
+            ->findOrFail($id);
+
+        abort_unless($pec->justificatif_path, 404);
+
+        return \Storage::disk('private')->download($pec->justificatif_path);
     }
 }

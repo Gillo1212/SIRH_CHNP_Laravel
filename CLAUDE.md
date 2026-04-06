@@ -18,8 +18,8 @@
    - adresse (AES-256)
    - telephone (AES-256)
    - numero_assurance (AES-256)
-   
-2. **RBAC strict** (5 rôles + permissions granulaires)
+
+2. **RBAC strict** (6 rôles + permissions granulaires)
 3. **Policies Laravel** : Vérification autorisation AVANT chaque action
 4. **Masquage à l'affichage** : Données sensibles partiellement masquées
 5. **Audit trail complet** : Traçabilité de TOUS les accès
@@ -116,73 +116,204 @@ Schema::create('agents', function (Blueprint $table) {
 - **Excel** : Maatwebsite Excel 1.1
 - **Images** : Intervention Image 1.5
 
-## 👥 RÔLES RBAC (5 RÔLES)
+## 👥 RÔLES RBAC (6 RÔLES)
 
 ### Hiérarchie
 ```
-Agent < Manager < AgentRH < DRH < AdminSystème
+Agent < Major ─┐
+               ├─ < AgentRH < DRH < AdminSystème
+    Manager ───┘
 ```
+> **Major** et **Manager** sont des rôles de supervision de terrain, au même niveau hiérarchique, mais avec des périmètres différents :
+> - **Manager** : supervision administrative d'un service (validation congés, statistiques)
+> - **Major** : supervision opérationnelle de terrain (planning, heures sup, absences)
+
+---
 
 ### **1. Agent**
-- Consulter son dossier personnel
-- Demander congés
-- Justifier absences
-- Consulter son planning
-- Accéder ses documents
-- **Self-Service** :
-  - Demander documents administratifs (attestation, certificat, ordre de mission)
-  - Demander prises en charge médicales (agent, conjoint, enfant)
-  - Consulter statut demandes
-  - Télécharger documents générés
+**Permissions** :
+```
+voir_propre_dossier
+demander_conge
+voir_mes_conges
+voir_mes_absences
+justifier_absence
+voir_mon_planning
+telecharger_document
+voir_dashboard_agent
+demander_document_administratif
+demander_prise_en_charge
+voir_mes_demandes
+```
+**Accès** : Self-service uniquement (dossier personnel, demandes, téléchargements)
 
-### **2. Manager**
-- Permissions Agent +
-- Consulter équipe (lecture seule)
-- Valider congés (1ère étape)
-- Enregistrer absences équipe
-- Créer/Modifier plannings
-- Transmettre planning à RH
-- Consulter statistiques service
+---
 
-### **3. AgentRH**
-- CRUD Personnel (agents, enfants, conjoints)
-- CRUD Contrats
-- Approbation finale congés + MAJ solde
-- Saisie congé physique (agent au bureau)
-- Validation plannings
-- GED complète
-- **Mouvements** : Affectations, Mutations, Retours, Départs
-- **Documents administratifs** : Traiter demandes, Générer documents
-- **Prises en charge** : Traiter demandes, Valider/Rejeter
-- **Organisation** : Gérer Services et Divisions, Assigner managers
-- Génération rapports
-- Export Excel/PDF
+### **2. Major** ⭐ RÔLE TERRAIN
+**Contexte** : Rôle spécifique milieu hospitalier — chef de salle/major infirmier. Gère son équipe opérationnellement (plannings, absences, heures sup) sans pouvoir valider les congés.
 
-### **4. DRH (Directeur RH)** ⭐ NOUVEAU
-- **Hérite de TOUTES les permissions AgentRH** +
-- **Pilotage stratégique** :
-  - Dashboard KPIs globaux
-  - Visualisation organigramme
-  - Indicateurs : Effectifs, Turnover, Absentéisme, Pyramide des âges
-  - Évolution effectifs 12 mois
-- **Validations finales** :
-  - Signer documents officiels (décisions d'affectation)
-  - Valider mouvements stratégiques
-  - Valider PEC exceptionnelles
-- **Rapports direction** :
-  - Bilan social annuel
-  - Rapports consolidés pour direction générale
-  - Prévisions départs (retraites, fins de contrat)
-  - Export données consolidées
-- **Organisation** :
-  - Valider création/modification services/divisions
+**Permissions** :
+```
+// Héritage Agent
+voir_propre_dossier
+demander_conge
+voir_mes_conges
+voir_mes_absences
+justifier_absence
+voir_mon_planning
+telecharger_document
+voir_dashboard_agent
 
-### **5. AdminSystème**
-- Gestion comptes utilisateurs
-- Gestion rôles/permissions
-- Audit trail complet
-- Configuration système
-- Sauvegardes
+// Gestion équipe (lecture)
+voir_equipe
+voir_conges_equipe
+donner_avis_sur_conge        // Donne un avis mais NE VALIDE PAS
+
+// Absences équipe
+enregistrer_absence          // Enregistre les absences de son équipe
+
+// Planning
+voir_planning_service
+creer_planning
+modifier_planning
+transmettre_planning         // Transmet au RH pour validation
+
+// Heures supplémentaires
+gerer_heures_sup             // Saisie et suivi des heures sup de l'équipe
+
+// Dashboard exclusif
+voir_dashboard_major
+```
+**N'a PAS accès à** : validation finale congés, GED globale, mouvements, documents administratifs tiers
+
+---
+
+### **3. Manager**
+**Permissions** : Permissions Agent +
+```
+// Équipe
+voir_equipe
+voir_conges_equipe
+voir_absences_equipe
+
+// Congés
+valider_conge_manager        // 1ère validation (avant RH)
+rejeter_conge_manager
+
+// Absences
+enregistrer_absence
+modifier_absence_equipe
+
+// Planning
+voir_planning_service
+creer_planning
+modifier_planning
+transmettre_planning
+
+// Dashboard
+voir_dashboard_manager
+voir_statistiques_service
+```
+
+---
+
+### **4. AgentRH**
+**Permissions** :
+```
+// Personnel
+creer_agent, modifier_agent, voir_agent, supprimer_agent
+gerer_enfants, gerer_conjoints
+gerer_contrats
+exporter_agents
+
+// Congés
+approuver_conge_rh           // Validation finale
+rejeter_conge_rh
+saisir_conge_physique        // Pour agent au bureau
+gerer_soldes_conges
+
+// Absences
+valider_justificatif_absence
+
+// Plannings
+valider_planning
+rejeter_planning
+
+// GED
+gerer_documents
+gerer_etageres
+gerer_dossiers
+
+// Mouvements
+creer_mouvement
+modifier_mouvement
+traiter_mouvement
+
+// Documents administratifs
+traiter_demande_document
+generer_document
+rejeter_demande_document
+
+// Prises en charge
+valider_pec
+rejeter_pec
+
+// Organisation
+gerer_services
+gerer_divisions
+assigner_manager
+
+// Rapports
+generer_rapport
+exporter_excel
+exporter_pdf
+
+// Dashboard
+voir_dashboard_rh
+```
+
+---
+
+### **5. DRH (Directeur RH)**
+**Hérite de TOUTES les permissions AgentRH** +
+```
+// Pilotage stratégique
+voir_dashboard_drh
+voir_kpis_globaux
+voir_organigramme
+voir_indicateurs_effectifs
+voir_pyramide_ages
+voir_taux_turnover
+voir_taux_absenteisme
+voir_evolution_effectifs
+
+// Validations finales
+signer_document_officiel
+valider_mouvement_strategique
+valider_pec_exceptionnelle
+
+// Rapports direction
+generer_bilan_social
+generer_rapport_direction
+voir_previsions_departs
+
+// Organisation
+valider_creation_service
+valider_modification_service
+```
+
+---
+
+### **6. AdminSystème**
+**Toutes les permissions** + exclusives :
+```
+gerer_utilisateurs
+gerer_roles_permissions
+voir_audit_trail_complet
+configurer_systeme
+gerer_sauvegardes
+impersonner_utilisateur      // Pour support/debug
+```
 
 ## ⚠️ PÉRIMÈTRE MVP (IMPORTANT)
 
@@ -198,7 +329,7 @@ Agent < Manager < AgentRH < DRH < AdminSystème
 - Prises en charge médicales
 - Services et divisions
 - Reporting et dashboards
-- RBAC complet (5 rôles)
+- RBAC complet (6 rôles : Agent, Major, Manager, AgentRH, DRH, AdminSystème)
 - Audit trail
 
 ### ❌ EXCLUS du MVP (PAS DE PAIE)
@@ -211,7 +342,7 @@ Agent < Manager < AgentRH < DRH < AdminSystème
 
 **Note** : Les indicateurs DRH sont basés sur les EFFECTIFS et MOUVEMENTS, pas sur les données financières.
 
-## 🎯 MVP COMPLET : 7 MODULES + 3 NOUVEAUX
+## 🎯 MVP COMPLET : 7 MODULES + 3 NOUVEAUX (10 MODULES TOTAL)
 
 ### **MODULE 1 : GESTION PERSONNEL**
 - CRUD agents (avec user associé)
@@ -242,11 +373,12 @@ Agent < Manager < AgentRH < DRH < AdminSystème
 - Validation justificatif (RH)
 
 ### **MODULE 5 : GESTION PLANNINGS**
-- Création planning mensuel (Manager)
+- Création planning mensuel (Manager **ou Major**)
 - Types postes : Jour, Nuit, Garde, Repos, Astreinte
 - Transmission à RH
 - Validation/Rejet RH
 - Export PDF
+- **Heures supplémentaires** : Saisie et suivi par le Major
 
 ### **MODULE 6 : GED**
 - Upload documents multi-formats
@@ -348,6 +480,7 @@ Schema::create('mouvements', function (Blueprint $table) {
 | DRH | drh@chnp.sn | password |
 | Agent RH | rh@chnp.sn | password |
 | Manager | manager@chnp.sn | password |
+| Major | major@chnp.sn | password |
 | Agent | agent@chnp.sn | password |
 
 ## 🎨 CHARTE GRAPHIQUE
@@ -406,7 +539,7 @@ Demande confirmation AVANT :
 
 ### Livrables
 1.  10 modules COMPLETS et FONCTIONNELS
-2.  5 rôles RBAC (incluant DRH)
+2.  6 rôles RBAC (Agent, Major, Manager, AgentRH, DRH, AdminSystème)
 3.  Démonstration TRIADE CID
 4.  Self-service Agent
 5.  Tests (70% couverture)
@@ -418,7 +551,7 @@ Demande confirmation AVANT :
 
 **Confidentialité** :
 - Montrer chiffrement en base (phpMyAdmin)
-- Démontrer RBAC 5 rôles (accès refusé si mauvais rôle)
+- Démontrer RBAC 6 rôles (accès refusé si mauvais rôle)
 - Audit trail complet
 
 **Intégrité** :
@@ -433,4 +566,4 @@ Demande confirmation AVANT :
 
 ---
 
-**MVP COMPLET : 10 MODULES + 5 RÔLES + TRIADE CID**
+**MVP COMPLET : 10 MODULES + 6 RÔLES + TRIADE CID**

@@ -1,6 +1,6 @@
 @extends('layouts.master')
 
-@section('title', 'Divisions — RH')
+@section('title', 'Divisions - RH')
 @section('page-title', 'Gestion des Divisions')
 
 @section('breadcrumb')
@@ -178,7 +178,7 @@
 
 
 {{-- ═══════════════════════════════════════════════════════════════════════
-     MODAL — CRÉER UNE DIVISION
+     MODAL - CRÉER UNE DIVISION
      ═══════════════════════════════════════════════════════════════════════ --}}
 <div class="modal fade" id="modalCreateDivision" tabindex="-1">
     <div class="modal-dialog modal-dialog-centered modal-sm">
@@ -194,7 +194,7 @@
                 <div class="modal-body px-4 py-3">
                     <label class="modal-label">Service parent <span class="text-danger">*</span></label>
                     <select id="createServiceId" name="id_service" class="form-control modal-input mb-3" required>
-                        <option value="">— Choisir un service —</option>
+                        <option value="">- Choisir un service -</option>
                         @foreach($services as $svc)
                             <option value="{{ $svc->id_service }}">{{ $svc->nom_service }}</option>
                         @endforeach
@@ -215,7 +215,7 @@
 </div>
 
 {{-- ═══════════════════════════════════════════════════════════════════════
-     MODAL — MODIFIER UNE DIVISION
+     MODAL - MODIFIER UNE DIVISION
      ═══════════════════════════════════════════════════════════════════════ --}}
 <div class="modal fade" id="modalEditDivision" tabindex="-1">
     <div class="modal-dialog modal-dialog-centered modal-sm">
@@ -231,7 +231,7 @@
                 <div class="modal-body px-4 py-3">
                     <label class="modal-label">Service parent</label>
                     <select id="editDivServiceId" name="id_service" class="form-control modal-input mb-3">
-                        <option value="">— Aucun —</option>
+                        <option value="">- Aucun -</option>
                         @foreach($services as $svc)
                             <option value="{{ $svc->id_service }}">{{ $svc->nom_service }}</option>
                         @endforeach
@@ -251,7 +251,7 @@
 </div>
 
 {{-- ═══════════════════════════════════════════════════════════════════════
-     MODAL — SUPPRIMER UNE DIVISION
+     MODAL - SUPPRIMER UNE DIVISION
      ═══════════════════════════════════════════════════════════════════════ --}}
 <div class="modal fade" id="modalDeleteDivision" tabindex="-1">
     <div class="modal-dialog modal-dialog-centered modal-sm">

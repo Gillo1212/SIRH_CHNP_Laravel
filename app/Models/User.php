@@ -46,14 +46,6 @@ class User extends Authenticatable
     // =====================================================
 
     /**
-     * Préférences utilisateur
-     */
-    public function preference()
-    {
-        return $this->hasOne(UserPreference::class);
-    }
-
-    /**
      * Tickets support créés par l'utilisateur
      */
     public function ticketsSupport()

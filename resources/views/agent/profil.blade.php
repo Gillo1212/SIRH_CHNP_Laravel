@@ -171,7 +171,7 @@
                         </div>
                         <div class="col-6">
                             <div class="field-label">Date de naissance</div>
-                            <div class="field-value">{{ $agent->date_naissance?->format('d/m/Y') ?? '—' }}</div>
+                            <div class="field-value">{{ $agent->date_naissance?->format('d/m/Y') ?? '-' }}</div>
                         </div>
                         <div class="col-6">
                             <div class="field-label">Sexe</div>
@@ -179,7 +179,7 @@
                         </div>
                         <div class="col-6">
                             <div class="field-label">Statut contrat</div>
-                            <div class="field-value">{{ $agent->statut_agent === 'En_congé' ? 'En congé' : ($agent->statut_agent ?? '—') }}</div>
+                            <div class="field-value">{{ $agent->statut_agent === 'En_congé' ? 'En congé' : ($agent->statut_agent ?? '-') }}</div>
                         </div>
                         <div class="col-6">
                             <div class="field-label">Religion</div>
@@ -257,23 +257,23 @@
                         </div>
                         <div class="col-6 col-md-3">
                             <div class="field-label">Famille d'emploi</div>
-                            <div class="field-value">{{ $agent->famille_d_emploi ? str_replace('_', ' ', $agent->famille_d_emploi) : '—' }}</div>
+                            <div class="field-value">{{ $agent->famille_d_emploi ? str_replace('_', ' ', $agent->famille_d_emploi) : '-' }}</div>
                         </div>
                         <div class="col-6 col-md-3">
                             <div class="field-label">Catégorie CSP</div>
-                            <div class="field-value">{{ str_replace('_', ' ', $agent->categorie_cp ?? '—') }}</div>
+                            <div class="field-value">{{ str_replace('_', ' ', $agent->categorie_cp ?? '-') }}</div>
                         </div>
                         <div class="col-6 col-md-3">
                             <div class="field-label">Statut agent</div>
-                            <div class="field-value">{{ $agent->statut_agent === 'En_congé' ? 'En congé' : ($agent->statut_agent ?? '—') }}</div>
+                            <div class="field-value">{{ $agent->statut_agent === 'En_congé' ? 'En congé' : ($agent->statut_agent ?? '-') }}</div>
                         </div>
                         <div class="col-6 col-md-3">
                             <div class="field-label">Service</div>
-                            <div class="field-value">{{ $agent->service?->nom_service ?? '—' }}</div>
+                            <div class="field-value">{{ $agent->service?->nom_service ?? '-' }}</div>
                         </div>
                         <div class="col-6 col-md-3">
                             <div class="field-label">Division</div>
-                            <div class="field-value">{{ $agent->division?->nom_division ?? '—' }}</div>
+                            <div class="field-value">{{ $agent->division?->nom_division ?? '-' }}</div>
                         </div>
                     </div>
                 </div>
@@ -292,11 +292,11 @@
                     <div class="row g-3">
                         <div class="col-6 col-md-3">
                             <div class="field-label">Type</div>
-                            <div class="field-value">{{ $contrat->type_contrat ?? '—' }}</div>
+                            <div class="field-value">{{ $contrat->type_contrat ?? '-' }}</div>
                         </div>
                         <div class="col-6 col-md-3">
                             <div class="field-label">Début</div>
-                            <div class="field-value">{{ $contrat->date_debut?->format('d/m/Y') ?? '—' }}</div>
+                            <div class="field-value">{{ $contrat->date_debut?->format('d/m/Y') ?? '-' }}</div>
                         </div>
                         <div class="col-6 col-md-3">
                             <div class="field-label">Fin</div>
@@ -508,7 +508,7 @@
                     <div class="row g-3">
                         <div class="col-12">
                             <div class="field-label">Identifiant de connexion</div>
-                            <div class="field-value font-monospace">{{ auth()->user()->login ?? '—' }}</div>
+                            <div class="field-value font-monospace">{{ auth()->user()->login ?? '-' }}</div>
                         </div>
                         <div class="col-12">
                             <div class="field-label">Rôle(s)</div>

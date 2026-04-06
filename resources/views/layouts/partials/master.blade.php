@@ -707,7 +707,7 @@
             100% { background-position: -200% 0; }
         }
         /* ═════════════════════════════════════════════════════════════════════
-           FILTER BAR — Standard harmonisé tous modules
+           FILTER BAR - Standard harmonisé tous modules
            ═════════════════════════════════════════════════════════════════════ */
         .filter-bar {
             display: flex;

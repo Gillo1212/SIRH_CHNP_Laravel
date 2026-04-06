@@ -42,7 +42,7 @@ class Agent extends Model
         'cni',                // AES-256 — Carte Nationale d'Identité
         'religion',
         'date_prise_service',
-        'fontion',
+        'fonction',
         'grade',
         'categorie_cp',
         'famille_d_emploi',
@@ -212,7 +212,7 @@ class Agent extends Model
     public function getActivitylogOptions(): LogOptions
     {
         return LogOptions::defaults()
-            ->logOnly(['matricule', 'nom', 'prenom', 'statut_agent', 'id_service', 'famille_d_emploi', 'fontion'])
+            ->logOnly(['matricule', 'nom', 'prenom', 'statut_agent', 'id_service', 'famille_d_emploi', 'fonction'])
             ->logOnlyDirty()
             ->dontSubmitEmptyLogs()
             ->useLogName('agents');

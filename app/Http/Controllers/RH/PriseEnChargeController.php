@@ -25,7 +25,9 @@ class PriseEnChargeController extends Controller
             'rejetees' => Demande::where('type_demande', 'PriseEnCharge')->where('statut_demande', 'Rejeté')->count(),
         ];
 
-        return view('rh.prises-en-charge.index', compact('prises', 'stats'));
+        $agents = Agent::actif()->orderBy('nom')->get();
+
+        return view('rh.prises-en-charge.index', compact('prises', 'stats', 'agents'));
     }
 
     public function create()
@@ -42,10 +44,17 @@ class PriseEnChargeController extends Controller
             'type_prise'    => 'required|string',
             'raison_medical'=> 'required|string|max:1000',
             'date_debut'    => 'required|date',
-            'exceptionnelle'=> 'nullable|boolean',
+            'justificatif'  => 'required_if:ayant_droit,Conjoint|nullable|file|mimes:pdf,jpg,jpeg,png|max:5120',
+        ], [
+            'justificatif.required_if' => 'Le certificat de mariage est obligatoire pour une prise en charge du conjoint.',
         ]);
 
-        DB::transaction(function () use ($validated) {
+        $justificatifPath = null;
+        if ($request->hasFile('justificatif')) {
+            $justificatifPath = $request->file('justificatif')->store('pec-justificatifs', 'private');
+        }
+
+        DB::transaction(function () use ($validated, $justificatifPath) {
             $demande = Demande::create([
                 'id_agent'      => $validated['agent_id'],
                 'type_demande'  => 'PriseEnCharge',
@@ -53,12 +62,12 @@ class PriseEnChargeController extends Controller
             ]);
 
             PriseEnCharge::create([
-                'id_demande'     => $demande->id_demande,
-                'raison_medical' => $validated['raison_medical'],
-                'ayant_droit'    => $validated['ayant_droit'],
-                'type_prise'     => $validated['type_prise'],
-                'exceptionnelle' => $validated['exceptionnelle'] ?? false,
-                'date_edition'   => $validated['date_debut'],
+                'id_demande'       => $demande->id_demande,
+                'raison_medical'   => $validated['raison_medical'],
+                'ayant_droit'      => $validated['ayant_droit'],
+                'type_prise'       => $validated['type_prise'],
+                'justificatif_path'=> $justificatifPath,
+                'date_edition'     => $validated['date_debut'],
             ]);
         });
 
@@ -104,6 +113,15 @@ class PriseEnChargeController extends Controller
         }
 
         return back()->with('error', 'Action invalide.');
+    }
+
+    public function downloadJustificatif(int $id)
+    {
+        $prise = PriseEnCharge::findOrFail($id);
+
+        abort_unless($prise->justificatif_path, 404);
+
+        return \Storage::disk('private')->download($prise->justificatif_path);
     }
 
     public function historique()

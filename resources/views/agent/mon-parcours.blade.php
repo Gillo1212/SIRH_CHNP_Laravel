@@ -134,7 +134,7 @@
             </h4>
             <p class="mb-0 text-white-75" style="font-size:13px;opacity:.85;">
                 {{ $agent->service?->nom_service ?? 'Service non défini' }}
-                @if($agent->fontion) · {{ $agent->fontion }}@endif
+                @if($agent->fonction) · {{ $agent->fonction }}@endif
             </p>
         </div>
 
@@ -228,7 +228,7 @@
                                             <div class="tl-card-meta mb-2">
                                                 <span class="tl-card-date">
                                                     <i class="fas fa-calendar-day"></i>
-                                                    {{ $mvt->date_mouvement?->format('d/m/Y') ?? '—' }}
+                                                    {{ $mvt->date_mouvement?->format('d/m/Y') ?? '-' }}
                                                 </span>
                                                 <span class="tl-badge" style="background:{{ $statut['bg'] }};color:{{ $statut['color'] }};">
                                                     <i class="fas {{ $statut['icon'] }}" style="font-size:9px;"></i>
@@ -286,7 +286,7 @@
                             Fonction
                         </div>
                         <div style="font-weight:500;color:var(--theme-text);">
-                            {{ $agent->fontion ?? '—' }}
+                            {{ $agent->fonction ?? '-' }}
                         </div>
                     </div>
                     <div class="col-6">
@@ -294,7 +294,7 @@
                             Grade
                         </div>
                         <div style="font-weight:500;color:var(--theme-text);">
-                            {{ $agent->grade ?? '—' }}
+                            {{ $agent->grade ?? '-' }}
                         </div>
                     </div>
                     <div class="col-6">
@@ -302,7 +302,7 @@
                             Catégorie CSP
                         </div>
                         <div style="font-weight:500;color:var(--theme-text);">
-                            {{ str_replace('_', ' ', $agent->categorie_cp ?? '—') }}
+                            {{ str_replace('_', ' ', $agent->categorie_cp ?? '-') }}
                         </div>
                     </div>
                     <div class="col-6">
@@ -310,7 +310,7 @@
                             Famille d'emploi
                         </div>
                         <div style="font-weight:500;color:var(--theme-text);">
-                            {{ $agent->famille_d_emploi ? str_replace('_', ' ', $agent->famille_d_emploi) : '—' }}
+                            {{ $agent->famille_d_emploi ? str_replace('_', ' ', $agent->famille_d_emploi) : '-' }}
                         </div>
                     </div>
                     <div class="col-6">
@@ -318,7 +318,7 @@
                             Service
                         </div>
                         <div style="font-weight:500;color:var(--theme-text);">
-                            {{ $agent->service?->nom_service ?? '—' }}
+                            {{ $agent->service?->nom_service ?? '-' }}
                         </div>
                     </div>
                     <div class="col-6">
@@ -326,7 +326,7 @@
                             Prise de service
                         </div>
                         <div style="font-weight:500;color:var(--theme-text);">
-                            {{ $agent->date_prise_service?->format('d/m/Y') ?? '—' }}
+                            {{ $agent->date_prise_service?->format('d/m/Y') ?? '-' }}
                         </div>
                     </div>
                 </div>
@@ -376,7 +376,7 @@
                             <div class="d-flex gap-3 flex-wrap" style="font-size:12px;color:var(--theme-text-muted);">
                                 <span>
                                     <i class="fas fa-play me-1" style="color:#10B981;font-size:9px;"></i>
-                                    {{ $contrat->date_debut?->format('d/m/Y') ?? '—' }}
+                                    {{ $contrat->date_debut?->format('d/m/Y') ?? '-' }}
                                 </span>
                                 @if($contrat->date_fin)
                                 <span>

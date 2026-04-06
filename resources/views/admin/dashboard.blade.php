@@ -1,6 +1,6 @@
 @extends('layouts.master')
 
-@section('title', 'Tableau de bord — Administration')
+@section('title', 'Tableau de bord - Administration')
 @section('page-title', 'Administration Système')
 
 @section('breadcrumb')
@@ -50,7 +50,7 @@
             Bonjour, {{ Auth::user()->agent->prenom ?? 'Administrateur' }} 
         </h4>
         <p class="mb-0 text-muted" style="font-size:13.5px;">
-            {{ now()->isoFormat('dddd D MMMM YYYY') }} — Administration Système
+            {{ now()->isoFormat('dddd D MMMM YYYY') }} - Administration Système
         </p>
     </div>
     <div class="d-flex gap-2 flex-wrap">
@@ -134,7 +134,7 @@
     </div>
     <div class="col-12 col-lg-7">
         <div class="panel h-100">
-            <div class="fw-600 mb-1" style="color:#111827;">Activité système — 7 derniers jours</div>
+            <div class="fw-600 mb-1" style="color:#111827;">Activité système - 7 derniers jours</div>
             <div style="font-size:12px;color:#9CA3AF;margin-bottom:14px;">Connexions et actions enregistrées</div>
             <canvas id="chartActivite" style="max-height:220px;"></canvas>
         </div>
@@ -159,7 +159,7 @@
                     <div class="flex-1">
                         <div style="font-size:13px;font-weight:500;color:#111827;">{{ $log->action ?? 'Événement système' }}</div>
                         <div style="font-size:12px;color:#9CA3AF;">
-                            {{ $log->utilisateur?->login ?? 'Système' }} — {{ optional($log->date_evenement)->diffForHumans() ?? '' }}
+                            {{ $log->utilisateur?->login ?? 'Système' }} - {{ optional($log->date_evenement)->diffForHumans() ?? '' }}
                         </div>
                     </div>
                 </div>
@@ -170,7 +170,7 @@
                     <div class="alert-dot" style="background:{{ $item[2] }};"></div>
                     <div>
                         <div style="font-size:13px;font-weight:500;color:#111827;">{{ $item[0] }}</div>
-                        <div style="font-size:12px;color:#9CA3AF;">{{ $item[1] }} — {{ $item[3] }}</div>
+                        <div style="font-size:12px;color:#9CA3AF;">{{ $item[1] }} - {{ $item[3] }}</div>
                     </div>
                 </div>
                 @endforeach
@@ -198,7 +198,7 @@
                         <div style="font-size:13px;font-weight:500;color:#111827;">{{ $user->login }}</div>
                         <div style="font-size:12px;color:#9CA3AF;">
                             <span style="background:{{ $roleColors[$role] ?? '#0A4D8C' }}22;color:{{ $roleColors[$role] ?? '#0A4D8C' }};padding:1px 8px;border-radius:20px;font-weight:600;">{{ $role }}</span>
-                            — {{ $user->derniere_connexion?->diffForHumans() ?? 'Jamais' }}
+                            - {{ $user->derniere_connexion?->diffForHumans() ?? 'Jamais' }}
                         </div>
                     </div>
                 </div>

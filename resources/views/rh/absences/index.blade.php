@@ -129,7 +129,13 @@
                 </div>
                 <div class="kpi-value" style="color:#059669;">{{ $kpis['maladie_mois'] }}</div>
                 <div class="kpi-label text-muted">Congés maladie</div>
-                <div class="kpi-trend up"><i class="fas fa-notes-medical me-1"></i>Certificat requis</div>
+                @if($kpis['certificats_en_attente'] > 0)
+                    <div class="kpi-trend down">
+                        <i class="fas fa-file-medical me-1"></i>{{ $kpis['certificats_en_attente'] }} certificat(s) à valider
+                    </div>
+                @else
+                    <div class="kpi-trend up"><i class="fas fa-check me-1"></i>Certificats à jour</div>
+                @endif
             </div>
         </div>
         <div class="col-6 col-lg-3">
@@ -155,7 +161,7 @@
                 <div class="card-header border-0 bg-transparent px-4 pt-4 pb-2">
                     <h6 class="mb-0 fw-bold" style="color:var(--theme-text);">
                         Répartition par type
-                        <small class="fw-normal text-muted ms-1">— {{ now()->isoFormat('MMMM YYYY') }}</small>
+                        <small class="fw-normal text-muted ms-1">- {{ now()->isoFormat('MMMM YYYY') }}</small>
                     </h6>
                 </div>
                 <div class="card-body px-4 pb-4">
@@ -193,7 +199,7 @@
                 <div class="card-header border-0 bg-transparent px-4 pt-4 pb-2">
                     <h6 class="mb-0 fw-bold" style="color:var(--theme-text);">
                         Services les plus absents
-                        <small class="fw-normal text-muted ms-1">— top 5</small>
+                        <small class="fw-normal text-muted ms-1">- top 5</small>
                     </h6>
                 </div>
                 <div class="card-body px-4 pb-4">
@@ -234,6 +240,20 @@
                         <div><div style="font-weight:600;color:#111827;font-size:13px;">Congés maladie</div><div style="font-size:11px;color:#6B7280;">Certificat médical requis</div></div>
                         <i class="fas fa-chevron-right ms-auto" style="color:#D1D5DB;font-size:11px;"></i>
                     </a>
+                    @if($kpis['certificats_en_attente'] > 0)
+                    <a href="{{ route('rh.absences.index', ['type'=>'Maladie','justifie'=>'0']) }}"
+                       class="d-flex align-items-center gap-3 p-3 rounded-3 text-decoration-none" style="background:#FEF2F2;border:1px solid #FECACA;transition:all 150ms;" onmouseover="this.style.boxShadow='0 3px 10px rgba(0,0,0,0.08)'" onmouseout="this.style.boxShadow='none'">
+                        <div style="position:relative;flex-shrink:0;">
+                            <i class="fas fa-file-medical" style="color:#DC2626;font-size:20px;"></i>
+                            <span style="position:absolute;top:-6px;right:-8px;background:#DC2626;color:#fff;font-size:9px;font-weight:700;border-radius:99px;padding:1px 5px;">{{ $kpis['certificats_en_attente'] }}</span>
+                        </div>
+                        <div>
+                            <div style="font-weight:600;color:#991B1B;font-size:13px;">Certificats à valider</div>
+                            <div style="font-size:11px;color:#6B7280;">Action requise</div>
+                        </div>
+                        <i class="fas fa-chevron-right ms-auto" style="color:#D1D5DB;font-size:11px;"></i>
+                    </a>
+                    @endif
                     <a href="{{ route('rh.absences.index', ['type'=>'Injustifiée']) }}"
                        class="d-flex align-items-center gap-3 p-3 rounded-3 text-decoration-none" style="background:#FFF7ED;transition:all 150ms;" onmouseover="this.style.boxShadow='0 3px 10px rgba(0,0,0,0.08)'" onmouseout="this.style.boxShadow='none'">
                         <i class="fas fa-ban" style="color:#EA580C;font-size:20px;flex-shrink:0;"></i>
@@ -335,6 +355,8 @@
                                     'Professionnelle' => 'background:#EDE9FE;color:#5B21B6',
                                     'Injustifiée'     => 'background:#FEE2E2;color:#991B1B',
                                 ];
+                                $hasPending  = $absence->justificatif_path && !$absence->justifie;
+                                $hasValidated = $absence->justifie;
                             @endphp
                             <tr class="absence-row" style="border-bottom:1px solid #F3F4F6;">
                                 <td class="px-4 py-3 border-0">
@@ -343,23 +365,29 @@
                                             {{ $initiales }}
                                         </div>
                                         <div>
-                                            <div style="font-weight:600;color:var(--theme-text);">{{ $ag?->nom_complet ?? '—' }}</div>
+                                            <div style="font-weight:600;color:var(--theme-text);">{{ $ag?->nom_complet ?? '-' }}</div>
                                             <div style="font-size:11px;color:#9CA3AF;">{{ $ag?->matricule }}</div>
                                         </div>
                                     </div>
                                 </td>
-                                <td class="py-3 border-0 text-muted" style="font-size:12px;">{{ $svc?->nom_service ?? '—' }}</td>
+                                <td class="py-3 border-0 text-muted" style="font-size:12px;">{{ $svc?->nom_service ?? '-' }}</td>
                                 <td class="py-3 border-0" style="font-weight:500;color:var(--theme-text);">{{ $absence->date_absence->format('d/m/Y') }}</td>
                                 <td class="py-3 border-0">
                                     <span style="font-size:11px;{{ $typeColors[$absence->type_absence] ?? 'background:#F3F4F6;color:#374151' }};padding:3px 10px;border-radius:20px;font-weight:700;">
+                                        @if($absence->type_absence === 'Maladie')<i class="fas fa-stethoscope me-1"></i>@endif
                                         {{ $absence->type_absence }}
                                     </span>
                                 </td>
                                 <td class="py-3 border-0">
                                     @if($absence->justifie)
-                                        <span style="font-size:11px;background:#D1FAE5;color:#065F46;padding:3px 10px;border-radius:20px;font-weight:600;"><i class="fas fa-check me-1"></i>Oui</span>
+                                        <span style="font-size:11px;background:#D1FAE5;color:#065F46;padding:3px 10px;border-radius:20px;font-weight:600;"><i class="fas fa-check me-1"></i>Justifiée</span>
+                                    @elseif($hasPending)
+                                        <a href="{{ route('rh.absences.show', $absence->id_absence) }}"
+                                           style="font-size:11px;background:#FEF3C7;color:#92400E;padding:3px 10px;border-radius:20px;font-weight:600;text-decoration:none;display:inline-flex;align-items:center;">
+                                            <i class="fas fa-clock me-1"></i>À valider
+                                        </a>
                                     @else
-                                        <span style="font-size:11px;background:#FEE2E2;color:#991B1B;padding:3px 10px;border-radius:20px;font-weight:600;"><i class="fas fa-times me-1"></i>Non</span>
+                                        <span style="font-size:11px;background:#FEE2E2;color:#991B1B;padding:3px 10px;border-radius:20px;font-weight:600;"><i class="fas fa-times me-1"></i>Non justifiée</span>
                                     @endif
                                 </td>
                                 <td class="py-3 border-0 text-end pe-4">
@@ -443,7 +471,7 @@
                         <div class="col-12 col-md-5">
                             <label class="modal-label">Filtrer par service</label>
                             <select id="filterServiceCreate" class="form-select form-select-sm" style="border-radius:7px;">
-                                <option value="">— Tous les services —</option>
+                                <option value="">- Tous les services -</option>
                                 @foreach($services as $svc)
                                     <option value="{{ $svc->id_service }}">{{ $svc->nom_service }}</option>
                                 @endforeach
@@ -452,7 +480,7 @@
                         <div class="col-12 col-md-7">
                             <label class="modal-label">Agent concerné <span class="text-danger">*</span></label>
                             <select name="id_agent" id="selectAgentCreate" class="form-select form-select-sm" style="border-radius:7px;" required>
-                                <option value="">— Sélectionner un agent —</option>
+                                <option value="">- Sélectionner un agent -</option>
                                 @foreach($agents as $agent)
                                     <option value="{{ $agent->id_agent }}" data-service="{{ $agent->id_service }}">
                                         {{ $agent->nom_complet }} ({{ $agent->matricule }})
@@ -472,7 +500,7 @@
                         <div class="col-12 col-md-7">
                             <label class="modal-label">Type <span class="text-danger">*</span></label>
                             <select name="type_absence" class="form-select form-select-sm" style="border-radius:7px;" required>
-                                <option value="">— Choisir —</option>
+                                <option value="">- Choisir -</option>
                                 <option value="Maladie">Maladie (certificat médical requis)</option>
                                 <option value="Personnelle">Personnelle</option>
                                 <option value="Professionnelle">Professionnelle (formation, mission…)</option>
@@ -485,7 +513,7 @@
                             <input class="form-check-input" type="checkbox" name="justifie" id="justifieCreate" value="1">
                             <label class="form-check-label small fw-600" for="justifieCreate">
                                 Absence justifiée
-                                <span class="text-muted fw-normal ms-1">— justificatif fourni par l'agent</span>
+                                <span class="text-muted fw-normal ms-1">- justificatif fourni par l'agent</span>
                             </label>
                         </div>
                     </div>
@@ -525,7 +553,7 @@
                     </div>
                     <div>
                         <h5 class="modal-title fw-bold mb-0">Modifier l'absence</h5>
-                        <p class="text-muted small mb-0" id="edit-agent-name">—</p>
+                        <p class="text-muted small mb-0" id="edit-agent-name">-</p>
                     </div>
                 </div>
                 <button type="button" class="btn-close" data-bs-dismiss="modal"></button>

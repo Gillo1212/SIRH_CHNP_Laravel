@@ -201,14 +201,14 @@ class AgentRHController extends Controller
         $query = Agent::with(['service:id_service,nom_service', 'division:id_division,nom_division', 'contratActif'])
             ->select('id_agent', 'matricule', 'nom', 'prenom', 'sexe',
                      'date_naissance', 'date_prise_service', 'famille_d_emploi',
-                     'categorie_cp', 'statut_agent', 'fontion', 'grade', 'id_service', 'id_division');
+                     'categorie_cp', 'statut_agent', 'fonction', 'grade', 'id_service', 'id_division');
 
         if ($v = $request->recherche) {
             $query->where(fn($q) => $q
                 ->where('nom', 'like', "%{$v}%")
                 ->orWhere('prenom', 'like', "%{$v}%")
                 ->orWhere('matricule', 'like', "%{$v}%")
-                ->orWhere('fontion', 'like', "%{$v}%")
+                ->orWhere('fonction', 'like', "%{$v}%")
             );
         }
         if ($v = $request->service) {
@@ -238,7 +238,7 @@ class AgentRHController extends Controller
                 $agent->sexe === 'M' ? 'Masculin' : 'Féminin',
                 $agent->date_naissance?->format('d/m/Y') ?? '—',
                 $agent->date_prise_service?->format('d/m/Y') ?? '—',
-                $agent->fontion ?? '—',
+                $agent->fonction ?? '—',
                 $agent->grade ?? '—',
                 str_replace('_', ' ', $agent->categorie_cp ?? '—'),
                 $agent->famille_d_emploi ? str_replace('_', ' ', $agent->famille_d_emploi) : '—',

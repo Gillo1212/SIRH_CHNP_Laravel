@@ -37,6 +37,7 @@ class AuthenticatedSessionController extends Controller
             $user->hasRole('DRH')         => '/drh/dashboard',
             $user->hasRole('AgentRH')     => '/rh/dashboard',
             $user->hasRole('Manager')     => '/manager/dashboard',
+            $user->hasRole('Major')       => '/major/dashboard',
             $user->hasRole('Agent')       => '/agent/dashboard',
             default                       => '/profile',
         };

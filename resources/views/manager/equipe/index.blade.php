@@ -105,12 +105,12 @@
                                     </div>
                                 </div>
                             </td>
-                            <td class="py-3 px-4 border-0" style="color:var(--theme-text);">{{ str_replace('_',' ',$agent->famille_d_emploi ?? '—') }}</td>
+                            <td class="py-3 px-4 border-0" style="color:var(--theme-text);">{{ str_replace('_',' ',$agent->famille_d_emploi ?? '-') }}</td>
                             <td class="py-3 px-4 border-0">
                                 @if($agent->contratActif)
                                 <span style="font-size:11px;background:#EFF6FF;color:#1E40AF;padding:2px 8px;border-radius:20px;font-weight:600;">{{ $agent->contratActif->type_contrat }}</span>
                                 @else
-                                <span class="text-muted" style="font-size:12px;">—</span>
+                                <span class="text-muted" style="font-size:12px;">-</span>
                                 @endif
                             </td>
                             <td class="py-3 px-4 border-0">

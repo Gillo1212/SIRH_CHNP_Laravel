@@ -10,7 +10,7 @@
 @push('styles')
 <style>
 /* ══════════════════════════════════════════════════════════════
-   VUE AGENT — DOSSIER PERSONNEL
+   VUE AGENT - DOSSIER PERSONNEL
    ══════════════════════════════════════════════════════════════ */
 
 /* HERO DOSSIER */
@@ -194,7 +194,7 @@
                                 <div class="dc-actions">
                                     <a href="{{ route('agent.documents.show', $doc->id_document) }}"
                                        class="action-btn btn-view" title="Visualiser" onclick="event.stopPropagation()">
-                                        {{-- Œil — visualiser --}}
+                                        {{-- Œil - visualiser --}}
                                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                                             <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
                                             <circle cx="12" cy="12" r="3"/>
@@ -239,7 +239,7 @@
                     </div>
                     <div class="info-row">
                         <span class="il">Étagère</span>
-                        <span class="iv">{{ $dossier->etagere?->nom_etagere ?? '—' }}</span>
+                        <span class="iv">{{ $dossier->etagere?->nom_etagere ?? '-' }}</span>
                     </div>
                     <div class="info-row">
                         <span class="il">Documents</span>

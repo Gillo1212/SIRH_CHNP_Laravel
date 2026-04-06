@@ -1,6 +1,6 @@
 @extends('layouts.master')
 
-@section('title', 'Tableau de bord — Major')
+@section('title', 'Tableau de bord - Major')
 @section('page-title', 'Gestion de mon service')
 
 @section('breadcrumb')
@@ -9,164 +9,362 @@
 
 @push('styles')
 <style>
-.kpi-card { border-radius:12px;padding:20px 24px;transition:box-shadow 200ms,transform 200ms;position:relative;overflow:hidden; }
-.kpi-card:hover { box-shadow:0 6px 20px rgba(10,77,140,.10);transform:translateY(-2px); }
+.kpi-card {
+    border-radius: 12px; padding: 20px 24px;
+    transition: box-shadow 200ms, transform 200ms;
+    position: relative; overflow: hidden;
+}
+.kpi-card:hover { box-shadow: 0 6px 20px rgba(10,77,140,0.10); transform: translateY(-2px); }
 .kpi-card .kpi-icon { width:48px;height:48px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0; }
-.kpi-card .kpi-value { font-size:28px;font-weight:700;line-height:1.1;margin-top:12px; }
-.kpi-card .kpi-label { font-size:13px;margin-top:2px;font-weight:500; }
+.kpi-card .kpi-value  { font-size:28px;font-weight:700;line-height:1.1;margin-top:12px; }
+.kpi-card .kpi-label  { font-size:13px;margin-top:2px;font-weight:500; }
+.kpi-card .kpi-trend  { font-size:12px;font-weight:600;margin-top:6px; }
+.kpi-card .kpi-trend.up   { color:#10B981; }
+.kpi-card .kpi-trend.down { color:#EF4444; }
 .kpi-card::before { content:'';position:absolute;top:0;right:0;width:80px;height:80px;border-radius:0 12px 0 80px;opacity:0.07; }
 .kpi-card.blue::before   { background:#0A4D8C; }
 .kpi-card.green::before  { background:#059669; }
 .kpi-card.amber::before  { background:#D97706; }
+.kpi-card.red::before    { background:#DC2626; }
 .kpi-card.purple::before { background:#7C3AED; }
-.badge-statut { padding:3px 10px;border-radius:20px;font-size:11px;font-weight:600; }
+
+.action-btn { display:inline-flex;align-items:center;gap:8px;padding:10px 18px;border-radius:8px;font-size:13.5px;font-weight:500;text-decoration:none;border:none;cursor:pointer;transition:all 180ms; }
+.action-btn-primary { background:#0A4D8C;color:white; }
+.action-btn-primary:hover { background:#1565C0;color:white;box-shadow:0 4px 12px rgba(10,77,140,0.3);transform:translateY(-1px); }
+.action-btn-outline { background:white;color:#0A4D8C;border:1.5px solid #BFDBFE; }
+.action-btn-outline:hover { background:#EFF6FF;color:#0A4D8C; }
+
+.section-title { font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;margin-bottom:12px;padding-bottom:6px; }
+.panel { border-radius:12px;padding:20px;background:white;border:1px solid #F3F4F6;box-shadow:0 1px 4px rgba(0,0,0,.04); }
+.data-row { display:flex;align-items:center;justify-content:space-between;padding:12px 0;border-bottom:1px solid #F9FAFB; }
+.data-row:last-child { border-bottom: none; }
+
+.planning-cell { border-radius:8px;padding:10px 6px;text-align:center;transition:all 180ms;border:1.5px solid #F3F4F6;background:#FAFAFA; }
+.planning-cell:hover { box-shadow:0 3px 10px rgba(0,0,0,0.08); }
+.planning-cell.today { border-color:#1565C0;background:#EFF6FF;box-shadow:0 0 0 2px rgba(21,101,192,0.2); }
 </style>
 @endpush
 
 @section('content')
-<div class="container-fluid px-4 py-4">
 
-@if(session('error'))
-    <div class="alert alert-danger rounded-3 mb-4">{{ session('error') }}</div>
-@endif
-
-@isset($noService)
-<div class="row justify-content-center">
-    <div class="col-md-6">
-        <div class="card border-0 shadow-sm rounded-4 text-center p-5">
-            <i class="fas fa-exclamation-triangle fa-3x text-warning mb-3"></i>
-            <h5 class="fw-bold mb-2">Aucun service assigné</h5>
-            <p class="text-muted">Vous n'êtes pas encore assigné à un service comme Major. Contactez le service RH.</p>
-        </div>
+{{-- ─── ALERTE AUCUN SERVICE ─────────────────────────────────────── --}}
+@if(!empty($noService))
+<div style="max-width:520px;margin:80px auto;text-align:center;">
+    <div style="width:72px;height:72px;border-radius:50%;background:#FEF3C7;display:flex;align-items:center;justify-content:center;margin:0 auto 20px;font-size:28px;">
+        <i class="fas fa-exclamation-triangle" style="color:#D97706;"></i>
     </div>
+    <h5 style="font-weight:700;margin-bottom:8px;">Aucun service assigné</h5>
+    <p style="font-size:13px;color:var(--theme-text-muted);margin-bottom:24px;">
+        Votre compte Major n'est pas encore assigné à un service.<br>
+        Contactez l'Administrateur ou un Agent RH pour finaliser votre configuration.
+    </p>
 </div>
 @else
 
-{{-- En-tête service --}}
-<div class="card border-0 shadow-sm rounded-4 mb-4" style="background:linear-gradient(135deg,#0A4D8C 0%,#1565C0 100%);">
-    <div class="card-body p-4 text-white d-flex align-items-center justify-content-between flex-wrap gap-3">
-        <div>
-            <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;opacity:.75;">Votre service</div>
-            <h3 class="fw-bold mb-1 mt-1">{{ $service->nom_service }}</h3>
-            <span class="badge" style="background:rgba(255,255,255,.2);font-size:12px;">{{ $service->type_service }}</span>
-        </div>
-        <div class="d-flex gap-3">
-            <a href="{{ route('major.equipe') }}" class="btn btn-sm" style="background:rgba(255,255,255,.15);color:#fff;border:1px solid rgba(255,255,255,.3);">
-                <i class="fas fa-users me-1"></i> Mon équipe
-            </a>
-            <a href="{{ route('major.planning.index') }}" class="btn btn-sm" style="background:rgba(255,255,255,.15);color:#fff;border:1px solid rgba(255,255,255,.3);">
-                <i class="fas fa-calendar-week me-1"></i> Plannings
-            </a>
-        </div>
+{{-- ─── EN-TÊTE ──────────────────────────────────────────────────── --}}
+<div class="d-flex align-items-center justify-content-between mb-4 flex-wrap gap-3">
+    <div>
+        <h4 class="mb-0 fw-bold" style="color:#111827;">
+            Bonjour, {{ Auth::user()->agent->prenom ?? 'Major' }}
+        </h4>
+        <p class="mb-0 text-muted" style="font-size:13.5px;">
+            {{ now()->isoFormat('dddd D MMMM YYYY') }}
+            - Service {{ $service->nom_service }}
+            <span class="ms-2 badge" style="background:#D1FAE5;color:#065F46;font-size:10px;">Avis consultatif</span>
+        </p>
+    </div>
+    <div class="d-flex gap-2 flex-wrap">
+        <a href="{{ route('major.planning.index') }}" class="action-btn action-btn-outline">
+            <i class="fas fa-calendar-plus"></i> Plannings
+        </a>
+        <a href="{{ route('major.conges.index') }}" class="action-btn action-btn-primary">
+            <i class="fas fa-comment-dots"></i> Avis congés
+            @if($congesSansAvisCount > 0)
+                <span style="background:white;color:#0A4D8C;border-radius:20px;font-size:11px;font-weight:700;padding:1px 7px;margin-left:2px;">{{ $congesSansAvisCount }}</span>
+            @endif
+        </a>
     </div>
 </div>
 
-{{-- KPIs --}}
+{{-- ─── KPIs ÉQUIPE ──────────────────────────────────────────────── --}}
+<div class="section-title" style="color:#9CA3AF;">Mon équipe - Vue d'ensemble</div>
 <div class="row g-3 mb-4">
-    <div class="col-sm-6 col-xl-3">
-        <div class="card kpi-card blue border-0 shadow-sm">
-            <div class="kpi-icon" style="background:#e8f0fe;color:#0A4D8C;"><i class="fas fa-users"></i></div>
-            <div class="kpi-value" style="color:#0A4D8C;">{{ $totalAgents }}</div>
-            <div class="kpi-label text-muted">Agents actifs</div>
+    <div class="col-12 col-sm-6 col-xl-3">
+        <div class="kpi-card blue">
+            <div class="d-flex align-items-start justify-content-between">
+                <div class="kpi-icon" style="background:#EFF6FF;"><i class="fas fa-users" style="color:#0A4D8C;"></i></div>
+                <span class="badge" style="background:#EFF6FF;color:#1E40AF;">Mon service</span>
+            </div>
+            <div class="kpi-value">{{ $totalAgents }}</div>
+            <div class="kpi-label">Membres de l'équipe</div>
+            <div class="kpi-trend up"><i class="fas fa-building me-1"></i>Effectif actif</div>
         </div>
     </div>
-    <div class="col-sm-6 col-xl-3">
-        <div class="card kpi-card green border-0 shadow-sm">
-            <div class="kpi-icon" style="background:#d1fae5;color:#059669;"><i class="fas fa-user-check"></i></div>
-            <div class="kpi-value" style="color:#059669;">{{ $agentsPresents }}</div>
-            <div class="kpi-label text-muted">Présents aujourd'hui</div>
+
+    <div class="col-12 col-sm-6 col-xl-3">
+        <div class="kpi-card green">
+            <div class="d-flex align-items-start justify-content-between">
+                <div class="kpi-icon" style="background:#ECFDF5;"><i class="fas fa-user-check" style="color:#059669;"></i></div>
+                <span class="badge" style="background:#ECFDF5;color:#065F46;">Aujourd'hui</span>
+            </div>
+            <div class="kpi-value">{{ $agentsPresents }}</div>
+            <div class="kpi-label">Présents aujourd'hui</div>
+            <div class="kpi-trend up"><i class="fas fa-arrow-up me-1"></i>En poste</div>
         </div>
     </div>
-    <div class="col-sm-6 col-xl-3">
-        <div class="card kpi-card amber border-0 shadow-sm">
-            <div class="kpi-icon" style="background:#fef3c7;color:#D97706;"><i class="fas fa-user-minus"></i></div>
-            <div class="kpi-value" style="color:#D97706;">{{ $absencesMois }}</div>
-            <div class="kpi-label text-muted">Absences ce mois</div>
+
+    <div class="col-12 col-sm-6 col-xl-3">
+        <div class="kpi-card red">
+            <div class="d-flex align-items-start justify-content-between">
+                <div class="kpi-icon" style="background:#FEF2F2;"><i class="fas fa-user-minus" style="color:#DC2626;"></i></div>
+                <span class="badge" style="background:#FEE2E2;color:#991B1B;">Aujourd'hui</span>
+            </div>
+            <div class="kpi-value">{{ $absencesToday }}</div>
+            <div class="kpi-label">Absents</div>
+            <div class="kpi-trend {{ $absencesToday > 0 ? 'down' : 'up' }}">
+                <i class="fas fa-{{ $absencesToday > 0 ? 'exclamation-circle' : 'check' }} me-1"></i>
+                {{ $absencesToday > 0 ? $agentsEnConge.' en congé aussi' : 'Aucune absence' }}
+            </div>
         </div>
     </div>
-    <div class="col-sm-6 col-xl-3">
-        <div class="card kpi-card purple border-0 shadow-sm">
-            <div class="kpi-icon" style="background:#ede9fe;color:#7C3AED;"><i class="fas fa-calendar-week"></i></div>
-            <div class="kpi-value" style="color:#7C3AED;">{{ $planningsEnCours }}</div>
-            <div class="kpi-label text-muted">Plannings en cours</div>
+
+    <div class="col-12 col-sm-6 col-xl-3">
+        <div class="kpi-card amber">
+            <div class="d-flex align-items-start justify-content-between">
+                <div class="kpi-icon" style="background:#FFFBEB;"><i class="fas fa-comment-dots" style="color:#D97706;"></i></div>
+                <span class="badge" style="background:#FEF3C7;color:#92400E;">En attente</span>
+            </div>
+            <div class="kpi-value">{{ $congesSansAvisCount }}</div>
+            <div class="kpi-label">Congés sans avis</div>
+            <div class="kpi-trend {{ $congesSansAvisCount > 0 ? 'down' : 'up' }}">
+                <i class="fas fa-{{ $congesSansAvisCount > 0 ? 'hourglass-half' : 'check-circle' }} me-1"></i>
+                {{ $congesSansAvisCount > 0 ? 'Avis requis' : 'À jour' }}
+            </div>
         </div>
     </div>
 </div>
 
-<div class="row g-4">
-    {{-- Planning semaine --}}
-    <div class="col-lg-8">
-        <div class="card border-0 shadow-sm rounded-4 h-100">
-            <div class="card-header bg-transparent border-0 pt-4 px-4 d-flex align-items-center justify-content-between">
-                <h6 class="fw-bold mb-0"><i class="fas fa-calendar-week me-2" style="color:#0A4D8C;"></i>Planning cette semaine</h6>
-                <a href="{{ route('major.planning.index') }}" class="btn btn-sm btn-outline-primary">Gérer</a>
-            </div>
-            <div class="card-body px-4 pb-4">
-                @php
-                    $jours = ['Lundi','Mardi','Mercredi','Jeudi','Vendredi','Samedi','Dimanche'];
-                @endphp
-                @if($lignesSemaine->isEmpty())
-                    <p class="text-muted text-center py-3"><i class="fas fa-calendar-times me-2"></i>Aucun planning validé cette semaine.</p>
-                @else
-                    <div class="table-responsive">
-                        <table class="table table-sm">
-                            <thead><tr>
-                                @foreach($jours as $i => $jour)
-                                    <th class="text-center" style="font-size:12px;font-weight:600;color:#6b7280;">{{ $jour }}</th>
-                                @endforeach
-                            </tr></thead>
-                            <tbody><tr>
-                                @for($i = 0; $i <= 6; $i++)
-                                    <td class="align-top" style="min-width:90px;">
-                                        @foreach($lignesSemaine->get($i, collect()) as $ligne)
-                                            <div class="mb-1 p-1 rounded" style="background:#e8f0fe;font-size:11px;">
-                                                <div class="fw-600">{{ $ligne->agent->prenom ?? '' }} {{ substr($ligne->agent->nom ?? '', 0, 1) }}.</div>
-                                                <div class="text-muted">{{ $ligne->typePoste->libelle ?? '' }}</div>
-                                            </div>
-                                        @endforeach
-                                    </td>
-                                @endfor
-                            </tr></tbody>
-                        </table>
+{{-- ─── PLANNING SEMAINE ─────────────────────────────────────────── --}}
+<div class="section-title" style="color:#9CA3AF;">Planning de la semaine</div>
+<div class="row g-3 mb-4">
+    <div class="col-12 col-lg-8">
+        <div class="panel">
+            <div class="d-flex align-items-center justify-content-between mb-3">
+                <div>
+                    <div class="fw-bold" style="color:#111827;">Planning équipe - Semaine {{ now()->weekOfYear }}</div>
+                    <div style="font-size:12px;color:#9CA3AF;">
+                        Du {{ now()->startOfWeek()->isoFormat('D MMM') }} au {{ now()->endOfWeek()->isoFormat('D MMM YYYY') }}
                     </div>
-                @endif
+                </div>
+                <a href="{{ route('major.planning.index') }}" class="action-btn action-btn-outline" style="font-size:12px;padding:7px 14px;">
+                    <i class="fas fa-calendar-alt"></i> Tous les plannings
+                </a>
             </div>
-        </div>
-    </div>
-
-    {{-- Dernières absences --}}
-    <div class="col-lg-4">
-        <div class="card border-0 shadow-sm rounded-4 h-100">
-            <div class="card-header bg-transparent border-0 pt-4 px-4 d-flex align-items-center justify-content-between">
-                <h6 class="fw-bold mb-0"><i class="fas fa-user-minus me-2 text-danger"></i>Absences récentes</h6>
-                <a href="{{ route('major.absences.index') }}" class="btn btn-sm btn-outline-danger">Voir tout</a>
-            </div>
-            <div class="card-body px-4 pb-4">
-                @forelse($dernieresAbsences as $absence)
-                    <div class="d-flex align-items-center gap-3 py-2 border-bottom">
-                        <div class="rounded-circle d-flex align-items-center justify-content-center" style="width:34px;height:34px;background:#fee2e2;flex-shrink:0;">
-                            <i class="fas fa-user-minus" style="font-size:13px;color:#dc2626;"></i>
+            @php
+                $colorMapP = [
+                    'Jour'=>['#3B82F6','#EFF6FF'],'Nuit'=>['#4F46E5','#EEF2FF'],
+                    'Garde'=>['#F59E0B','#FFFBEB'],'Repos'=>['#9CA3AF','#F3F4F6'],
+                    'Astreinte'=>['#8B5CF6','#F5F3FF'],'Permanence'=>['#0D9488','#F0FDFA'],
+                ];
+                $iconMapP = ['Jour'=>'fa-sun','Nuit'=>'fa-moon','Garde'=>'fa-heartbeat','Repos'=>'fa-bed','Astreinte'=>'fa-bell','Permanence'=>'fa-shield-alt'];
+                $todayIdx = now()->dayOfWeekIso - 1;
+                $joursP = ['Lun','Mar','Mer','Jeu','Ven','Sam','Dim'];
+            @endphp
+            <div class="row g-2">
+                @for($i = 0; $i <= 6; $i++)
+                @php
+                    $lignesJour = $lignesSemaine->get($i, collect());
+                    $isToday = $i === $todayIdx;
+                    $nbAgents = $lignesJour->count();
+                @endphp
+                <div class="col">
+                    <div class="planning-cell {{ $isToday ? 'today' : '' }}">
+                        <div style="font-size:10px;font-weight:600;color:{{ $isToday ? '#1565C0' : '#9CA3AF' }};margin-bottom:4px;">{{ $joursP[$i] }}</div>
+                        <div style="font-size:13px;font-weight:700;color:{{ $isToday ? '#0A4D8C' : '#374151' }};margin-bottom:6px;">
+                            {{ now()->startOfWeek()->addDays($i)->format('d') }}
                         </div>
-                        <div class="flex-grow-1 min-w-0">
-                            <div class="fw-600" style="font-size:13px;">{{ $absence->demande->agent->nom_complet ?? '—' }}</div>
-                            <div class="text-muted" style="font-size:11px;">
-                                {{ $absence->type_absence }} — {{ \Carbon\Carbon::parse($absence->date_absence)->format('d/m/Y') }}
-                            </div>
-                        </div>
-                        @if($absence->justifie)
-                            <span class="badge bg-success" style="font-size:10px;">Justifiée</span>
+                        @if($nbAgents > 0)
+                            @foreach($lignesJour->take(3) as $lig)
+                            @php $tLib = $lig->typePoste->libelle ?? 'Autre'; [$c,$b] = $colorMapP[$tLib] ?? ['#9CA3AF','#F3F4F6']; @endphp
+                            <span style="display:block;background:{{ $c }};color:white;border-radius:4px;font-size:9px;padding:2px;font-weight:600;margin-bottom:1px;">
+                                <i class="fas {{ $iconMapP[$tLib] ?? 'fa-circle' }}"></i>
+                            </span>
+                            @endforeach
+                            @if($nbAgents > 3)
+                                <div style="font-size:8px;color:#9CA3AF;margin-top:2px;">+{{ $nbAgents - 3 }}</div>
+                            @endif
+                            <div style="font-size:9px;color:#6B7280;margin-top:3px;">{{ $nbAgents }} agent{{ $nbAgents > 1 ? 's' : '' }}</div>
                         @else
-                            <span class="badge bg-warning text-dark" style="font-size:10px;">Non justifiée</span>
+                            <span style="display:block;background:#F3F4F6;color:#D1D5DB;border-radius:4px;font-size:10px;padding:3px 4px;">-</span>
                         @endif
                     </div>
-                @empty
-                    <p class="text-muted text-center py-3" style="font-size:13px;">Aucune absence récente.</p>
-                @endforelse
+                </div>
+                @endfor
+            </div>
+            <div style="background:#EFF6FF;border-radius:8px;padding:10px 14px;margin-top:14px;font-size:12.5px;color:#1E40AF;">
+                <i class="fas fa-info-circle me-2"></i>
+                Planning du service {{ $service->nom_service }}. Seuls les plannings validés par la RH sont affichés.
+            </div>
+        </div>
+    </div>
+
+    {{-- Congés sans avis --}}
+    <div class="col-12 col-lg-4">
+        <div class="panel h-100">
+            <div class="d-flex align-items-center justify-content-between mb-3">
+                <div class="fw-bold" style="color:#111827;">Congés sans mon avis</div>
+                @if($congesSansAvisCount > 0)
+                    <span style="background:#FEF3C7;color:#92400E;font-size:11px;font-weight:600;padding:2px 10px;border-radius:20px;">{{ $congesSansAvisCount }}</span>
+                @endif
+            </div>
+            @if($congesSansAvis->isEmpty())
+                <div style="text-align:center;padding:30px 0;color:#9CA3AF;">
+                    <i class="fas fa-check-double fa-2x mb-2 d-block" style="color:#D1D5DB;"></i>
+                    Tous les avis ont été donnés
+                </div>
+            @else
+                @foreach($congesSansAvis as $demande)
+                @php
+                    $a = $demande->agent;
+                    $init = strtoupper(substr($a->prenom,0,1).substr($a->nom,0,1));
+                    $typeConge = $demande->conge?->typeConge?->libelle ?? 'Congé';
+                @endphp
+                <div class="data-row">
+                    <div class="d-flex align-items-center gap-2">
+                        <div style="width:30px;height:30px;border-radius:50%;background:linear-gradient(135deg,#0A4D8C,#1565C0);display:flex;align-items:center;justify-content:center;color:white;font-weight:700;font-size:11px;flex-shrink:0;">{{ $init }}</div>
+                        <div>
+                            <div style="font-size:12.5px;font-weight:500;color:#111827;">{{ $a->prenom }} {{ $a->nom }}</div>
+                            <div style="font-size:11px;color:#9CA3AF;">{{ $typeConge }} · {{ $demande->created_at->format('d/m') }}</div>
+                        </div>
+                    </div>
+                    <a href="{{ route('major.conges.index') }}" style="font-size:10px;color:#D97706;font-weight:600;text-decoration:none;">Avis →</a>
+                </div>
+                @endforeach
+            @endif
+            <a href="{{ route('major.conges.index') }}" class="action-btn action-btn-outline w-100 mt-2" style="justify-content:center;font-size:12px;">
+                <i class="fas fa-clipboard-list"></i> Toutes les demandes
+            </a>
+        </div>
+    </div>
+</div>
+
+{{-- ─── GRAPHIQUES ───────────────────────────────────────────────── --}}
+<div class="section-title" style="color:#9CA3AF;">Statistiques équipe</div>
+<div class="row g-3 mb-4">
+    <div class="col-12 col-lg-7">
+        <div class="panel">
+            <div class="fw-bold mb-1" style="color:#111827;">Absentéisme - 6 derniers mois</div>
+            <div style="font-size:12px;color:#9CA3AF;margin-bottom:14px;">Nombre de jours d'absence par mois</div>
+            <canvas id="chartAbsenteisme" style="max-height:200px;"></canvas>
+        </div>
+    </div>
+    <div class="col-12 col-lg-5">
+        <div class="panel h-100">
+            <div class="fw-bold mb-3" style="color:#111827;">Répartition postes - {{ now()->isoFormat('MMMM YYYY') }}</div>
+            @if(empty($postesData))
+                <div class="text-center py-4" style="color:#9CA3AF;font-size:12px;">
+                    <i class="fas fa-calendar-times fa-2x mb-2 d-block" style="color:#D1D5DB;"></i>
+                    Aucun planning validé ce mois
+                </div>
+            @else
+                <canvas id="chartPostes" style="max-height:200px;"></canvas>
+            @endif
+        </div>
+    </div>
+</div>
+
+{{-- ─── ABSENCES RÉCENTES ────────────────────────────────────────── --}}
+<div class="section-title" style="color:#9CA3AF;">Absences récentes</div>
+<div class="row g-3 mb-4">
+    <div class="col-12">
+        <div class="panel">
+            @if($dernieresAbsences->isEmpty())
+                <div class="text-center py-3" style="color:#9CA3AF;font-size:13px;">
+                    <i class="fas fa-check-circle me-2" style="color:#D1D5DB;"></i>Aucune absence récente.
+                </div>
+            @else
+                @foreach($dernieresAbsences as $absence)
+                <div class="data-row">
+                    <div class="d-flex align-items-center gap-3">
+                        <div style="width:34px;height:34px;border-radius:50%;background:#FEE2E2;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+                            <i class="fas fa-user-minus" style="font-size:13px;color:#DC2626;"></i>
+                        </div>
+                        <div>
+                            <div style="font-weight:600;font-size:13px;color:#111827;">{{ $absence->demande->agent->nom_complet ?? '-' }}</div>
+                            <div style="font-size:11px;color:#9CA3AF;">
+                                {{ $absence->type_absence }} - {{ \Carbon\Carbon::parse($absence->date_absence)->format('d/m/Y') }}
+                            </div>
+                        </div>
+                    </div>
+                    @if($absence->justifie)
+                        <span style="background:#D1FAE5;color:#065F46;font-size:10px;font-weight:600;padding:2px 10px;border-radius:20px;">Justifiée</span>
+                    @else
+                        <span style="background:#FEF3C7;color:#92400E;font-size:10px;font-weight:600;padding:2px 10px;border-radius:20px;">Non justifiée</span>
+                    @endif
+                </div>
+                @endforeach
+            @endif
+            <div class="mt-3">
+                <a href="{{ route('major.absences.index') }}" class="action-btn action-btn-outline" style="font-size:12px;padding:7px 14px;">
+                    <i class="fas fa-list"></i> Voir toutes les absences
+                </a>
             </div>
         </div>
     </div>
 </div>
 
-@endisset
+{{-- ─── ACTIONS RAPIDES ──────────────────────────────────────────── --}}
+<div style="background:linear-gradient(135deg,#EFF6FF 0%,#E0F2FE 100%);border:1px solid #BFDBFE;border-radius:12px;padding:20px;">
+    <div class="fw-bold mb-3" style="color:#0A4D8C;">Actions rapides</div>
+    <div class="d-flex flex-wrap gap-2">
+        <a href="{{ route('major.conges.index') }}" class="action-btn action-btn-primary"><i class="fas fa-comment-dots"></i> Donner mes avis</a>
+        <a href="{{ route('major.planning.index') }}" class="action-btn action-btn-outline"><i class="fas fa-calendar-plus"></i> Mes plannings</a>
+        <a href="{{ route('major.absences.create') }}" class="action-btn action-btn-outline"><i class="fas fa-user-minus"></i> Enregistrer absence</a>
+        <a href="{{ route('major.equipe') }}" class="action-btn action-btn-outline"><i class="fas fa-user-friends"></i> Mon équipe</a>
+    </div>
 </div>
+
+@endif {{-- @else noService --}}
+
 @endsection
+
+@if(empty($noService))
+@push('scripts')
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const colors = { primary:'#0A4D8C', green:'#059669', amber:'#D97706', red:'#DC2626', grid:'#F3F4F6', text:'#9CA3AF' };
+
+    new Chart(document.getElementById('chartAbsenteisme'), {
+        type: 'bar',
+        data: {
+            labels: @json($labelsAbsences),
+            datasets: [{ label: 'Jours absence', data: @json($absenteisme6Mois), backgroundColor: 'rgba(217,119,6,0.15)', borderColor: colors.amber, borderWidth: 1.5, borderRadius: 4 }]
+        },
+        options: {
+            responsive: true,
+            plugins: { legend: { display: false } },
+            scales: {
+                x: { grid: { display: false }, ticks: { color: colors.text, font: { size: 11 } } },
+                y: { grid: { color: colors.grid }, ticks: { color: colors.text, font: { size: 11 } }, beginAtZero: true }
+            }
+        }
+    });
+
+    @if(!empty($postesData))
+    new Chart(document.getElementById('chartPostes'), {
+        type: 'doughnut',
+        data: {
+            labels: @json($postesLabels),
+            datasets: [{ data: @json($postesData), backgroundColor: ['#3B82F6','#4F46E5','#F59E0B','#9CA3AF','#8B5CF6','#0D9488'], borderWidth: 2, borderColor: '#fff' }]
+        },
+        options: {
+            responsive: true, cutout: '58%',
+            plugins: { legend: { position: 'bottom', labels: { font: { size: 10 }, color: colors.text, padding: 8, boxWidth: 10 } } }
+        }
+    });
+    @endif
+});
+</script>
+@endpush
+@endif

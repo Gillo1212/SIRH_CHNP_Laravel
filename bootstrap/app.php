@@ -25,5 +25,13 @@ return Application::configure(basePath: dirname(__DIR__))
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions) {
-        //
+        // Spatie Permission : afficher 403 au lieu de rediriger vers /login
+        $exceptions->render(function (\Spatie\Permission\Exceptions\UnauthorizedException $e, $request) {
+            if ($request->expectsJson()) {
+                return response()->json(['message' => 'Accès refusé. Vous n\'avez pas les permissions nécessaires.'], 403);
+            }
+            return response()->view('errors.403', [
+                'message' => 'Vous n\'avez pas les permissions nécessaires pour accéder à cette page.',
+            ], 403);
+        });
     })->create();

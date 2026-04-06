@@ -29,7 +29,7 @@
             <h4 class="mb-1 fw-bold" style="color:var(--theme-text);">
                 <i class="fas fa-sitemap me-2" style="color:#0A4D8C;"></i>Organigramme du CHNP
             </h4>
-            <p class="mb-0 text-muted" style="font-size:13.5px;">Structure organisationnelle — {{ $totalAgents }} agent(s) actif(s)</p>
+            <p class="mb-0 text-muted" style="font-size:13.5px;">Structure organisationnelle - {{ $totalAgents }} agent(s) actif(s)</p>
         </div>
         <div class="d-flex gap-2">
             <button onclick="window.print()" class="btn btn-outline-secondary btn-sm">
@@ -93,7 +93,7 @@
                                     @if($service->manager)
                                     <div>
                                         <div style="font-size:10px;font-weight:700;text-transform:uppercase;color:#9CA3AF;margin-bottom:2px;">Responsable</div>
-                                        <div style="font-size:12px;color:var(--theme-text);font-weight:600;">{{ $service->manager?->nom_complet ?? '—' }}</div>
+                                        <div style="font-size:12px;color:var(--theme-text);font-weight:600;">{{ $service->manager?->nom_complet ?? '-' }}</div>
                                     </div>
                                     @endif
                                 </div>

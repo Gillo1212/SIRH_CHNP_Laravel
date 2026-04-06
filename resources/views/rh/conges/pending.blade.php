@@ -37,6 +37,13 @@
         @endif
     </div>
 
+    {{-- Navigation --}}
+    @include('rh.conges._nav', [
+        'active'       => 'pending',
+        'pendingCount' => $pending->count(),
+        'enCoursCount' => \App\Models\Agent::where('statut_agent','En_Conge')->count(),
+    ])
+
     @if($pending->count() > 0)
         <div class="row g-3">
             @foreach($pending as $demande)
@@ -54,14 +61,14 @@
                                         <div>
                                             <div class="fw-bold small" style="color:var(--theme-text);">{{ $agent->nom_complet }}</div>
                                             <div class="text-muted" style="font-size:11px;">{{ $agent->matricule }}</div>
-                                            <div class="text-muted" style="font-size:11px;">{{ $agent->service->nom_service ?? '—' }} — {{ str_replace('_', ' ', $agent->famille_d_emploi ?? '—') }}</div>
+                                            <div class="text-muted" style="font-size:11px;">{{ $agent->service->nom_service ?? '-' }} - {{ str_replace('_', ' ', $agent->famille_d_emploi ?? '-') }}</div>
                                         </div>
                                     </div>
                                 </div>
 
                                 {{-- Détails --}}
                                 <div class="col-lg-4">
-                                    <div class="fw-600 small" style="color:var(--theme-text);">{{ $conge->typeConge->libelle ?? '—' }}</div>
+                                    <div class="fw-600 small" style="color:var(--theme-text);">{{ $conge->typeConge->libelle ?? '-' }}</div>
                                     <div class="text-muted small">
                                         Du <strong>{{ $conge->date_debut?->format('d/m/Y') }}</strong>
                                         au <strong>{{ $conge->date_fin?->format('d/m/Y') }}</strong>
@@ -117,7 +124,7 @@
                                 @csrf
                                 <div class="modal-body px-4 py-3">
                                     <p class="text-muted small mb-3">
-                                        Rejet du congé de <strong>{{ $agent->nom_complet }}</strong> — {{ $conge->nbres_jours }}j.
+                                        Rejet du congé de <strong>{{ $agent->nom_complet }}</strong> - {{ $conge->nbres_jours }}j.
                                     </p>
                                     <div class="mb-3">
                                         <label class="modal-label">Motif du rejet <span class="text-danger">*</span></label>

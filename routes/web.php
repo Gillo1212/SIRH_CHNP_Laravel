@@ -20,11 +20,13 @@ use App\Http\Controllers\RH\ContratController;
 use App\Http\Controllers\RH\CongeRHController;
 use App\Http\Controllers\RH\AbsenceRHController;
 use App\Http\Controllers\RH\PlanningRHController;
+use App\Http\Controllers\RH\HeuresSupRHController;
 use App\Http\Controllers\RH\GEDController;
 use App\Http\Controllers\Agent\GEDAgentController;
 use App\Http\Controllers\RH\ServiceController;
 use App\Http\Controllers\RH\DivisionController;
 use App\Http\Controllers\RH\DemandeDocController;
+use App\Http\Controllers\RH\DocumentTemplateController;
 use App\Http\Controllers\RH\RapportRHController;
 use App\Http\Controllers\DRH\DRHDashboardController;
 use App\Http\Controllers\DRH\OrganigrammeController;
@@ -35,6 +37,8 @@ use App\Http\Controllers\Major\MajorDashboardController;
 use App\Http\Controllers\Major\EquipeMajorController;
 use App\Http\Controllers\Major\AbsenceMajorController;
 use App\Http\Controllers\Major\PlanningMajorController;
+use App\Http\Controllers\Major\CongesMajorController;
+use App\Http\Controllers\Major\HeuresSupMajorController;
 use App\Http\Controllers\Manager\ManagerDashboardController;
 use App\Http\Controllers\Manager\EquipeController;
 use App\Http\Controllers\Manager\CongeManagerController;
@@ -48,7 +52,6 @@ use App\Http\Controllers\Agent\PECAgentController;
 use App\Http\Controllers\Agent\DocAdminAgentController;
 use App\Http\Controllers\Agent\AbsenceAgentController;
 use App\Http\Controllers\Agent\PlanningAgentController;
-use App\Http\Controllers\PreferenceController;
 use App\Http\Controllers\AideController;
 use App\Http\Controllers\SupportController;
 use Illuminate\Support\Facades\Route;
@@ -95,7 +98,6 @@ Route::middleware(['auth', 'check.account.locked'])->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
-    Route::get('/profile/settings', [ProfileController::class, 'settings'])->name('profile.settings');
 
     /*
     |--------------------------------------------------------------------------
@@ -185,8 +187,6 @@ Route::middleware(['auth', 'check.account.locked'])->group(function () {
             Route::get('/mouvements', [ValidationDRHController::class, 'mouvements'])->name('mouvements');
             Route::post('/mouvements/{id}/valider', [ValidationDRHController::class, 'validerMouvement'])->name('valider-mouvement');
             Route::post('/mouvements/{id}/rejeter', [ValidationDRHController::class, 'rejeterMouvement'])->name('rejeter-mouvement');
-            Route::get('/pec-exceptionnelles', [ValidationDRHController::class, 'pecExceptionnelles'])->name('pec');
-            Route::post('/pec/{id}/valider', [ValidationDRHController::class, 'validerPEC'])->name('valider-pec');
         });
 
         // Rapports direction
@@ -256,11 +256,15 @@ Route::middleware(['auth', 'check.account.locked'])->group(function () {
         Route::prefix('conges')->name('conges.')->group(function () {
             Route::get('/', [CongeRHController::class, 'index'])->name('index');
             Route::get('/pending', [CongeRHController::class, 'pending'])->name('pending');
+            Route::get('/en-cours', [CongeRHController::class, 'enCours'])->name('en-cours');
             Route::get('/soldes', [CongeRHController::class, 'soldes'])->name('soldes');
             Route::post('/soldes/init', [CongeRHController::class, 'initSoldes'])->name('soldes.init');
+            Route::get('/soldes/export', [CongeRHController::class, 'exportSoldes'])->name('soldes.export');
+            Route::patch('/soldes/{id}/ajuster', [CongeRHController::class, 'ajusterSolde'])->name('soldes.ajuster');
             Route::get('/{id}', [CongeRHController::class, 'show'])->name('show');
             Route::post('/{id}/approuver', [CongeRHController::class, 'approuver'])->name('approuver');
             Route::post('/{id}/rejeter', [CongeRHController::class, 'rejeter'])->name('rejeter');
+            Route::get('/{id}/justificatif', [CongeRHController::class, 'downloadJustificatif'])->name('justificatif');
         });
         Route::get('/conge-physique', [CongeRHController::class, 'saisiePhysique'])->name('conge-physique');
         Route::post('/conge-physique', [CongeRHController::class, 'storeSaisiePhysique'])->name('conge-physique.store');
@@ -277,8 +281,6 @@ Route::middleware(['auth', 'check.account.locked'])->group(function () {
             Route::delete('/{id}', [AbsenceRHController::class, 'destroy'])->name('destroy');
             Route::patch('/{id}/valider-justificatif',            [AbsenceRHController::class, 'validerJustificatif'])->name('valider-justificatif');
             Route::patch('/{id}/rejeter-justificatif',            [AbsenceRHController::class, 'rejeterJustificatif'])->name('rejeter-justificatif');
-            Route::patch('/{id}/pieces/{pieceId}/valider',        [AbsenceRHController::class, 'validerPiece'])->name('pieces.valider');
-            Route::patch('/{id}/pieces/{pieceId}/rejeter',        [AbsenceRHController::class, 'rejeterPiece'])->name('pieces.rejeter');
         });
 
         // Demandes documents (traitement RH)
@@ -307,15 +309,21 @@ Route::middleware(['auth', 'check.account.locked'])->group(function () {
             Route::get('/historique', [PriseEnChargeController::class, 'historique'])->name('historique');
             Route::get('/{id}', [PriseEnChargeController::class, 'show'])->name('show');
             Route::patch('/{id}', [PriseEnChargeController::class, 'update'])->name('update');
+            Route::get('/{id}/justificatif', [PriseEnChargeController::class, 'downloadJustificatif'])->name('justificatif');
         });
 
-        // Plannings
+        // Plannings (lecture seule — validation par le Manager)
         Route::prefix('plannings')->name('plannings.')->group(function () {
-            Route::get('/',               [PlanningRHController::class, 'index'])->name('index');
-            Route::get('/pending',        [PlanningRHController::class, 'pending'])->name('pending');
-            Route::get('/{id}',           [PlanningRHController::class, 'show'])->name('show');
-            Route::post('/{id}/valider',  [PlanningRHController::class, 'valider'])->name('valider');
-            Route::post('/{id}/rejeter',  [PlanningRHController::class, 'rejeter'])->name('rejeter');
+            Route::get('/',        [PlanningRHController::class, 'index'])->name('index');
+            Route::get('/recus',   [PlanningRHController::class, 'pending'])->name('pending');
+            Route::get('/{id}',    [PlanningRHController::class, 'show'])->name('show');
+        });
+
+        // Heures supplémentaires — vérification conformité (pas de validation)
+        Route::prefix('heures-sup')->name('heures-sup.')->group(function () {
+            Route::get('/',                     [HeuresSupRHController::class, 'index'])->name('index');
+            Route::post('/{id}/conforme',       [HeuresSupRHController::class, 'marquerConforme'])->name('conforme');
+            Route::post('/{id}/anomalie',       [HeuresSupRHController::class, 'signalerAnomalie'])->name('anomalie');
         });
 
         // GED — Gestion Électronique de Documents
@@ -393,6 +401,18 @@ Route::middleware(['auth', 'check.account.locked'])->group(function () {
         Route::get('/certificat/{agent}', [DocumentAdminController::class, 'certificat'])->name('certificat');
         Route::get('/decision-affectation/{mouvement}', [DocumentAdminController::class, 'decisionAffectation'])->name('decision');
         Route::get('/ordre-mission/{agent}', [DocumentAdminController::class, 'ordreMission'])->name('ordre-mission');
+
+        // Génération avancée de documents (12 types officiels CHNP)
+        Route::get('/agent/{agentId}/select-type', [DocumentTemplateController::class, 'selectType'])->name('select-type');
+        Route::get('/agent/{agentId}/formulaire/{type}', [DocumentTemplateController::class, 'formulaire'])->name('formulaire');
+        Route::post('/agent/{agentId}/preview/{type}', [DocumentTemplateController::class, 'preview'])->name('preview');
+        Route::post('/agent/{agentId}/generer/{type}', [DocumentTemplateController::class, 'generer'])->name('generer');
+        Route::get('/document/{id}', [DocumentTemplateController::class, 'showGenerated'])->name('show-generated');
+        Route::get('/document/{id}/modifier', [DocumentTemplateController::class, 'modifier'])->name('modifier');
+        Route::put('/document/{id}', [DocumentTemplateController::class, 'update'])->name('update');
+        Route::patch('/document/{id}/annuler', [DocumentTemplateController::class, 'annuler'])->name('annuler');
+        Route::get('/historique', [DocumentTemplateController::class, 'historique'])->name('historique');
+        Route::get('/duplicate/{id}', [DocumentTemplateController::class, 'duplicate'])->name('duplicate');
     });
 
     // Alias pec.* (compatibilité sidebar)
@@ -403,6 +423,7 @@ Route::middleware(['auth', 'check.account.locked'])->group(function () {
         Route::get('/historique', [PriseEnChargeController::class, 'historique'])->name('historique');
         Route::get('/{id}', [PriseEnChargeController::class, 'show'])->name('show');
         Route::patch('/{id}', [PriseEnChargeController::class, 'update'])->name('update');
+        Route::get('/{id}/justificatif', [PriseEnChargeController::class, 'downloadJustificatif'])->name('justificatif');
     });
 
     /*
@@ -417,12 +438,23 @@ Route::middleware(['auth', 'check.account.locked'])->group(function () {
         // Équipe (lecture seule)
         Route::get('/equipe', [EquipeMajorController::class, 'index'])->name('equipe');
 
+        // Congés équipe
+        Route::get('/conges', [CongesMajorController::class, 'index'])->name('conges.index');
+        Route::post('/conges/{id}/avis', [CongesMajorController::class, 'avis'])->name('conges.avis');
+
         // Absences
         Route::prefix('absences')->name('absences.')->middleware('major.service')->group(function () {
             Route::get('/',       [AbsenceMajorController::class, 'index'])->name('index');
             Route::get('/create', [AbsenceMajorController::class, 'create'])->name('create');
             Route::post('/',      [AbsenceMajorController::class, 'store'])->name('store');
             Route::get('/{id}',   [AbsenceMajorController::class, 'show'])->name('show');
+        });
+
+        // Heures supplémentaires
+        Route::prefix('heures-sup')->name('heures-sup.')->middleware('major.service')->group(function () {
+            Route::get('/',       [HeuresSupMajorController::class, 'index'])->name('index');
+            Route::post('/',      [HeuresSupMajorController::class, 'store'])->name('store');
+            Route::delete('/{id}',[HeuresSupMajorController::class, 'destroy'])->name('destroy');
         });
 
         // Plannings
@@ -473,7 +505,7 @@ Route::middleware(['auth', 'check.account.locked'])->group(function () {
             Route::get('/{id}',    [AbsenceManagerController::class, 'show'])->name('show');
         });
 
-        // Plannings
+        // Plannings (Manager = validateur final)
         Route::prefix('planning')->name('planning.')->group(function () {
             Route::get('/',                                [PlanningManagerController::class, 'index'])->name('index');
             Route::get('/create',                          [PlanningManagerController::class, 'create'])->name('create');
@@ -481,7 +513,9 @@ Route::middleware(['auth', 'check.account.locked'])->group(function () {
             Route::get('/{id}',                            [PlanningManagerController::class, 'show'])->name('show');
             Route::put('/{id}',                            [PlanningManagerController::class, 'update'])->name('update');
             Route::delete('/{id}',                         [PlanningManagerController::class, 'destroy'])->name('destroy');
-            Route::post('/{id}/transmettre',               [PlanningManagerController::class, 'transmettre'])->name('transmettre');
+            Route::post('/{id}/valider',                   [PlanningManagerController::class, 'valider'])->name('valider');
+            Route::post('/{id}/rejeter',                   [PlanningManagerController::class, 'rejeter'])->name('rejeter');
+            Route::post('/{id}/diffuser',                  [PlanningManagerController::class, 'diffuser'])->name('diffuser');
             Route::post('/{id}/lignes',                    [PlanningManagerController::class, 'addLigne'])->name('lignes.store');
             Route::delete('/{id}/lignes/{ligneId}',        [PlanningManagerController::class, 'removeLigne'])->name('lignes.destroy');
         });
@@ -512,6 +546,7 @@ Route::middleware(['auth', 'check.account.locked'])->group(function () {
             Route::post('/', [DocAdminAgentController::class, 'store'])->name('store');
             Route::get('/{id}', [DocAdminAgentController::class, 'show'])->name('show');
             Route::get('/{id}/telecharger', [DocAdminAgentController::class, 'download'])->name('download');
+            Route::patch('/{id}/annuler', [DocAdminAgentController::class, 'cancel'])->name('cancel');
         });
 
         // Prises en charge (self-service)
@@ -521,6 +556,7 @@ Route::middleware(['auth', 'check.account.locked'])->group(function () {
             Route::post('/', [PECAgentController::class, 'store'])->name('store');
             Route::get('/{id}', [PECAgentController::class, 'show'])->name('show');
             Route::get('/{id}/telecharger', [PECAgentController::class, 'download'])->name('download');
+            Route::get('/{id}/justificatif', [PECAgentController::class, 'downloadJustificatif'])->name('justificatif');
         });
 
         // Mes congés
@@ -529,6 +565,7 @@ Route::middleware(['auth', 'check.account.locked'])->group(function () {
             Route::get('/create', [CongeAgentController::class, 'create'])->name('create');
             Route::post('/', [CongeAgentController::class, 'store'])->name('store');
             Route::get('/{id}', [CongeAgentController::class, 'show'])->name('show');
+            Route::get('/{id}/justificatif', [CongeAgentController::class, 'downloadJustificatif'])->name('justificatif');
         });
 
         // Mes absences (demande + justification)
@@ -568,15 +605,6 @@ Route::middleware(['auth', 'check.account.locked'])->group(function () {
         Route::delete('/{id}',                  [NotificationController::class, 'destroy'])->name('destroy');
         Route::delete('/',                      [NotificationController::class, 'destroyAll'])->name('destroy-all');
     });
-
-    /*
-    |--------------------------------------------------------------------------
-    | Préférences utilisateur (tous les rôles authentifiés)
-    |--------------------------------------------------------------------------
-    */
-    Route::get('/preferences', [PreferenceController::class, 'index'])->name('preferences.index');
-    Route::put('/preferences', [PreferenceController::class, 'update'])->name('preferences.update');
-    Route::post('/preferences/theme', [PreferenceController::class, 'updateTheme'])->name('preferences.theme');
 
     /*
     |--------------------------------------------------------------------------

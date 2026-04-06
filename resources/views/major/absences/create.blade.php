@@ -1,6 +1,6 @@
 @extends('layouts.master')
 
-@section('title', 'Enregistrer une absence — Major')
+@section('title', 'Enregistrer une absence - Major')
 @section('page-title', 'Enregistrer une absence')
 
 @section('breadcrumb')
@@ -16,7 +16,7 @@
 
 <div class="card border-0 shadow-sm rounded-4">
     <div class="card-header bg-transparent border-0 pt-4 px-4">
-        <h6 class="fw-bold mb-0"><i class="fas fa-user-minus me-2 text-danger"></i>Nouvelle absence — {{ $service->nom_service }}</h6>
+        <h6 class="fw-bold mb-0"><i class="fas fa-user-minus me-2 text-danger"></i>Nouvelle absence - {{ $service->nom_service }}</h6>
     </div>
     <div class="card-body px-4 pb-4">
 

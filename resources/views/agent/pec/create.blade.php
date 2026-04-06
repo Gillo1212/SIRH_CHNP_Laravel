@@ -35,7 +35,7 @@
 
     <div class="card border-0 shadow-sm" style="border-radius:12px;max-width:600px;">
         <div class="card-body p-4">
-            <form action="{{ route('agent.pec.store') }}" method="POST">
+            <form action="{{ route('agent.pec.store') }}" method="POST" enctype="multipart/form-data">
                 @csrf
 
                 <div class="mb-3">
@@ -49,6 +49,17 @@
                         @endforeach
                     </div>
                     @error('ayant_droit')<div class="text-danger" style="font-size:12px;margin-top:4px;">{{ $message }}</div>@enderror
+                </div>
+
+                <div class="mb-3" id="bloc-justificatif" style="display:none;">
+                    <label class="form-label" style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:#6B7280;">Certificat de mariage *</label>
+                    <div style="background:#FEF3C7;border:1px solid #FCD34D;border-radius:10px;padding:12px 16px;margin-bottom:12px;font-size:12px;color:#92400E;">
+                        <i class="fas fa-exclamation-triangle me-2"></i>
+                        Pour une prise en charge du conjoint, vous devez obligatoirement joindre votre certificat de mariage.
+                    </div>
+                    <input type="file" name="justificatif" class="form-control @error('justificatif') is-invalid @enderror" accept=".pdf,.jpg,.jpeg,.png">
+                    <div class="form-text">Formats acceptés : PDF, JPG, PNG. Taille max : 5 Mo</div>
+                    @error('justificatif')<div class="invalid-feedback d-block">{{ $message }}</div>@enderror
                 </div>
 
                 <div class="mb-3">
@@ -87,6 +98,8 @@
 
 @push('scripts')
 <script>
+const blocJustificatif = document.getElementById('bloc-justificatif');
+
 document.querySelectorAll('.beneficiaire-option').forEach(label => {
     label.addEventListener('click', function() {
         document.querySelectorAll('.beneficiaire-option').forEach(l => {
@@ -99,8 +112,23 @@ document.querySelectorAll('.beneficiaire-option').forEach(label => {
         this.style.fontWeight = '700';
         this.style.color = '#1D4ED8';
         this.style.background = '#EFF6FF';
-        this.querySelector('input[type=radio]').checked = true;
+        const radio = this.querySelector('input[type=radio]');
+        radio.checked = true;
+        blocJustificatif.style.display = (radio.value === 'Conjoint') ? 'block' : 'none';
     });
 });
+
+// Restaurer l'état si erreur de validation (old value)
+(function() {
+    const checked = document.querySelector('.beneficiaire-option input[type=radio]:checked');
+    if (checked && checked.value === 'Conjoint') {
+        blocJustificatif.style.display = 'block';
+        const lbl = checked.closest('.beneficiaire-option');
+        lbl.style.borderColor = '#1D4ED8';
+        lbl.style.fontWeight = '700';
+        lbl.style.color = '#1D4ED8';
+        lbl.style.background = '#EFF6FF';
+    }
+})();
 </script>
 @endpush

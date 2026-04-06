@@ -1,6 +1,6 @@
 @extends('layouts.master')
 
-@section('title', $service->nom_service . ' — Détails')
+@section('title', $service->nom_service . ' - Détails')
 @section('page-title', $service->nom_service)
 
 @section('breadcrumb')
@@ -198,7 +198,7 @@
         <div class="col-12 col-md-4">
             <div class="card border-0 shadow-sm" style="border-radius:14px;background:var(--theme-panel-bg);">
                 <div class="card-header border-0 px-4 pt-4 pb-2">
-                    <h6 class="fw-bold mb-0"><i class="fas fa-chart-bar me-2 text-primary"></i>Absences — 6 derniers mois</h6>
+                    <h6 class="fw-bold mb-0"><i class="fas fa-chart-bar me-2 text-primary"></i>Absences - 6 derniers mois</h6>
                 </div>
                 <div class="card-body px-4 pb-4">
                     <canvas id="chartAbsences" style="max-height:180px;"></canvas>
@@ -260,7 +260,7 @@
                     </div>
                     <div class="flex-grow-1">
                         <div class="fw-500 small">{{ $agent->nom_complet }}</div>
-                        <div class="text-muted" style="font-size:11px;">{{ $agent->matricule }} — {{ $agent->fontion }}</div>
+                        <div class="text-muted" style="font-size:11px;">{{ $agent->matricule }} - {{ $agent->fonction }}</div>
                     </div>
                     <span class="badge {{ $agent->statut_agent === 'actif' ? 'bg-success' : 'bg-secondary' }}" style="font-size:10px;">
                         {{ ucfirst($agent->statut_agent) }}
@@ -282,7 +282,7 @@
 
 
 {{-- ═══════════════════════════════════════════════════════════════════════
-     MODAL — MODIFIER LE SERVICE
+     MODAL - MODIFIER LE SERVICE
      ═══════════════════════════════════════════════════════════════════════ --}}
 @can('update', $service)
 <div class="modal fade" id="modalEditService" tabindex="-1">
@@ -327,7 +327,7 @@
                         <div class="col-6">
                             <label class="modal-label">Manager</label>
                             <select name="id_agent_manager" class="form-select modal-input">
-                                <option value="">— Aucun —</option>
+                                <option value="">- Aucun -</option>
                                 @foreach($managers as $mgr)
                                     <option value="{{ $mgr->id }}"
                                         {{ old('id_agent_manager', $service->id_agent_manager) == $mgr->id ? 'selected' : '' }}>
@@ -352,7 +352,7 @@
 
 
 {{-- ═══════════════════════════════════════════════════════════════════════
-     MODAL — ASSIGNER / CHANGER DE MANAGER
+     MODAL - ASSIGNER / CHANGER DE MANAGER
      ═══════════════════════════════════════════════════════════════════════ --}}
 @can('assignerManager', $service)
 <div class="modal fade" id="modalAssignManager" tabindex="-1">
@@ -370,7 +370,7 @@
                     <p class="text-muted small mb-3">Service : <strong>{{ $service->nom_service }}</strong></p>
                     <label class="modal-label">Manager</label>
                     <select name="id_agent_manager" class="form-select modal-input">
-                        <option value="">— Retirer le manager —</option>
+                        <option value="">- Retirer le manager -</option>
                         @foreach($managers as $mgr)
                             <option value="{{ $mgr->id }}"
                                 {{ $service->id_agent_manager == $mgr->id ? 'selected' : '' }}>
@@ -393,7 +393,7 @@
 
 
 {{-- ═══════════════════════════════════════════════════════════════════════
-     MODAL — ASSIGNER / CHANGER DE MAJOR
+     MODAL - ASSIGNER / CHANGER DE MAJOR
      ═══════════════════════════════════════════════════════════════════════ --}}
 @can('assignerManager', $service)
 <div class="modal fade" id="modalAssignMajor" tabindex="-1">
@@ -411,7 +411,7 @@
                     <p class="text-muted small mb-3">Service : <strong>{{ $service->nom_service }}</strong></p>
                     <label class="modal-label">Major paramédical</label>
                     <select name="id_agent_major" class="form-select modal-input">
-                        <option value="">— Retirer le major —</option>
+                        <option value="">- Retirer le major -</option>
                         @foreach($majors as $maj)
                             <option value="{{ $maj->id }}"
                                 {{ $service->id_agent_major == $maj->id ? 'selected' : '' }}>
@@ -434,7 +434,7 @@
 
 
 {{-- ═══════════════════════════════════════════════════════════════════════
-     MODAL — SUPPRIMER LE SERVICE (DRH uniquement)
+     MODAL - SUPPRIMER LE SERVICE (DRH uniquement)
      ═══════════════════════════════════════════════════════════════════════ --}}
 @can('delete', $service)
 <div class="modal fade" id="modalDeleteService" tabindex="-1">

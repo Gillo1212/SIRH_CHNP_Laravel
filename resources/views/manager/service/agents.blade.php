@@ -1,6 +1,6 @@
 @extends('layouts.master')
 
-@section('title', 'Équipe — ' . $service->nom_service)
+@section('title', 'Équipe - ' . $service->nom_service)
 @section('page-title', 'Mon Équipe')
 
 @section('breadcrumb')
@@ -80,14 +80,14 @@
                                     </div>
                                 </td>
                                 <td class="py-3 border-0 text-muted">{{ $agent->matricule }}</td>
-                                <td class="py-3 border-0">{{ str_replace('_',' ',$agent->famille_d_emploi ?? '—') ?? '—' }}</td>
+                                <td class="py-3 border-0">{{ str_replace('_',' ',$agent->famille_d_emploi ?? '-') ?? '-' }}</td>
                                 <td class="py-3 border-0">
                                     @if($agent->contratActif)
                                         <span style="font-size:11px;background:#ECFDF5;color:#065F46;padding:2px 8px;border-radius:20px;font-weight:600;">
                                             {{ $agent->contratActif->type_contrat ?? 'Actif' }}
                                         </span>
                                     @else
-                                        <span class="text-muted small">—</span>
+                                        <span class="text-muted small">-</span>
                                     @endif
                                 </td>
                                 <td class="py-3 border-0">

@@ -49,7 +49,7 @@
                 Bonjour, {{ $agent->prenom }} 
             </h4>
             <p class="mb-0 text-muted" style="font-size:13.5px;">
-                {{ now()->isoFormat('dddd D MMMM YYYY') }} — Mon planning de travail
+                {{ now()->isoFormat('dddd D MMMM YYYY') }} - Mon planning de travail
             </p>
         </div>
         <div style="background:#EFF6FF;border:1px solid #BFDBFE;border-radius:8px;padding:8px 14px;font-size:12px;color:#1E40AF;font-weight:500;">
@@ -121,7 +121,7 @@
 
                 @forelse($prochains as $ligne)
                     @php
-                        $typeLib = $ligne->typePoste->libelle ?? '—';
+                        $typeLib = $ligne->typePoste->libelle ?? '-';
                         $colorMap = [
                             'Jour'       => ['#EFF6FF','#1E40AF','#3B82F6'],
                             'Nuit'       => ['#EEF2FF','#3730A3','#4F46E5'],

@@ -1,6 +1,6 @@
 @extends('layouts.master')
 
-@section('title', 'Modifier — ' . $division->nom_division)
+@section('title', 'Modifier - ' . $division->nom_division)
 @section('page-title', 'Modifier une Division')
 
 @section('breadcrumb')
@@ -29,7 +29,7 @@
             <div class="mb-3">
                 <label class="form-label fw-bold small">Service parent</label>
                 <select name="id_service" class="form-select @error('id_service') is-invalid @enderror" style="border-radius:8px;">
-                    <option value="">— Aucun service —</option>
+                    <option value="">- Aucun service -</option>
                     @foreach($services as $svc)
                         <option value="{{ $svc->id_service }}"
                             {{ old('id_service', $division->id_service) == $svc->id_service ? 'selected' : '' }}>

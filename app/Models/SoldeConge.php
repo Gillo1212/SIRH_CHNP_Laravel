@@ -72,6 +72,22 @@ class SoldeConge extends Model
     }
 
     /**
+     * Alias court utilisé dans les controllers
+     */
+    public function deduire($nbJours)
+    {
+        $this->deduireJours($nbJours);
+    }
+
+    /**
+     * Le reliquat est le solde restant (alias sémantique)
+     */
+    public function getReliquatAttribute(): int
+    {
+        return $this->solde_restant;
+    }
+
+    /**
      * Vérifier si le solde est suffisant
      */
     public function aSoldeSuffisant($nbJours)

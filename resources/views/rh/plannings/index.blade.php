@@ -60,13 +60,8 @@
             <p class="mb-0 text-muted" style="font-size:13.5px;">{{ now()->isoFormat('dddd D MMMM YYYY') }}</p>
         </div>
         <div class="d-flex gap-2">
-            <a href="{{ route('rh.plannings.pending') }}" class="action-btn action-btn-primary position-relative">
-                <i class="fas fa-clock"></i>À valider
-                @if($stats['transmis'] > 0)
-                    <span style="position:absolute;top:-6px;right:-6px;background:#DC2626;color:white;border-radius:50%;width:18px;height:18px;font-size:10px;font-weight:700;display:flex;align-items:center;justify-content:center;line-height:1;">
-                        {{ $stats['transmis'] }}
-                    </span>
-                @endif
+            <a href="{{ route('rh.plannings.pending') }}" class="action-btn action-btn-outline">
+                <i class="fas fa-inbox"></i>Plannings reçus
             </a>
         </div>
     </div>
@@ -83,23 +78,23 @@
         </div>
         <div class="col-6 col-lg-3">
             <div class="kpi-card" style="background:#FFFBEB;border:1px solid #FDE68A;">
-                <div class="kpi-icon" style="background:#FEF3C7;"><i class="fas fa-hourglass-half" style="color:#D97706;"></i></div>
-                <div class="kpi-value" style="color:#D97706;">{{ $stats['transmis'] }}</div>
-                <div class="kpi-label">En attente validation</div>
+                <div class="kpi-icon" style="background:#FEF3C7;"><i class="fas fa-calendar-day" style="color:#D97706;"></i></div>
+                <div class="kpi-value" style="color:#D97706;">{{ $stats['ce_mois'] }}</div>
+                <div class="kpi-label">Ce mois</div>
             </div>
         </div>
         <div class="col-6 col-lg-3">
             <div class="kpi-card" style="background:#ECFDF5;border:1px solid #A7F3D0;">
-                <div class="kpi-icon" style="background:#D1FAE5;"><i class="fas fa-check-double" style="color:#059669;"></i></div>
+                <div class="kpi-icon" style="background:#D1FAE5;"><i class="fas fa-share-square" style="color:#059669;"></i></div>
                 <div class="kpi-value" style="color:#059669;">{{ $stats['valides'] }}</div>
-                <div class="kpi-label">Validés</div>
+                <div class="kpi-label">Diffusés</div>
             </div>
         </div>
         <div class="col-6 col-lg-3">
             <div class="kpi-card" style="background:#F9FAFB;border:1px solid #E5E7EB;">
-                <div class="kpi-icon" style="background:#F3F4F6;"><i class="fas fa-pencil-alt" style="color:#6B7280;"></i></div>
-                <div class="kpi-value" style="color:#6B7280;">{{ $stats['brouillons'] }}</div>
-                <div class="kpi-label">Brouillons (managers)</div>
+                <div class="kpi-icon" style="background:#F3F4F6;"><i class="fas fa-hospital" style="color:#6B7280;"></i></div>
+                <div class="kpi-value" style="color:#6B7280;">{{ $stats['services_couverts'] }}</div>
+                <div class="kpi-label">Services couverts</div>
             </div>
         </div>
     </div>
@@ -151,7 +146,7 @@
         <div class="panel">
             <div class="d-flex align-items-start justify-content-between mb-4 flex-wrap gap-3">
                 <div>
-                    <div class="fw-600" style="color:#111827;font-size:14px;">Vue calendrier — Plannings validés &amp; transmis</div>
+                    <div class="fw-600" style="color:#111827;font-size:14px;">Vue calendrier - Plannings validés &amp; transmis</div>
                     <div style="font-size:12px;color:#9CA3AF;">Tous les services confondus</div>
                 </div>
                 <div class="d-flex align-items-center gap-3 flex-wrap">
@@ -196,7 +191,7 @@
                             @endphp
                             <tr style="border-bottom:1px solid #F3F4F6;transition:background 150ms;" onmouseover="this.style.background='#FAFBFF'" onmouseout="this.style.background=''">
                                 <td class="px-4 py-3 border-0">
-                                    <div style="font-weight:500;color:#111827;">{{ $planning->service->nom_service ?? '—' }}</div>
+                                    <div style="font-weight:500;color:#111827;">{{ $planning->service->nom_service ?? '-' }}</div>
                                 </td>
                                 <td class="py-3 border-0" style="color:#374151;">
                                     {{ $planning->periode_debut->format('d/m/Y') }} → {{ $planning->periode_fin->format('d/m/Y') }}

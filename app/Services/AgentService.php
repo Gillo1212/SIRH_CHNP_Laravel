@@ -49,7 +49,7 @@ class AgentService
                 'cni'                 => $data['cni'] ?? null,            // Auto-chiffré AES-256
                 'religion'            => $data['religion'] ?? null,
                 'date_prise_service'  => $data['date_prise_service'] ?? null,
-                'fontion'             => $data['fontion'] ?? null,
+                'fonction'             => $data['fonction'] ?? null,
                 'grade'               => $data['grade'] ?? null,
                 'categorie_cp'        => $data['categorie_cp'] ?? null,
                 'famille_d_emploi'    => $data['famille_d_emploi'] ?? null,
@@ -138,7 +138,7 @@ class AgentService
                 'cni'                 => $data['cni'] ?? null,            // Auto-chiffré AES-256
                 'religion'            => $data['religion'] ?? null,
                 'date_prise_service'  => $data['date_prise_service'] ?? null,
-                'fontion'             => $data['fontion'] ?? null,
+                'fonction'             => $data['fonction'] ?? null,
                 'grade'               => $data['grade'] ?? null,
                 'categorie_cp'        => $data['categorie_cp'] ?? null,
                 'famille_d_emploi'    => $data['famille_d_emploi'] ?? null,

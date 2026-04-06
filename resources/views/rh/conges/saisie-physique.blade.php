@@ -1,6 +1,6 @@
 @extends('layouts.master')
 
-@section('title', 'Saisie Physique — Congé')
+@section('title', 'Saisie Physique - Congé')
 @section('page-title', 'Saisie Physique')
 
 @section('breadcrumb')
@@ -32,6 +32,13 @@
 @section('content')
 <div class="container-fluid px-4 py-4">
 
+    {{-- Navigation --}}
+    @include('rh.conges._nav', [
+        'active'       => 'physique',
+        'pendingCount' => \App\Models\Demande::where('type_demande','Conge')->where('statut_demande','Validé')->count(),
+        'enCoursCount' => \App\Models\Agent::where('statut_agent','En_Conge')->count(),
+    ])
+
     <div class="row justify-content-center">
         <div class="col-lg-8">
             <div class="card border-0 shadow-sm" style="border-radius:14px;padding:28px 32px;">
@@ -41,7 +48,7 @@
                         <i class="fas fa-pen-to-square" style="color:#D97706;font-size:22px;"></i>
                     </div>
                     <div>
-                        <h5 class="fw-bold mb-0" style="color:var(--theme-text);">Saisie physique — Congé</h5>
+                        <h5 class="fw-bold mb-0" style="color:var(--theme-text);">Saisie physique - Congé</h5>
                         <p class="text-muted small mb-0">Pour les agents qui se présentent directement au bureau RH. Le congé est approuvé immédiatement.</p>
                     </div>
                 </div>
@@ -63,8 +70,10 @@
                         <select name="id_agent" id="id_agent" class="form-select-custom form-select @error('id_agent') is-invalid @enderror" required>
                             <option value="">-- Sélectionner l'agent --</option>
                             @foreach($agents as $agent)
-                                <option value="{{ $agent->id_agent }}" {{ old('id_agent') == $agent->id_agent ? 'selected' : '' }}>
-                                    {{ $agent->nom_complet }} ({{ $agent->matricule }}) — {{ $agent->service->nom_service ?? '—' }}
+                                <option value="{{ $agent->id_agent }}"
+                                    data-sexe="{{ $agent->sexe }}"
+                                    {{ old('id_agent') == $agent->id_agent ? 'selected' : '' }}>
+                                    {{ $agent->nom_complet }} ({{ $agent->matricule }}) - {{ $agent->service->nom_service ?? '-' }}
                                 </option>
                             @endforeach
                         </select>
@@ -81,9 +90,10 @@
                             @foreach($typesConge as $type)
                                 <option value="{{ $type->id_type_conge }}"
                                     data-deductible="{{ $type->deductible ? '1' : '0' }}"
+                                    data-maternite="{{ $type->est_maternite ? '1' : '0' }}"
                                     {{ old('id_type_conge') == $type->id_type_conge ? 'selected' : '' }}>
                                     {{ $type->libelle }}
-                                    ({{ $type->deductible ? 'Déductible — '.$type->nb_jours_droit.'j max' : 'Non déductible' }})
+                                    ({{ $type->deductible ? 'Déductible - '.$type->nb_jours_droit.'j max' : 'Non déductible' }})
                                 </option>
                             @endforeach
                         </select>
@@ -119,7 +129,7 @@
                         <div class="d-flex align-items-center gap-2 p-3 rounded" style="background:#EFF6FF;border:1px solid #BFDBFE;">
                             <i class="fas fa-calculator" style="color:#3B82F6;"></i>
                             <span style="color:#1E40AF;font-size:13px;">
-                                Durée calculée : <strong id="nb-jours-text">—</strong>
+                                Durée calculée : <strong id="nb-jours-text">-</strong>
                             </span>
                         </div>
                     </div>
@@ -171,6 +181,23 @@ function showToast(message, type) {
     document.body.insertAdjacentHTML('beforeend', `<div id="${id}" style="position:fixed;top:22px;right:22px;z-index:10000;background:${c.bg};color:#fff;border-radius:12px;padding:14px 20px;display:flex;align-items:center;gap:12px;box-shadow:0 8px 28px rgba(0,0,0,.18);font-size:14px;font-weight:500;max-width:400px;animation:toastIn .3s ease;"><i class="fas ${c.icon}" style="font-size:18px;flex-shrink:0;"></i><span>${message}</span><button onclick="document.getElementById('${id}').remove()" style="background:none;border:none;color:#fff;font-size:20px;cursor:pointer;margin-left:auto;padding:0 0 0 8px;line-height:1;">×</button></div>`);
     setTimeout(() => document.getElementById(id)?.remove(), 4500);
 }
+// Filtrer les types de congé selon le sexe de l'agent sélectionné
+document.getElementById('id_agent').addEventListener('change', function() {
+    const selected = this.options[this.selectedIndex];
+    const sexe     = selected ? selected.dataset.sexe : '';
+    const typeSelect = document.getElementById('id_type_conge');
+    Array.from(typeSelect.options).forEach(opt => {
+        if (opt.dataset.maternite === '1' && sexe !== 'F') {
+            opt.disabled = true;
+            opt.style.display = 'none';
+            if (opt.selected) { typeSelect.value = ''; }
+        } else {
+            opt.disabled = false;
+            opt.style.display = '';
+        }
+    });
+});
+
 document.getElementById('date_debut').addEventListener('change', function() {
     const fin = document.getElementById('date_fin');
     if (fin.value && fin.value < this.value) fin.value = this.value;

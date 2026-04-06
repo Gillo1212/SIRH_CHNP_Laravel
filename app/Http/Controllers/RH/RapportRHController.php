@@ -54,7 +54,7 @@ class RapportRHController extends Controller
         } elseif ($view === 'effectifs') {
             $serviceId = $request->service;
             $statut    = $request->statut ?? 'actif';
-            $query     = Agent::with(['service.division', 'contratActif'])->orderBy('nom');
+            $query     = Agent::with(['service.divisions', 'contratActif'])->orderBy('nom');
             if ($serviceId) $query->where('id_service', $serviceId);
             if ($statut)    $query->where('statut_agent', $statut);
 
@@ -152,7 +152,7 @@ class RapportRHController extends Controller
         $serviceId = $request->service;
         $statut    = $request->statut ?? 'actif';
 
-        $query = Agent::with(['service.division', 'contratActif'])->orderBy('nom');
+        $query = Agent::with(['service.divisions', 'contratActif'])->orderBy('nom');
 
         if ($serviceId) {
             $query->where('id_service', $serviceId);

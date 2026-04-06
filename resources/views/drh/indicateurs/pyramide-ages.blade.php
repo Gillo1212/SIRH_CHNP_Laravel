@@ -1,5 +1,5 @@
 @extends('layouts.master')
-@section('title', 'Pyramide des âges — DRH')
+@section('title', 'Pyramide des âges - DRH')
 @section('page-title', 'Indicateur : Pyramide des âges')
 
 @section('breadcrumb')
@@ -111,7 +111,7 @@
     {{-- Agents proches retraite --}}
     @if($agents55Plus->isNotEmpty())
     <div class="chart-card">
-        <div class="section-title" style="color:#DC2626;">Agents de 55 ans et plus — Anticipation départs retraite</div>
+        <div class="section-title" style="color:#DC2626;">Agents de 55 ans et plus - Anticipation départs retraite</div>
         <div class="table-responsive">
             <table class="table table-sm mb-0" style="font-size:13px;">
                 <thead>
@@ -127,13 +127,13 @@
                     @foreach($agents55Plus as $agent)
                     <tr>
                         <td class="py-2 px-3 border-0 fw-600">{{ $agent->nom_complet }}</td>
-                        <td class="py-2 px-3 border-0 text-muted">{{ $agent->service->nom_service ?? '—' }}</td>
+                        <td class="py-2 px-3 border-0 text-muted">{{ $agent->service->nom_service ?? '-' }}</td>
                         <td class="py-2 px-3 border-0 text-center text-muted">{{ $agent->date_naissance?->format('d/m/Y') }}</td>
                         <td class="py-2 px-3 border-0 text-center">
                             @php $age = $agent->date_naissance?->diffInYears(now()); @endphp
                             <span style="font-weight:700;color:{{ $age >= 60 ? '#DC2626' : '#D97706' }};">{{ $age }} ans</span>
                         </td>
-                        <td class="py-2 px-3 border-0 text-muted">{{ str_replace('_',' ',$agent->famille_d_emploi ?? '—') }}</td>
+                        <td class="py-2 px-3 border-0 text-muted">{{ str_replace('_',' ',$agent->famille_d_emploi ?? '-') }}</td>
                     </tr>
                     @endforeach
                 </tbody>

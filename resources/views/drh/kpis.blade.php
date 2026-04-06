@@ -1,6 +1,6 @@
 @extends('layouts.master')
 
-@section('title', 'KPIs Stratégiques — DRH')
+@section('title', 'KPIs Stratégiques - DRH')
 @section('page-title', 'KPIs Stratégiques')
 
 @section('breadcrumb')
@@ -66,7 +66,7 @@
     <div>
         <h4 class="mb-0 fw-bold" style="color:#111827;">KPIs Stratégiques</h4>
         <p class="mb-0 text-muted" style="font-size:13.5px;">
-            Vue détaillée des indicateurs clés de performance RH — {{ now()->isoFormat('MMMM YYYY') }}
+            Vue détaillée des indicateurs clés de performance RH - {{ now()->isoFormat('MMMM YYYY') }}
         </p>
     </div>
     <a href="{{ route('drh.dashboard') }}" class="btn btn-secondary btn-sm">

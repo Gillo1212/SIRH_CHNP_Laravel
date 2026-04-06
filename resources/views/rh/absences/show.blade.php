@@ -36,7 +36,7 @@
     <div class="d-flex align-items-center justify-content-between mb-4 flex-wrap gap-3">
         <div>
             <h4 class="mb-0 fw-bold" style="color:var(--theme-text);">Absence du {{ $absence->date_absence->format('d/m/Y') }}</h4>
-            <p class="mb-0 text-muted" style="font-size:13.5px;">{{ $agent?->nom_complet }} &mdash; {{ $agent?->service?->nom_service ?? '—' }}</p>
+            <p class="mb-0 text-muted" style="font-size:13.5px;">{{ $agent?->nom_complet }} &mdash; {{ $agent?->service?->nom_service ?? '-' }}</p>
         </div>
         <div class="d-flex gap-2 flex-wrap">
             <a href="{{ route('rh.absences.index') }}" class="action-btn action-btn-outline">
@@ -63,12 +63,12 @@
                     <div style="width:68px;height:68px;border-radius:50%;background:linear-gradient(135deg,#0A4D8C,#1565C0);color:white;display:flex;align-items:center;justify-content:center;font-size:22px;font-weight:700;margin:0 auto 14px;box-shadow:0 4px 15px rgba(10,77,140,.25);">
                         {{ strtoupper(substr($agent?->prenom ?? 'A',0,1).substr($agent?->nom ?? '',0,1)) }}
                     </div>
-                    <h6 class="fw-bold mb-1" style="color:var(--theme-text);">{{ $agent?->nom_complet ?? '—' }}</h6>
-                    <div class="text-muted small mb-1">{{ $agent?->fonction ?? '—' }}</div>
+                    <h6 class="fw-bold mb-1" style="color:var(--theme-text);">{{ $agent?->nom_complet ?? '-' }}</h6>
+                    <div class="text-muted small mb-1">{{ $agent?->fonction ?? '-' }}</div>
                     <div style="font-size:11px;color:#9CA3AF;margin-bottom:12px;">{{ $agent?->matricule }}</div>
                     <div class="d-flex gap-1 justify-content-center flex-wrap">
                         <span style="background:#EFF6FF;color:#1E40AF;font-size:11px;font-weight:600;padding:3px 10px;border-radius:20px;">
-                            <i class="fas fa-building me-1"></i>{{ $agent?->service?->nom_service ?? '—' }}
+                            <i class="fas fa-building me-1"></i>{{ $agent?->service?->nom_service ?? '-' }}
                         </span>
                     </div>
                 </div>
@@ -171,55 +171,45 @@
                 </div>
             </div>
 
-            {{-- Pièces justificatives soumises par l'agent --}}
-            @php $pieces = $absence->piecesJustificatives ?? collect(); @endphp
-            @if($pieces->count() > 0)
+            {{-- Justificatif soumis par l'agent --}}
+            @if($absence->justificatif_path)
+            @php
+                $ext = strtolower(pathinfo($absence->justificatif_path, PATHINFO_EXTENSION));
+                $isPdf = $ext === 'pdf';
+            @endphp
             <div class="card border-0 shadow-sm mb-4" style="border-radius:12px;background:var(--theme-panel-bg);">
                 <div class="card-header border-0 bg-transparent px-4 pt-4 pb-3 d-flex align-items-center justify-content-between">
                     <h6 class="fw-bold mb-0" style="color:var(--theme-text);">
-                        <i class="fas fa-paperclip me-2" style="color:#059669;"></i>Justificatifs soumis par l'agent
+                        @if($absence->type_absence === 'Maladie')
+                            <i class="fas fa-file-medical me-2" style="color:#DC2626;"></i>Certificat médical soumis
+                        @else
+                            <i class="fas fa-paperclip me-2" style="color:#059669;"></i>Justificatif soumis par l'agent
+                        @endif
                     </h6>
-                    <span style="background:#D1FAE5;color:#065F46;font-size:11px;font-weight:600;padding:3px 10px;border-radius:20px;">{{ $pieces->count() }} document(s)</span>
+                    <span style="background:#D1FAE5;color:#065F46;font-size:11px;font-weight:600;padding:3px 10px;border-radius:20px;">1 document</span>
                 </div>
                 <div class="card-body px-4 pb-4">
-                    @foreach($pieces as $piece)
-                        <div class="d-flex align-items-center gap-3 p-3 rounded-3 mb-2" style="background:#F8FAFC;border:1px solid #E5E7EB;">
-                            <div style="width:38px;height:38px;border-radius:8px;background:{{ $piece->est_pdf ? '#FEF2F2' : '#EFF6FF' }};display:flex;align-items:center;justify-content:center;flex-shrink:0;">
-                                <i class="fas fa-{{ $piece->est_pdf ? 'file-pdf' : 'file-image' }}" style="color:{{ $piece->est_pdf ? '#DC2626' : '#1D4ED8' }};font-size:16px;"></i>
-                            </div>
-                            <div class="flex-grow-1">
-                                <div style="font-weight:600;font-size:13px;color:var(--theme-text);">{{ $piece->type_piece }}</div>
-                                <div style="font-size:11px;color:#9CA3AF;">{{ $piece->nom_fichier }} &bull; Déposé le {{ $piece->date_depot->format('d/m/Y à H:i') }}</div>
-                            </div>
-                            <div class="d-flex align-items-center gap-2">
-                                @if($piece->valide)
-                                    <span style="font-size:11px;background:#D1FAE5;color:#065F46;padding:3px 10px;border-radius:20px;font-weight:600;">
-                                        <i class="fas fa-check me-1"></i>Validé
-                                    </span>
-                                    <form action="{{ route('rh.absences.pieces.rejeter', [$absence->id_absence, $piece->id_piece]) }}" method="POST" class="d-inline">
-                                        @csrf @method('PATCH')
-                                        <button type="submit" class="btn-icon" style="background:#FEF3C7;color:#D97706;" title="Annuler la validation">
-                                            <i class="fas fa-undo"></i>
-                                        </button>
-                                    </form>
-                                @else
-                                    <span style="font-size:11px;background:#FEF3C7;color:#92400E;padding:3px 10px;border-radius:20px;font-weight:600;">
-                                        <i class="fas fa-hourglass me-1"></i>En attente
-                                    </span>
-                                    <form action="{{ route('rh.absences.pieces.valider', [$absence->id_absence, $piece->id_piece]) }}" method="POST" class="d-inline">
-                                        @csrf @method('PATCH')
-                                        <button type="submit" class="btn-icon" style="background:#D1FAE5;color:#059669;" title="Valider ce justificatif">
-                                            <i class="fas fa-check"></i>
-                                        </button>
-                                    </form>
-                                @endif
-                                <a href="{{ Storage::url($piece->fichier_url) }}" target="_blank"
-                                   class="btn-icon" style="background:#EFF6FF;color:#1D4ED8;" title="Télécharger">
-                                    <i class="fas fa-download"></i>
-                                </a>
-                            </div>
+                    <div class="d-flex align-items-center gap-3 p-3 rounded-3" style="background:#F8FAFC;border:1px solid #E5E7EB;">
+                        <div style="width:38px;height:38px;border-radius:8px;background:{{ $isPdf ? '#FEF2F2' : '#EFF6FF' }};display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+                            <i class="fas fa-{{ $isPdf ? 'file-pdf' : 'file-image' }}" style="color:{{ $isPdf ? '#DC2626' : '#1D4ED8' }};font-size:16px;"></i>
                         </div>
-                    @endforeach
+                        <div class="flex-grow-1">
+                            <div style="font-weight:600;font-size:13px;color:var(--theme-text);">{{ basename($absence->justificatif_path) }}</div>
+                            <div style="font-size:11px;color:#9CA3AF;">Fichier {{ strtoupper($ext) }}</div>
+                        </div>
+                        <a href="{{ Storage::url($absence->justificatif_path) }}" target="_blank"
+                           class="btn-icon" style="background:#EFF6FF;color:#1D4ED8;" title="Télécharger">
+                            <i class="fas fa-download"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            @elseif($absence->type_absence === 'Maladie' && !$absence->justifie)
+            <div class="d-flex align-items-start gap-3 p-4 rounded-3 mb-4" style="background:#FEF2F2;border-left:4px solid #DC2626;">
+                <i class="fas fa-file-medical mt-1" style="color:#DC2626;font-size:18px;flex-shrink:0;"></i>
+                <div>
+                    <div style="font-weight:600;color:#991B1B;font-size:14px;margin-bottom:3px;">Certificat médical non reçu</div>
+                    <p style="font-size:13px;color:#374151;margin:0;">L'agent n'a pas encore soumis de certificat médical. Vous pouvez valider manuellement ci-dessous.</p>
                 </div>
             </div>
             @endif
@@ -228,7 +218,11 @@
             <div class="card border-0 shadow-sm" style="border-radius:12px;background:var(--theme-panel-bg);">
                 <div class="card-header border-0 bg-transparent px-4 pt-4 pb-3">
                     <h6 class="fw-bold mb-0" style="color:var(--theme-text);">
-                        <i class="fas fa-file-check me-2" style="color:#1565C0;"></i>Validation du justificatif
+                        @if($absence->type_absence === 'Maladie')
+                            <i class="fas fa-file-medical me-2" style="color:#DC2626;"></i>Validation du certificat médical
+                        @else
+                            <i class="fas fa-file-check me-2" style="color:#1565C0;"></i>Validation du justificatif
+                        @endif
                     </h6>
                 </div>
                 <div class="card-body px-4 pb-4">
@@ -236,7 +230,9 @@
                         <div class="d-flex align-items-center gap-3 p-3 rounded-3 mb-3" style="background:#ECFDF5;">
                             <i class="fas fa-check-circle" style="color:#059669;font-size:22px;flex-shrink:0;"></i>
                             <div>
-                                <div style="font-weight:600;color:#065F46;font-size:14px;">Justificatif validé</div>
+                                <div style="font-weight:600;color:#065F46;font-size:14px;">
+                                    @if($absence->type_absence === 'Maladie') Certificat médical validé @else Justificatif validé @endif
+                                </div>
                                 <div style="font-size:12px;color:#6B7280;">Document fourni et validé par le service RH.</div>
                             </div>
                         </div>
@@ -245,23 +241,34 @@
                             <i class="fas fa-undo"></i>Annuler la validation
                         </button>
                     @else
-                        <div class="d-flex align-items-center gap-3 p-3 rounded-3 mb-3" style="background:#FFFBEB;">
-                            <i class="fas fa-exclamation-circle" style="color:#D97706;font-size:22px;flex-shrink:0;"></i>
+                        <div class="d-flex align-items-center gap-3 p-3 rounded-3 mb-3"
+                             style="background:{{ $absence->justificatif_path ? '#FEF3C7' : '#FFFBEB' }};">
+                            <i class="fas fa-{{ $absence->justificatif_path ? 'clock' : 'exclamation-circle' }}"
+                               style="color:#D97706;font-size:22px;flex-shrink:0;"></i>
                             <div>
-                                <div style="font-weight:600;color:#92400E;font-size:14px;">En attente de justificatif</div>
-                                <div style="font-size:12px;color:#6B7280;">
-                                    @if($pieces->where('valide',false)->count() > 0)
-                                        {{ $pieces->where('valide',false)->count() }} pièce(s) soumise(s) par l'agent — en attente de votre validation.
+                                <div style="font-weight:600;color:#92400E;font-size:14px;">
+                                    @if($absence->justificatif_path)
+                                        Justificatif en attente de validation
                                     @else
-                                        Aucun document justificatif n'a encore été fourni par l'agent.
+                                        Aucun document reçu
+                                        @if($absence->type_absence === 'Maladie')
+                                            — certificat médical non soumis par l'agent
+                                        @endif
+                                    @endif
+                                </div>
+                                <div style="font-size:12px;color:#6B7280;">
+                                    @if($absence->justificatif_path)
+                                        Le document a été soumis par l'agent. Validez ou rejetez ci-dessous.
+                                    @else
+                                        Vous pouvez valider manuellement une fois le document reçu physiquement.
                                     @endif
                                 </div>
                             </div>
                         </div>
-                        <div class="d-flex gap-2">
+                        <div class="d-flex gap-2 flex-wrap">
                             <button type="button" class="action-btn" style="background:#059669;color:#fff;font-size:13px;padding:8px 14px;"
                                     data-bs-toggle="modal" data-bs-target="#modal-valider-just">
-                                <i class="fas fa-check"></i>Valider l'absence comme justifiée
+                                <i class="fas fa-check"></i>Valider comme justifiée
                             </button>
                         </div>
                     @endif

@@ -100,6 +100,8 @@ class RoleAndPermissionSeeder extends Seeder
         
         // Permissions exclusives Major
         Permission::create(['name' => 'voir_dashboard_major']);
+        Permission::create(['name' => 'donner_avis_sur_conge']);
+        Permission::create(['name' => 'gerer_heures_sup']);
 
         // 2. MAJOR DE SERVICE (responsable paramédical)
         $roleMajor = Role::create(['name' => 'Major']);
@@ -118,6 +120,7 @@ class RoleAndPermissionSeeder extends Seeder
             // Gestion équipe (lecture seule)
             'voir_equipe',
             'voir_conges_equipe',
+            'donner_avis_sur_conge',
 
             // Absences équipe
             'enregistrer_absence',
@@ -127,6 +130,9 @@ class RoleAndPermissionSeeder extends Seeder
             'creer_planning',
             'modifier_planning',
             'transmettre_planning',
+
+            // Heures supplémentaires
+            'gerer_heures_sup',
 
             // Dashboard Major
             'voir_dashboard_major',

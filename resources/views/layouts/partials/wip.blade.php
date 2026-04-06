@@ -31,7 +31,7 @@
         </div>
         <div style="margin-top: 32px; padding: 12px 16px; background: #F0FDF4; border: 1px solid #BBF7D0; border-radius: 8px; display: inline-block;">
             <span style="font-size: 12px; color: #059669; font-weight: 600;">
-                <i class="fas fa-shield-alt me-1"></i> SIRH CHNP — Système RH Sécurisé
+                <i class="fas fa-shield-alt me-1"></i> SIRH CHNP
             </span>
         </div>
     </div>

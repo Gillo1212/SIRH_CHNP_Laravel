@@ -1,6 +1,6 @@
 @extends('layouts.master')
 
-@section('title', 'Modifier — '.$agent->nom_complet)
+@section('title', 'Modifier - '.$agent->nom_complet)
 @section('page-title', 'Modifier le dossier agent')
 
 @section('breadcrumb')
@@ -12,7 +12,7 @@
 @push('styles')
 <style>
 /* ════════════════════════════════════════
-   HEADER AGENT — INCHANGÉ
+   HEADER AGENT - INCHANGÉ
    ════════════════════════════════════════ */
 .edit-agent-header {
     background: linear-gradient(135deg, #0A4D8C 0%, #1565C0 100%);
@@ -377,7 +377,7 @@
 
 @section('content')
 
-{{-- Header Agent —  INCHANGÉ --}}
+{{-- Header Agent -  INCHANGÉ --}}
 <div class="edit-agent-header">
     <div class="edit-avatar">
         @if($agent->photo)
@@ -462,7 +462,7 @@
                 <div class="col-md-4">
                     <label class="form-label-custom">Situation familiale</label>
                     <select name="situation_familiale" class="form-select-custom">
-                        <option value="">— Choisir —</option>
+                        <option value="">- Choisir -</option>
                         @foreach(['Célibataire','Marié','Divorcé','Veuf'] as $sf)
                         <option value="{{ $sf }}" @selected(old('situation_familiale', $agent->situation_familiale)===$sf)>{{ $sf }}</option>
                         @endforeach
@@ -572,7 +572,7 @@
                         </button>
                     </div>
                     <div class="field-hint-lock" x-show="!decrypted.cni">
-                        <i class="fas fa-lock"></i> Carte Nationale d'Identité — Cliquez pour modifier
+                        <i class="fas fa-lock"></i> Carte Nationale d'Identité - Cliquez pour modifier
                     </div>
                 </div>
                 <div class="col-md-6">
@@ -580,7 +580,7 @@
                     <input type="text" name="religion" class="form-control-custom"
                            value="{{ old('religion', $agent->religion) }}" placeholder="Islam, Christianisme…">
                     <div style="font-size:10px;color:#D97706;margin-top:4px;display:flex;align-items:center;gap:5px;">
-                        <i class="fas fa-info-circle"></i> Donnée personnelle sensible — accès restreint
+                        <i class="fas fa-info-circle"></i> Donnée personnelle sensible - accès restreint
                     </div>
                 </div>
             </div>
@@ -604,8 +604,8 @@
                 </div>
                 <div class="col-md-4">
                     <label class="form-label-custom">Fonction</label>
-                    <input type="text" name="fontion" class="form-control-custom"
-                           value="{{ old('fontion', $agent->fontion) }}" placeholder="Infirmier chef de poste">
+                    <input type="text" name="fonction" class="form-control-custom"
+                           value="{{ old('fonction', $agent->fonction) }}" placeholder="Infirmier chef de poste">
                 </div>
                 <div class="col-md-4">
                     <label class="form-label-custom">Grade</label>
@@ -615,7 +615,7 @@
                 <div class="col-md-6">
                     <label class="form-label-custom">Catégorie socio-professionnelle</label>
                     <select name="categorie_cp" class="form-select-custom">
-                        <option value="">— Choisir —</option>
+                        <option value="">- Choisir -</option>
                         @foreach([
                             'Cadre_Superieur'=>'Cadre Supérieur','Cadre_Moyen'=>'Cadre Moyen',
                             'Technicien_Superieur'=>'Technicien Supérieur','Technicien'=>'Technicien',
@@ -629,7 +629,7 @@
                 <div class="col-md-6">
                     <label class="form-label-custom">Famille d'emploi</label>
                     <select name="famille_d_emploi" class="form-select-custom">
-                        <option value="">— Choisir —</option>
+                        <option value="">- Choisir -</option>
                         @foreach(\App\Models\Agent::FAMILLES_EMPLOI as $fe)
                         <option value="{{ $fe }}" @selected(old('famille_d_emploi', $agent->famille_d_emploi)===$fe)>
                             {{ str_replace('_', ' ', $fe) }}
@@ -640,7 +640,7 @@
                 <div class="col-md-6">
                     <label class="form-label-custom">Service</label>
                     <select name="id_service" class="form-select-custom">
-                        <option value="">— Aucun —</option>
+                        <option value="">- Aucun -</option>
                         @foreach($services as $s)
                         <option value="{{ $s->id_service }}" @selected(old('id_service', $agent->id_service)==$s->id_service)>{{ $s->nom_service }}</option>
                         @endforeach
@@ -649,7 +649,7 @@
                 <div class="col-md-6">
                     <label class="form-label-custom">Division</label>
                     <select name="id_division" class="form-select-custom">
-                        <option value="">— Aucune —</option>
+                        <option value="">- Aucune -</option>
                         @foreach($divisions as $d)
                         <option value="{{ $d->id_division }}" @selected(old('id_division', $agent->id_division)==$d->id_division)>{{ $d->nom_division }}</option>
                         @endforeach
@@ -791,7 +791,7 @@
         </a>
         <div style="font-size:11px;color:var(--theme-text-muted);text-align:center;margin-top:14px;">
             <i class="fas fa-clock me-1"></i>
-            Modifié {{ $agent->updated_at?->diffForHumans() ?? '—' }}
+            Modifié {{ $agent->updated_at?->diffForHumans() ?? '-' }}
         </div>
     </div>
 </div>

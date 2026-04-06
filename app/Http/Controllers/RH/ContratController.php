@@ -170,7 +170,7 @@ class ContratController extends Controller
 
     public function show(Request $request, $id)
     {
-        $contrat = Contrat::with(['agent.service.division'])->findOrFail($id);
+        $contrat = Contrat::with(['agent.service.divisions'])->findOrFail($id);
 
         $this->authorize('view', $contrat);
 

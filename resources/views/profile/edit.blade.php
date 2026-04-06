@@ -258,11 +258,7 @@
                     :class="tab === 'securite' ? 'prof-tab tab-active' : 'prof-tab'">
                 <i class="fas fa-shield-alt"></i>Sécurité
             </button>
-            <div class="ms-auto d-flex align-items-center">
-                <a href="{{ route('preferences.index') }}" class="prof-tab" style="text-decoration:none;">
-                    <i class="fas fa-sliders-h"></i>Préférences
-                </a>
-            </div>
+            <div class="ms-auto d-flex align-items-center"></div>
         </div>
     </div>
 </div>
@@ -362,7 +358,7 @@
                     </div>
                     <div class="col-12">
                         <div class="pf-label">Membre depuis</div>
-                        <div class="pf-value">{{ $user->created_at ? $user->created_at->format('d/m/Y') : '—' }}</div>
+                        <div class="pf-value">{{ $user->created_at ? $user->created_at->format('d/m/Y') : '-' }}</div>
                     </div>
                     <div class="col-12">
                         <div class="pf-label">Dernière connexion</div>
@@ -390,9 +386,6 @@
                     <i class="fas fa-rocket"></i> Accès rapides
                 </div>
                 <div class="d-flex gap-3 flex-wrap">
-                    <a href="{{ route('preferences.index') }}" class="btn btn-outline-secondary btn-sm">
-                        <i class="fas fa-sliders-h me-2"></i>Préférences
-                    </a>
                     <a href="{{ route('aide.index') }}" class="btn btn-outline-secondary btn-sm">
                         <i class="fas fa-life-ring me-2"></i>Aide & FAQ
                     </a>
@@ -436,11 +429,11 @@
                     </div>
                     <div class="col-6">
                         <div class="pf-label">Date de naissance</div>
-                        <div class="pf-value">{{ $agent->date_naissance?->format('d/m/Y') ?? '—' }}</div>
+                        <div class="pf-value">{{ $agent->date_naissance?->format('d/m/Y') ?? '-' }}</div>
                     </div>
                     <div class="col-6">
                         <div class="pf-label">Lieu de naissance</div>
-                        <div class="pf-value">{{ $agent->lieu_naissance ?? '—' }}</div>
+                        <div class="pf-value">{{ $agent->lieu_naissance ?? '-' }}</div>
                     </div>
                     <div class="col-6">
                         <div class="pf-label">Sexe</div>
@@ -448,11 +441,11 @@
                     </div>
                     <div class="col-6">
                         <div class="pf-label">Situation familiale</div>
-                        <div class="pf-value">{{ $agent->situation_familiale ?? '—' }}</div>
+                        <div class="pf-value">{{ $agent->situation_familiale ?? '-' }}</div>
                     </div>
                     <div class="col-12">
                         <div class="pf-label">Nationalité</div>
-                        <div class="pf-value">{{ $agent->nationalite ?? '—' }}</div>
+                        <div class="pf-value">{{ $agent->nationalite ?? '-' }}</div>
                     </div>
                 </div>
             </div>
@@ -479,7 +472,7 @@
                     </div>
                     <div class="col-12">
                         <div class="pf-label">Email professionnel</div>
-                        <div class="pf-value">{{ $agent->email ?? '—' }}</div>
+                        <div class="pf-value">{{ $agent->email ?? '-' }}</div>
                     </div>
                     <div class="col-12">
                         <div class="pf-label">Adresse</div>
@@ -515,27 +508,27 @@
                     </div>
                     <div class="col-6 col-md-3">
                         <div class="pf-label">Date de recrutement</div>
-                        <div class="pf-value">{{ $agent->date_prise_service?->format('d/m/Y') ?? '—' }}</div>
+                        <div class="pf-value">{{ $agent->date_prise_service?->format('d/m/Y') ?? '-' }}</div>
                     </div>
                     <div class="col-6 col-md-3">
                         <div class="pf-label">Fonction</div>
-                        <div class="pf-value">{{ $agent->fontion ?? '—' }}</div>
+                        <div class="pf-value">{{ $agent->fonction ?? '-' }}</div>
                     </div>
                     <div class="col-6 col-md-3">
                         <div class="pf-label">Grade</div>
-                        <div class="pf-value">{{ $agent->grade ?? '—' }}</div>
+                        <div class="pf-value">{{ $agent->grade ?? '-' }}</div>
                     </div>
                     <div class="col-6 col-md-3">
                         <div class="pf-label">Catégorie</div>
-                        <div class="pf-value">{{ str_replace('_', ' ', $agent->categorie_cp ?? '—') }}</div>
+                        <div class="pf-value">{{ str_replace('_', ' ', $agent->categorie_cp ?? '-') }}</div>
                     </div>
                     <div class="col-6 col-md-3">
                         <div class="pf-label">Service</div>
-                        <div class="pf-value">{{ $agent->service?->nom_service ?? '—' }}</div>
+                        <div class="pf-value">{{ $agent->service?->nom_service ?? '-' }}</div>
                     </div>
                     <div class="col-6 col-md-3">
                         <div class="pf-label">Division</div>
-                        <div class="pf-value">{{ $agent->division?->nom_division ?? '—' }}</div>
+                        <div class="pf-value">{{ $agent->division?->nom_division ?? '-' }}</div>
                     </div>
                     <div class="col-6 col-md-3">
                         <div class="pf-label">Statut agent</div>
@@ -563,7 +556,7 @@
                     @if($agent->contratActif)
                     <div class="col-6 col-md-3">
                         <div class="pf-label">Type contrat</div>
-                        <div class="pf-value">{{ $agent->contratActif->type_contrat ?? '—' }}</div>
+                        <div class="pf-value">{{ $agent->contratActif->type_contrat ?? '-' }}</div>
                     </div>
                     @endif
                 </div>

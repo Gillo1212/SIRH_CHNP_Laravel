@@ -440,10 +440,6 @@
                         <i class="fas fa-user" style="width: 16px; text-align: center; color: #6B7280;"></i>
                         Mon profil
                     </a>
-                    <a href="{{ route('preferences.index') }}" class="hov-menu-item">
-                        <i class="fas fa-sliders-h" style="width: 16px; text-align: center; color: #6B7280;"></i>
-                        Préférences
-                    </a>
                     <a href="{{ route('aide.index') }}" class="hov-menu-item">
                         <i class="fas fa-life-ring" style="width: 16px; text-align: center; color: #6B7280;"></i>
                         Aide

@@ -430,7 +430,7 @@ x-init="
 </div>
 
 {{-- ══════════════════════════════════════════════════════════
-     MODAL — COMPLÉTER LE DOSSIER RH
+     MODAL - COMPLÉTER LE DOSSIER RH
 ══════════════════════════════════════════════════════════ --}}
 <div x-show="modalOpen"
      x-cloak
@@ -512,7 +512,7 @@ x-init="
                 <div style="font-size:11px;color:#EF4444;margin-top:3px;">{{ $message }}</div>
             @enderror
             <div style="font-size:11px;color:#6B7280;margin-top:3px;">
-                <i class="fas fa-keyboard me-1"></i>Saisir le matricule manuellement — Format : CHNP-XXXXX
+                <i class="fas fa-keyboard me-1"></i>Saisir le matricule manuellement - Format : CHNP-XXXXX
             </div>
         </div>
 
@@ -610,7 +610,7 @@ x-init="
                             <div class="col-md-4">
                                 <label class="form-label-sm">Sexe <span class="required">*</span></label>
                                 <select name="sexe" class="form-input @error('sexe') is-invalid @enderror" required>
-                                    <option value="">— Choisir —</option>
+                                    <option value="">- Choisir -</option>
                                     <option value="M" {{ old('sexe') === 'M' ? 'selected' : '' }}>Masculin</option>
                                     <option value="F" {{ old('sexe') === 'F' ? 'selected' : '' }}>Féminin</option>
                                 </select>
@@ -619,7 +619,7 @@ x-init="
                             <div class="col-md-4">
                                 <label class="form-label-sm">Situation familiale</label>
                                 <select name="situation_familiale" class="form-input">
-                                    <option value="">— Choisir —</option>
+                                    <option value="">- Choisir -</option>
                                     <option value="Célibataire" {{ old('situation_familiale') === 'Célibataire' ? 'selected' : '' }}>Célibataire</option>
                                     <option value="Marié"       {{ old('situation_familiale') === 'Marié'       ? 'selected' : '' }}>Marié(e)</option>
                                     <option value="Divorcé"     {{ old('situation_familiale') === 'Divorcé'     ? 'selected' : '' }}>Divorcé(e)</option>
@@ -647,7 +647,7 @@ x-init="
                 <div x-show="currentTab === 'coordonnees'" x-cloak>
                     <div class="sensitive-notice">
                         <i class="fas fa-shield-halved fa-lg"></i>
-                        <span>Ces données sont stockées <strong>chiffrées AES-256</strong> — accessibles uniquement aux personnes habilitées (Pilier Confidentialité – Triade CID).</span>
+                        <span>Ces données sont stockées <strong>chiffrées AES-256</strong> - accessibles uniquement aux personnes habilitées (Pilier Confidentialité – Triade CID).</span>
                     </div>
                     <div class="form-card">
                         <div class="form-card-title">
@@ -676,13 +676,6 @@ x-init="
                                 <textarea name="adresse" class="form-input" rows="2"
                                           placeholder="Quartier, Commune, Ville…">{{ old('adresse') }}</textarea>
                             </div>
-                            <div class="col-md-6">
-                                <label class="form-label-sm">
-                                    N° Assurance maladie <i class="fas fa-lock" style="font-size:9px;color:#D97706;"></i>
-                                </label>
-                                <input type="text" name="numero_assurance" class="form-input"
-                                       value="{{ old('numero_assurance') }}" placeholder="IPRES-XXXXXXXXX">
-                            </div>
                         </div>
                     </div>
                 </div>
@@ -703,7 +696,7 @@ x-init="
                             </div>
                             <div class="col-md-4">
                                 <label class="form-label-sm">Fonction</label>
-                                <input type="text" name="fontion" class="form-input"
+                                <input type="text" name="fonction" class="form-input"
                                        value="{{ old('fonction') }}" placeholder="Infirmier chef">
                             </div>
                             <div class="col-md-4">
@@ -714,7 +707,7 @@ x-init="
                             <div class="col-md-6">
                                 <label class="form-label-sm">Catégorie socio-professionnelle</label>
                                 <select name="categorie_cp" class="form-input">
-                                    <option value="">— Choisir —</option>
+                                    <option value="">- Choisir -</option>
                                     <option value="Cadre_Superieur"      {{ old('categorie_cp') === 'Cadre_Superieur'      ? 'selected' : '' }}>Cadre Supérieur</option>
                                     <option value="Cadre_Moyen"          {{ old('categorie_cp') === 'Cadre_Moyen'          ? 'selected' : '' }}>Cadre Moyen</option>
                                     <option value="Technicien_Superieur" {{ old('categorie_cp') === 'Technicien_Superieur' ? 'selected' : '' }}>Technicien Supérieur</option>
@@ -729,7 +722,7 @@ x-init="
                             <div class="col-md-3">
                                 <label class="form-label-sm">Service</label>
                                 <select name="id_service" class="form-input">
-                                    <option value="">— Aucun —</option>
+                                    <option value="">- Aucun -</option>
                                     @foreach($services as $s)
                                     <option value="{{ $s->id_service }}" {{ old('id_service') == $s->id_service ? 'selected' : '' }}>
                                         {{ $s->nom_service }}
@@ -740,7 +733,7 @@ x-init="
                             <div class="col-md-3">
                                 <label class="form-label-sm">Division</label>
                                 <select name="id_division" class="form-input">
-                                    <option value="">— Aucune —</option>
+                                    <option value="">- Aucune -</option>
                                     @foreach($divisions as $d)
                                     <option value="{{ $d->id_division }}" {{ old('id_division') == $d->id_division ? 'selected' : '' }}>
                                         {{ $d->nom_division }}
@@ -794,7 +787,7 @@ x-init="
                         </template>
                         <div x-show="conjoints.length === 0" class="empty-famille">
                             <i class="fas fa-heart-crack" style="font-size:22px;display:block;margin-bottom:6px;color:#E5E7EB;"></i>
-                            Aucun conjoint — cliquez sur Ajouter
+                            Aucun conjoint - cliquez sur Ajouter
                         </div>
                     </div>
 
@@ -833,7 +826,7 @@ x-init="
                         </template>
                         <div x-show="enfants.length === 0" class="empty-famille">
                             <i class="fas fa-baby" style="font-size:22px;display:block;margin-bottom:6px;color:#E5E7EB;"></i>
-                            Aucun enfant — cliquez sur Ajouter
+                            Aucun enfant - cliquez sur Ajouter
                         </div>
                     </div>
 

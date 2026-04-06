@@ -58,10 +58,10 @@
                 <div class="col-md-6">
                     <label class="form-label">Priorité <span style="color:#EF4444;">*</span></label>
                     <select name="priorite" class="form-select @error('priorite') is-invalid @enderror" required>
-                        <option value="basse" {{ old('priorite', 'normale') === 'basse' ? 'selected' : '' }}>🟢 Basse — Pas urgent</option>
-                        <option value="normale" {{ old('priorite', 'normale') === 'normale' ? 'selected' : '' }}>🔵 Normale — Peut attendre</option>
-                        <option value="haute" {{ old('priorite') === 'haute' ? 'selected' : '' }}>🟡 Haute — Perturbe le travail</option>
-                        <option value="urgente" {{ old('priorite') === 'urgente' ? 'selected' : '' }}>🔴 Urgente — Bloquant</option>
+                        <option value="basse" {{ old('priorite', 'normale') === 'basse' ? 'selected' : '' }}>🟢 Basse - Pas urgent</option>
+                        <option value="normale" {{ old('priorite', 'normale') === 'normale' ? 'selected' : '' }}>🔵 Normale - Peut attendre</option>
+                        <option value="haute" {{ old('priorite') === 'haute' ? 'selected' : '' }}>🟡 Haute - Perturbe le travail</option>
+                        <option value="urgente" {{ old('priorite') === 'urgente' ? 'selected' : '' }}>🔴 Urgente - Bloquant</option>
                     </select>
                     @error('priorite')
                         <div class="invalid-feedback">{{ $message }}</div>
@@ -90,7 +90,7 @@
                 <div class="col-12">
                     <label class="form-label">
                         Capture d'écran
-                        <span style="font-size:11px;color:#9CA3AF;font-weight:400;">(optionnel — JPG, PNG, max 2 Mo)</span>
+                        <span style="font-size:11px;color:#9CA3AF;font-weight:400;">(optionnel - JPG, PNG, max 2 Mo)</span>
                     </label>
                     <input type="file" name="capture_ecran" accept="image/*"
                            class="form-control @error('capture_ecran') is-invalid @enderror"

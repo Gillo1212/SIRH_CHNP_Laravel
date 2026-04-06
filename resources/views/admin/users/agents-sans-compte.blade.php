@@ -54,8 +54,8 @@
                             </div>
                         </div>
                     </td>
-                    <td class="d-none d-md-table-cell">{{ str_replace('_',' ',$agent->famille_d_emploi ?? '—') ?? '—' }}</td>
-                    <td class="d-none d-lg-table-cell">{{ $agent->service?->nom_service ?? '—' }}</td>
+                    <td class="d-none d-md-table-cell">{{ str_replace('_',' ',$agent->famille_d_emploi ?? '-') ?? '-' }}</td>
+                    <td class="d-none d-lg-table-cell">{{ $agent->service?->nom_service ?? '-' }}</td>
                     <td class="d-none d-lg-table-cell text-muted">{{ $agent->created_at->format('d/m/Y') }}</td>
                     <td class="text-end pe-3">
                         <a href="{{ route('admin.users.create-for-agent', $agent->id_agent) }}"

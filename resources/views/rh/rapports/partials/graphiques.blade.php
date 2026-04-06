@@ -2,7 +2,7 @@
 <div x-data="chartBuilder()" x-init="load()" class="row g-3">
 
     {{-- ═══════════════════════════════════════════════════
-         COLONNE GAUCHE — Panneau outils (accordéon)
+         COLONNE GAUCHE - Panneau outils (accordéon)
     ═══════════════════════════════════════════════════ --}}
     <div class="col-12 col-xl-3">
 
@@ -160,7 +160,7 @@
     </div>{{-- /col gauche --}}
 
     {{-- ═══════════════════════════════════════════════════
-         COLONNE DROITE — Zone de rendu
+         COLONNE DROITE - Zone de rendu
     ═══════════════════════════════════════════════════ --}}
     <div class="col-12 col-xl-9">
 

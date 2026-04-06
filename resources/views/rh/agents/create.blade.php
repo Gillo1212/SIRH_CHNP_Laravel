@@ -366,7 +366,7 @@
                                 <div class="col-md-2">
                                     <label class="form-label-sm">Sexe <span class="required">*</span></label>
                                     <select name="sexe" class="form-input">
-                                        <option value="">—</option>
+                                        <option value="">-</option>
                                         <option value="M" @selected(old('sexe')==='M')>M</option>
                                         <option value="F" @selected(old('sexe')==='F')>F</option>
                                     </select>
@@ -374,7 +374,7 @@
                                 <div class="col-md-4">
                                     <label class="form-label-sm">Situation familiale</label>
                                     <select name="situation_familiale" class="form-input">
-                                        <option value="">— Choisir —</option>
+                                        <option value="">- Choisir -</option>
                                         <option value="Célibataire" @selected(old('situation_familiale')==='Célibataire')>Célibataire</option>
                                         <option value="Marié" @selected(old('situation_familiale')==='Marié')>Marié(e)</option>
                                         <option value="Divorcé" @selected(old('situation_familiale')==='Divorcé')>Divorcé(e)</option>
@@ -433,14 +433,14 @@
                                         N° CNI <i class="fas fa-lock" style="font-size:9px;color:#D97706;" title="Chiffré AES-256"></i>
                                     </label>
                                     <input type="text" name="cni" class="form-input" value="{{ old('cni') }}" placeholder="1 XXXXXXX XXXXX XX">
-                                    <div class="form-hint"><i class="fas fa-lock" style="font-size:9px;"></i> Carte Nationale d'Identité — Chiffré AES-256</div>
+                                    <div class="form-hint"><i class="fas fa-lock" style="font-size:9px;"></i> Carte Nationale d'Identité - Chiffré AES-256</div>
                                 </div>
                                 <div class="col-md-6">
                                     <label class="form-label-sm">Religion</label>
                                     <input type="text" name="religion" class="form-input" value="{{ old('religion') }}" placeholder="Islam, Christianisme…">
                                     <div class="form-hint">
                                         <i class="fas fa-info-circle" style="font-size:9px;color:#D97706;"></i>
-                                        Donnée personnelle sensible — accès restreint
+                                        Donnée personnelle sensible - accès restreint
                                     </div>
                                 </div>
                             </div>
@@ -460,7 +460,7 @@
                                 </div>
                                 <div class="col-md-6">
                                     <label class="form-label-sm">Fonction</label>
-                                    <input type="text" name="fontion" class="form-input" value="{{ old('fontion') }}" placeholder="Infirmier chef de poste">
+                                    <input type="text" name="fonction" class="form-input" value="{{ old('fonction') }}" placeholder="Infirmier chef de poste">
                                 </div>
                                 <div class="col-md-6">
                                     <label class="form-label-sm">Grade</label>
@@ -469,7 +469,7 @@
                                 <div class="col-md-6">
                                     <label class="form-label-sm">Catégorie socio-professionnelle</label>
                                     <select name="categorie_cp" class="form-input">
-                                        <option value="">— Choisir —</option>
+                                        <option value="">- Choisir -</option>
                                         <option value="Cadre_Superieur">Cadre Supérieur</option>
                                         <option value="Cadre_Moyen">Cadre Moyen</option>
                                         <option value="Technicien_Superieur">Technicien Supérieur</option>
@@ -484,7 +484,7 @@
                                 <div class="col-md-6">
                                     <label class="form-label-sm">Famille d'emploi</label>
                                     <select name="famille_d_emploi" class="form-input">
-                                        <option value="">— Choisir —</option>
+                                        <option value="">- Choisir -</option>
                                         <option value="Corps_Médical">Corps Médical</option>
                                         <option value="Corps_Paramédical">Corps Paramédical</option>
                                         <option value="Corps_Administratif">Corps Administratif</option>
@@ -495,7 +495,7 @@
                                 <div class="col-md-3">
                                     <label class="form-label-sm">Service</label>
                                     <select name="id_service" class="form-input">
-                                        <option value="">— Aucun —</option>
+                                        <option value="">- Aucun -</option>
                                         @foreach($services ?? [] as $s)
                                         <option value="{{ $s->id_service }}">{{ $s->nom_service }}</option>
                                         @endforeach
@@ -504,7 +504,7 @@
                                 <div class="col-md-3">
                                     <label class="form-label-sm">Division</label>
                                     <select name="id_division" class="form-input">
-                                        <option value="">— Aucune —</option>
+                                        <option value="">- Aucune -</option>
                                         @foreach($divisions ?? [] as $d)
                                         <option value="{{ $d->id_division }}">{{ $d->nom_division }}</option>
                                         @endforeach

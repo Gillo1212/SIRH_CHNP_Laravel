@@ -1,5 +1,5 @@
 @extends('layouts.master')
-@section('title', 'Export consolidé — DRH')
+@section('title', 'Export consolidé - DRH')
 @section('page-title', 'Export consolidé')
 
 @section('breadcrumb')

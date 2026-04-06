@@ -19,7 +19,7 @@
                 $statut = $demande->statut_demande;
                 $config = match($statut) {
                     'En_attente' => ['bg'=>'#FEF3C7','color'=>'#92400E','icon'=>'fa-clock','label'=>'En attente de validation'],
-                    'Validé'     => ['bg'=>'#DBEAFE','color'=>'#1E40AF','icon'=>'fa-user-check','label'=>'Validé par le Manager — En attente RH'],
+                    'Validé'     => ['bg'=>'#DBEAFE','color'=>'#1E40AF','icon'=>'fa-user-check','label'=>'Validé par le Manager - En attente RH'],
                     'Approuvé'   => ['bg'=>'#D1FAE5','color'=>'#065F46','icon'=>'fa-check-double','label'=>'Approuvé'],
                     'Rejeté'     => ['bg'=>'#FEE2E2','color'=>'#991B1B','icon'=>'fa-times-circle','label'=>'Rejeté'],
                     default      => ['bg'=>'#F3F4F6','color'=>'#374151','icon'=>'fa-question','label'=>$statut],
@@ -34,7 +34,7 @@
                     </div>
                     <div>
                         <div class="fw-bold" style="color:{{ $config['color'] }};font-size:15px;">{{ $config['label'] }}</div>
-                        <div class="text-muted small">Demande #{{ $demande->id_demande }} — soumise le {{ $demande->created_at->format('d/m/Y à H:i') }}</div>
+                        <div class="text-muted small">Demande #{{ $demande->id_demande }} - soumise le {{ $demande->created_at->format('d/m/Y à H:i') }}</div>
                     </div>
                 </div>
             </div>
@@ -50,24 +50,38 @@
                     <div class="row g-3">
                         <div class="col-sm-6">
                             <div class="text-muted small fw-600 text-uppercase" style="font-size:10px;letter-spacing:.05em;">Type de congé</div>
-                            <div class="fw-600 mt-1" style="color:var(--theme-text);">{{ $conge->typeConge->libelle ?? '—' }}</div>
+                            <div class="fw-600 mt-1" style="color:var(--theme-text);">{{ $conge->typeConge->libelle ?? '-' }}</div>
                         </div>
                         <div class="col-sm-6">
                             <div class="text-muted small fw-600 text-uppercase" style="font-size:10px;letter-spacing:.05em;">Durée</div>
-                            <div class="fw-bold mt-1" style="color:#0A4D8C;font-size:18px;">{{ $conge->nbres_jours ?? '—' }} <span style="font-size:13px;font-weight:500;color:var(--theme-text-muted);">jour(s)</span></div>
+                            <div class="fw-bold mt-1" style="color:#0A4D8C;font-size:18px;">{{ $conge->nbres_jours ?? '-' }} <span style="font-size:13px;font-weight:500;color:var(--theme-text-muted);">jour(s)</span></div>
                         </div>
                         <div class="col-sm-6">
                             <div class="text-muted small fw-600 text-uppercase" style="font-size:10px;letter-spacing:.05em;">Date de début</div>
-                            <div class="fw-600 mt-1" style="color:var(--theme-text);">{{ $conge->date_debut?->format('d/m/Y') ?? '—' }}</div>
+                            <div class="fw-600 mt-1" style="color:var(--theme-text);">{{ $conge->date_debut?->format('d/m/Y') ?? '-' }}</div>
                         </div>
                         <div class="col-sm-6">
                             <div class="text-muted small fw-600 text-uppercase" style="font-size:10px;letter-spacing:.05em;">Date de fin</div>
-                            <div class="fw-600 mt-1" style="color:var(--theme-text);">{{ $conge->date_fin?->format('d/m/Y') ?? '—' }}</div>
+                            <div class="fw-600 mt-1" style="color:var(--theme-text);">{{ $conge->date_fin?->format('d/m/Y') ?? '-' }}</div>
                         </div>
                         @if($conge->date_approbation)
                             <div class="col-sm-6">
                                 <div class="text-muted small fw-600 text-uppercase" style="font-size:10px;letter-spacing:.05em;">Date d'approbation</div>
                                 <div class="fw-600 mt-1" style="color:#10B981;">{{ $conge->date_approbation->format('d/m/Y') }}</div>
+                            </div>
+                        @endif
+                        @if($conge->justificatif_path)
+                            <div class="col-12">
+                                <div class="text-muted small fw-600 text-uppercase" style="font-size:10px;letter-spacing:.05em;">Certificat médical</div>
+                                <div class="mt-1">
+                                    <a href="{{ route('agent.conges.justificatif', $demande->id_demande) }}"
+                                        class="d-inline-flex align-items-center gap-2"
+                                        style="font-size:13px;color:#0A4D8C;text-decoration:none;">
+                                        <i class="fas fa-file-medical" style="color:#10B981;"></i>
+                                        <span>Certificat médical joint</span>
+                                        <i class="fas fa-download" style="font-size:11px;color:#6B7280;"></i>
+                                    </a>
+                                </div>
                             </div>
                         @endif
                         @if($demande->date_traitement)

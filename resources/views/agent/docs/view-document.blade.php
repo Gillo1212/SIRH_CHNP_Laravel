@@ -1,5 +1,5 @@
 @extends('layouts.master')
-@section('title', $demande->libelleType . ' — ' . $agent->nom_complet)
+@section('title', $demande->libelleType . ' - ' . $agent->nom_complet)
 @section('page-title', $demande->libelleType)
 
 @section('breadcrumb')
@@ -45,7 +45,7 @@
             <h4 class="mb-1 fw-bold" style="color:var(--theme-text);">{{ $demande->libelleType }}</h4>
             <p class="mb-0 text-muted" style="font-size:13.5px;">
                 Demande du {{ $demande->created_at?->format('d/m/Y') }}
-                · Traité le {{ $demande->date_traitement?->format('d/m/Y') ?? '—' }}
+                · Traité le {{ $demande->date_traitement?->format('d/m/Y') ?? '-' }}
             </p>
         </div>
         <div class="d-flex gap-2">
@@ -82,12 +82,12 @@
                     <strong>M./Mme {{ strtoupper($agent->nom) }} {{ $agent->prenom }}</strong>,
                     matricule <strong>{{ $agent->matricule }}</strong>,
                     est bien employé(e) au sein du Centre Hospitalier National de Pikine,
-                    dans la famille d'emploi <strong>{{ str_replace('_', ' ', $agent->famille_d_emploi ?? '—') }}</strong>,
+                    dans la famille d'emploi <strong>{{ str_replace('_', ' ', $agent->famille_d_emploi ?? '-') }}</strong>,
                     au service de <strong>{{ $agent->service?->nom_service ?? 'CHNP' }}</strong>.
                 </p>
                 <p>
                     L'intéressé(e) occupe actuellement la catégorie
-                    <strong>{{ str_replace('_', ' ', $agent->categorie_cp ?? '—') }}</strong>.
+                    <strong>{{ str_replace('_', ' ', $agent->categorie_cp ?? '-') }}</strong>.
                 </p>
                 <p>
                     La présente attestation est délivrée à l'intéressé(e) pour servir et valoir ce que de droit.
@@ -127,8 +127,8 @@
                     <strong>M./Mme {{ strtoupper($agent->nom) }} {{ $agent->prenom }}</strong>,
                     matricule <strong>{{ $agent->matricule }}</strong>,
                     a été employé(e) au CHNP dans la famille d'emploi
-                    <strong>{{ str_replace('_', ' ', $agent->famille_d_emploi ?? '—') }}</strong>,
-                    catégorie <strong>{{ str_replace('_', ' ', $agent->categorie_cp ?? '—') }}</strong>
+                    <strong>{{ str_replace('_', ' ', $agent->famille_d_emploi ?? '-') }}</strong>,
+                    catégorie <strong>{{ str_replace('_', ' ', $agent->categorie_cp ?? '-') }}</strong>
                     @if($agent->statut_agent === 'Retraité')
                         au {{ now()->isoFormat('D MMMM YYYY') }}, date de fin de service.
                     @else
@@ -173,7 +173,7 @@
                 <div style="margin:24px 0;">
                     <div class="field-row"><span class="field-label">Nom et prénom :</span><span class="field-value">{{ strtoupper($agent->nom) }} {{ $agent->prenom }}</span></div>
                     <div class="field-row"><span class="field-label">Matricule :</span><span class="field-value">{{ $agent->matricule }}</span></div>
-                    <div class="field-row"><span class="field-label">Famille d'emploi :</span><span class="field-value">{{ str_replace('_', ' ', $agent->famille_d_emploi ?? '—') }}</span></div>
+                    <div class="field-row"><span class="field-label">Famille d'emploi :</span><span class="field-value">{{ str_replace('_', ' ', $agent->famille_d_emploi ?? '-') }}</span></div>
                     <div class="field-row"><span class="field-label">Service :</span><span class="field-value">{{ $agent->service?->nom_service ?? 'CHNP' }}</span></div>
                     <div class="field-row"><span class="field-label">Objet :</span><span class="field-value">{{ $demande->motif ?? '&nbsp;' }}</span></div>
                     <div class="field-row"><span class="field-label">Destination :</span><span class="field-value">&nbsp;</span></div>

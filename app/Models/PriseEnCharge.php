@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Storage;
 
 class PriseEnCharge extends Model
 {
@@ -17,7 +18,7 @@ class PriseEnCharge extends Model
         'raison_medical',
         'ayant_droit',
         'type_prise',
-        'exceptionnelle',
+        'justificatif_path',
         'validee_par',
         'date_edition',
     ];
@@ -26,7 +27,6 @@ class PriseEnCharge extends Model
     {
         return [
             'date_edition'   => 'date',
-            'exceptionnelle' => 'boolean',
         ];
     }
 
@@ -68,5 +68,13 @@ class PriseEnCharge extends Model
     public function getBeneficiaireLibelleAttribute(): string
     {
         return ucfirst($this->ayant_droit ?? 'Agent');
+    }
+
+    public function getJustificatifUrlAttribute(): ?string
+    {
+        if ($this->justificatif_path && Storage::disk('private')->exists($this->justificatif_path)) {
+            return Storage::url($this->justificatif_path);
+        }
+        return null;
     }
 }

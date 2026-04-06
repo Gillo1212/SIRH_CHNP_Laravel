@@ -1,6 +1,6 @@
 @extends('layouts.master')
 
-@section('title', 'Compte — ' . $user->login)
+@section('title', 'Compte - ' . $user->login)
 @section('page-title', 'Détail du Compte')
 
 @section('breadcrumb')
@@ -69,7 +69,7 @@
                 </div>
                 <div class="info-row">
                     <span class="info-label">Email</span>
-                    <span class="info-value">{{ $user->email ?? '—' }}</span>
+                    <span class="info-value">{{ $user->email ?? '-' }}</span>
                 </div>
                 <div class="info-row">
                     <span class="info-label">Rôle(s)</span>
@@ -125,7 +125,7 @@
                         <div>
                             <div class="fw-600" style="color:#065F46;">Dossier complété</div>
                             <div style="font-size:12px;color:#6B7280;">
-                                {{ $user->agent->prenom }} {{ $user->agent->nom }} —
+                                {{ $user->agent->prenom }} {{ $user->agent->nom }} -
                                 {{ $user->agent->matricule }}
                             </div>
                         </div>
@@ -180,7 +180,7 @@
         <div class="col-lg-7">
             <div class="panel">
                 <div class="fw-700 mb-3" style="color:#111827;font-size:15px;">
-                    <i class="fas fa-history me-2" style="color:#0A4D8C;"></i>Journal d'audit — 20 dernières actions
+                    <i class="fas fa-history me-2" style="color:#0A4D8C;"></i>Journal d'audit - 20 dernières actions
                 </div>
 
                 @forelse($auditLogs as $log)
@@ -219,14 +219,14 @@
 </div>
 
 {{-- ═══════════════════════════════════════════════════════════
-     MODAL — MODIFIER CE COMPTE
+     MODAL - MODIFIER CE COMPTE
      ═══════════════════════════════════════════════════════════ --}}
 <div class="modal fade modal-sirh" id="modalEdit" tabindex="-1" data-bs-backdrop="static">
     <div class="modal-dialog modal-lg modal-dialog-centered">
         <div class="modal-content">
             <div class="modal-header border-0 pb-0">
                 <h5 class="modal-title fw-700" style="color:#111827;">
-                    <i class="fas fa-edit me-2" style="color:#0A4D8C;"></i>Modifier — {{ $user->login }}
+                    <i class="fas fa-edit me-2" style="color:#0A4D8C;"></i>Modifier - {{ $user->login }}
                 </h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
             </div>

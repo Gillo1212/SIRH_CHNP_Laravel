@@ -28,7 +28,7 @@
                 <i class="fas fa-sign-in-alt me-2" style="color:#0A4D8C;"></i>Historique des connexions
             </h4>
             <p class="mb-0 text-muted" style="font-size:13.5px;">
-                Traçabilité des authentifications — <strong>Intégrité CID</strong>
+                Traçabilité des authentifications - <strong>Intégrité CID</strong>
             </p>
         </div>
         <div class="d-flex gap-2">
@@ -122,7 +122,7 @@
                     <td class="py-2 px-3 border-0" style="white-space:nowrap;">
                         @if($log->causer)
                         <div style="font-weight:600;color:var(--theme-text);">
-                            {{ $log->causer->login ?? $log->causer->name ?? '—' }}
+                            {{ $log->causer->login ?? $log->causer->name ?? '-' }}
                         </div>
                         @if($log->causer->roles->first())
                         <div style="font-size:10px;color:#9CA3AF;">{{ $log->causer->roles->first()->name }}</div>
@@ -136,12 +136,12 @@
                     </td>
                     <td class="py-2 px-3 border-0">
                         <span class="ev-badge {{ $evCls }}">
-                            {{ $log->event ? ucfirst($log->event) : '—' }}
+                            {{ $log->event ? ucfirst($log->event) : '-' }}
                         </span>
                     </td>
                     <td class="py-2 px-3 border-0">
                         <code style="font-size:10px;color:var(--theme-text-muted);">
-                            {{ $props['ip'] ?? '—' }}
+                            {{ $props['ip'] ?? '-' }}
                         </code>
                     </td>
                 </tr>

@@ -136,7 +136,7 @@
             Bonjour, {{ Auth::user()->agent->prenom ?? 'Directeur' }} 
         </h4>
         <p class="mb-0 text-muted" style="font-size: 13.5px;">
-            {{ now()->isoFormat('dddd D MMMM YYYY') }} — Direction des Ressources Humaines
+            {{ now()->isoFormat('dddd D MMMM YYYY') }} - Direction des Ressources Humaines
         </p>
     </div>
     <div class="d-flex gap-2 flex-wrap">
@@ -163,7 +163,7 @@
                 </div>
                 <span class="badge-status badge-info">Mensuel</span>
             </div>
-            <div class="kpi-value">— XOF</div>
+            <div class="kpi-value">- XOF</div>
             <div class="kpi-label">Masse salariale</div>
             <div class="kpi-trend neutral"><i class="fas fa-minus me-1"></i>Données à configurer</div>
         </div>
@@ -208,7 +208,7 @@
                 </div>
                 <span class="badge-status" style="background:#F5F3FF; color:#4C1D95; font-size:11px; font-weight:600; padding:2px 10px; border-radius:20px;">Estimé</span>
             </div>
-            <div class="kpi-value">— XOF</div>
+            <div class="kpi-value">- XOF</div>
             <div class="kpi-label">Coût moyen / agent</div>
             <div class="kpi-trend neutral"><i class="fas fa-info-circle me-1"></i>Données à configurer</div>
         </div>

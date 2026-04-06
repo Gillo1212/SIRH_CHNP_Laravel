@@ -48,10 +48,7 @@ return new class extends Migration
                 $table->renameColumn('date_recrutement', 'date_prise_service');
             }
 
-            // ── Renommer fonction → fontion si nécessaire ────────────────────────
-            if (Schema::hasColumn('agents', 'fonction') && ! Schema::hasColumn('agents', 'fontion')) {
-                $table->renameColumn('fonction', 'fontion');
-            }
+            // ── Conserver le nom de colonne fonction (pas de renommage) ─────────
         });
     }
 
@@ -64,9 +61,7 @@ return new class extends Migration
             if (Schema::hasColumn('agents', 'date_prise_service') && ! Schema::hasColumn('agents', 'date_recrutement')) {
                 $table->renameColumn('date_prise_service', 'date_recrutement');
             }
-            if (Schema::hasColumn('agents', 'fontion') && ! Schema::hasColumn('agents', 'fonction')) {
-                $table->renameColumn('fontion', 'fonction');
-            }
+            // (pas de renommage de fonction dans down())
         });
     }
 };

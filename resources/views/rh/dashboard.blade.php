@@ -1,6 +1,6 @@
 @extends('layouts.master')
 
-@section('title', 'Tableau de bord — Ressources Humaines')
+@section('title', 'Tableau de bord - Ressources Humaines')
 @section('page-title', 'Gestion des Ressources Humaines')
 
 @section('breadcrumb')
@@ -55,7 +55,7 @@
             Bonjour, {{ Auth::user()->agent->prenom ?? 'Agent RH' }} 
         </h4>
         <p class="mb-0 text-muted" style="font-size:13.5px;">
-            {{ now()->isoFormat('dddd D MMMM YYYY') }} — Service des Ressources Humaines
+            {{ now()->isoFormat('dddd D MMMM YYYY') }} - Service des Ressources Humaines
         </p>
     </div>
     <div class="d-flex gap-2 flex-wrap">
@@ -65,7 +65,7 @@
                 <span style="background:#0A4D8C;color:white;border-radius:20px;font-size:11px;font-weight:700;padding:1px 7px;">{{ $planningsPending }}</span>
             @endif
         </a>
-        <a href="{{ route('rh.agents.create') }}" class="action-btn action-btn-primary">
+        <a href="{{ route('rh.agents.index', ['create' => 1]) }}" class="action-btn action-btn-primary">
             <i class="fas fa-user-plus"></i> Nouvel agent
         </a>
     </div>
@@ -226,7 +226,7 @@
 <div style="background:linear-gradient(135deg,#EFF6FF 0%,#E0F2FE 100%);border:1px solid #BFDBFE;border-radius:12px;padding:20px;">
     <div class="fw-600 mb-3" style="color:#0A4D8C;">Actions rapides</div>
     <div class="d-flex flex-wrap gap-2">
-        <a href="{{ route('rh.agents.create') }}" class="action-btn action-btn-primary"><i class="fas fa-user-plus"></i> Nouvel agent</a>
+        <a href="{{ route('rh.agents.index', ['create' => 1]) }}" class="action-btn action-btn-primary"><i class="fas fa-user-plus"></i> Nouvel agent</a>
         <a href="{{ route('rh.contrats.index') }}" class="action-btn action-btn-outline"><i class="fas fa-file-contract"></i> Contrats</a>
         <a href="{{ route('rh.conge-physique') }}" class="action-btn action-btn-outline"><i class="fas fa-umbrella-beach"></i> Saisir congé</a>
         <a href="{{ route('rh.mouvements.index') }}" class="action-btn action-btn-outline"><i class="fas fa-exchange-alt"></i> Mouvement</a>

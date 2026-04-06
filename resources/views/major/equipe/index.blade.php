@@ -1,125 +1,151 @@
 @extends('layouts.master')
-
-@section('title', 'Mon équipe — Major')
-@section('page-title', 'Mon équipe')
+@section('title', 'Mon équipe')
+@section('page-title', 'Mon Équipe')
 
 @section('breadcrumb')
-    <li><a href="{{ route('major.dashboard') }}" style="color:#1565C0;">Tableau de bord</a></li>
+    <li><a href="{{ route('major.dashboard') }}" style="color:#1565C0;">Major</a></li>
     <li>Mon équipe</li>
 @endsection
+
+@push('styles')
+<style>
+.kpi-card { border-radius:12px;padding:16px 20px;border:1px solid;transition:box-shadow 180ms,transform 180ms; }
+.kpi-card:hover { box-shadow:0 4px 16px rgba(10,77,140,.10);transform:translateY(-2px); }
+.agent-row { transition:background 150ms; }
+.agent-row:hover { background:#F9FAFB!important; }
+.badge-actif    { background:#D1FAE5;color:#065F46;padding:3px 10px;border-radius:20px;font-size:10px;font-weight:700; }
+.badge-conge    { background:#DBEAFE;color:#1E40AF;padding:3px 10px;border-radius:20px;font-size:10px;font-weight:700; }
+.badge-suspendu { background:#FEE2E2;color:#991B1B;padding:3px 10px;border-radius:20px;font-size:10px;font-weight:700; }
+.badge-retraite { background:#F3F4F6;color:#374151;padding:3px 10px;border-radius:20px;font-size:10px;font-weight:700; }
+</style>
+@endpush
 
 @section('content')
 <div class="container-fluid px-4 py-4">
 
-{{-- En-tête --}}
-<div class="card border-0 shadow-sm rounded-4 mb-4" style="background:linear-gradient(135deg,#0A4D8C,#1565C0);">
-    <div class="card-body p-4 text-white">
-        <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;opacity:.75;">Service</div>
-        <h4 class="fw-bold mb-0 mt-1">{{ $service->nom_service }}</h4>
-        <span class="badge mt-2" style="background:rgba(255,255,255,.2);">{{ $service->type_service }}</span>
+    {{-- Header --}}
+    <div class="d-flex align-items-center justify-content-between mb-4 flex-wrap gap-3">
+        <div>
+            <h4 class="mb-1 fw-bold" style="color:var(--theme-text);">
+                <i class="fas fa-users me-2" style="color:#0A4D8C;"></i>Mon Équipe
+            </h4>
+            <p class="mb-0 text-muted" style="font-size:13.5px;">
+                Service : <strong>{{ $service->nom_service }}</strong>
+                @if($service->divisions && $service->divisions->count() > 0)
+                    · {{ $service->divisions->count() }} division(s)
+                @endif
+                <span class="ms-2 badge" style="background:#EFF6FF;color:#1D4ED8;font-size:10px;">Lecture seule</span>
+            </p>
+        </div>
+        <a href="{{ route('major.absences.index') }}" class="btn btn-outline-danger btn-sm">
+            <i class="fas fa-user-minus me-1"></i>Voir les absences
+        </a>
     </div>
-</div>
 
-{{-- Stats --}}
-<div class="row g-3 mb-4">
-    <div class="col-6 col-md-3">
-        <div class="card border-0 shadow-sm rounded-3 text-center p-3">
-            <div class="fw-bold fs-4" style="color:#0A4D8C;">{{ $stats['total'] }}</div>
-            <div class="text-muted" style="font-size:12px;">Total agents</div>
+    {{-- KPIs --}}
+    <div class="row g-3 mb-4">
+        <div class="col-6 col-xl-3">
+            <div class="kpi-card" style="background:#EFF6FF;border-color:#DBEAFE;">
+                <div style="font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:#6B7280;">Total équipe</div>
+                <div style="font-size:28px;font-weight:700;color:#0A4D8C;margin-top:6px;">{{ $stats['total'] }}</div>
+            </div>
+        </div>
+        <div class="col-6 col-xl-3">
+            <div class="kpi-card" style="background:#ECFDF5;border-color:#A7F3D0;">
+                <div style="font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:#6B7280;">Actifs</div>
+                <div style="font-size:28px;font-weight:700;color:#059669;margin-top:6px;">{{ $stats['actifs'] }}</div>
+            </div>
+        </div>
+        <div class="col-6 col-xl-3">
+            <div class="kpi-card" style="background:#EFF6FF;border-color:#BFDBFE;">
+                <div style="font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:#6B7280;">En congé</div>
+                <div style="font-size:28px;font-weight:700;color:#1D4ED8;margin-top:6px;">{{ $stats['en_conge'] }}</div>
+            </div>
+        </div>
+        <div class="col-6 col-xl-3">
+            <div class="kpi-card" style="background:#FEF2F2;border-color:#FECACA;">
+                <div style="font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:#6B7280;">Suspendus</div>
+                <div style="font-size:28px;font-weight:700;color:#DC2626;margin-top:6px;">{{ $stats['suspendus'] }}</div>
+            </div>
         </div>
     </div>
-    <div class="col-6 col-md-3">
-        <div class="card border-0 shadow-sm rounded-3 text-center p-3">
-            <div class="fw-bold fs-4 text-success">{{ $stats['actifs'] }}</div>
-            <div class="text-muted" style="font-size:12px;">Actifs</div>
-        </div>
-    </div>
-    <div class="col-6 col-md-3">
-        <div class="card border-0 shadow-sm rounded-3 text-center p-3">
-            <div class="fw-bold fs-4 text-warning">{{ $stats['en_conge'] }}</div>
-            <div class="text-muted" style="font-size:12px;">En congé</div>
-        </div>
-    </div>
-    <div class="col-6 col-md-3">
-        <div class="card border-0 shadow-sm rounded-3 text-center p-3">
-            <div class="fw-bold fs-4 text-danger">{{ $stats['suspendus'] }}</div>
-            <div class="text-muted" style="font-size:12px;">Suspendus</div>
-        </div>
-    </div>
-</div>
 
-{{-- Liste agents --}}
-<div class="card border-0 shadow-sm rounded-4">
-    <div class="card-header bg-transparent border-0 pt-4 px-4">
-        <h6 class="fw-bold mb-0"><i class="fas fa-users me-2" style="color:#0A4D8C;"></i>Liste des agents du service</h6>
-        <small class="text-muted">Consultation uniquement</small>
-    </div>
-    <div class="card-body p-0">
-        <div class="table-responsive">
-            <table class="table table-hover mb-0">
-                <thead style="background:#f8fafc;">
-                    <tr>
-                        <th class="ps-4" style="font-size:12px;font-weight:700;text-transform:uppercase;color:#6b7280;">Agent</th>
-                        <th style="font-size:12px;font-weight:700;text-transform:uppercase;color:#6b7280;">Matricule</th>
-                        <th style="font-size:12px;font-weight:700;text-transform:uppercase;color:#6b7280;">Fonction</th>
-                        <th style="font-size:12px;font-weight:700;text-transform:uppercase;color:#6b7280;">Statut</th>
-                        <th style="font-size:12px;font-weight:700;text-transform:uppercase;color:#6b7280;">Absences (mois)</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @forelse($agents as $agent)
-                    <tr>
-                        <td class="ps-4">
-                            <div class="d-flex align-items-center gap-3">
-                                @if($agent->photo)
-                                    <img src="{{ asset('storage/'.$agent->photo) }}" class="rounded-circle" width="36" height="36" style="object-fit:cover;">
-                                @else
-                                    <div class="rounded-circle d-flex align-items-center justify-content-center" style="width:36px;height:36px;background:#e8f0fe;font-size:13px;font-weight:700;color:#0A4D8C;">
+    {{-- Tableau agents --}}
+    <div class="card border-0 shadow-sm" style="border-radius:12px;overflow:hidden;">
+        <div class="card-header d-flex align-items-center justify-content-between py-3 px-4" style="background:#fff;border-bottom:1px solid #F3F4F6;">
+            <h6 class="mb-0 fw-bold" style="color:var(--theme-text);">
+                <i class="fas fa-list me-2" style="color:#0A4D8C;"></i>Liste des agents
+            </h6>
+        </div>
+        <div class="card-body p-0">
+            @if($agents->isNotEmpty())
+            <div class="table-responsive">
+                <table class="table mb-0" style="font-size:13px;">
+                    <thead>
+                        <tr style="background:#F9FAFB;">
+                            <th class="border-0 py-3 px-4" style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:#9CA3AF;">Agent</th>
+                            <th class="border-0 py-3 px-4" style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:#9CA3AF;">Fonction</th>
+                            <th class="border-0 py-3 px-4" style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:#9CA3AF;">Contrat</th>
+                            <th class="border-0 py-3 px-4" style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:#9CA3AF;">Statut</th>
+                            <th class="border-0 py-3 px-4" style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:#9CA3AF;">Absences (mois)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach($agents as $agent)
+                        <tr class="agent-row">
+                            <td class="py-3 px-4 border-0">
+                                <div class="d-flex align-items-center gap-3">
+                                    @if($agent->photo)
+                                    <img src="{{ Storage::url($agent->photo) }}" alt="" style="width:36px;height:36px;border-radius:50%;object-fit:cover;flex-shrink:0;">
+                                    @else
+                                    <div style="width:36px;height:36px;border-radius:50%;background:#EFF6FF;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-weight:700;color:#0A4D8C;font-size:13px;">
                                         {{ strtoupper(substr($agent->prenom, 0, 1)) }}{{ strtoupper(substr($agent->nom, 0, 1)) }}
                                     </div>
-                                @endif
-                                <div>
-                                    <div class="fw-600">{{ $agent->nom_complet }}</div>
-                                    <div class="text-muted" style="font-size:11px;">{{ $agent->categorie_cp ?? '' }}</div>
+                                    @endif
+                                    <div>
+                                        <div style="font-weight:600;color:var(--theme-text);">{{ $agent->prenom }} {{ $agent->nom }}</div>
+                                        <div style="font-size:11px;color:#9CA3AF;">{{ $agent->matricule }}</div>
+                                    </div>
                                 </div>
-                            </div>
-                        </td>
-                        <td><code style="font-size:12px;">{{ $agent->matricule }}</code></td>
-                        <td style="font-size:13px;">{{ $agent->fontion ?? '—' }}</td>
-                        <td>
-                            @php
-                                $sc = match($agent->statut_agent) {
-                                    'Actif'     => 'success',
-                                    'En_congé'  => 'warning',
-                                    'Suspendu'  => 'danger',
-                                    'Retraité'  => 'secondary',
-                                    default     => 'secondary',
-                                };
-                            @endphp
-                            <span class="badge bg-{{ $sc }}" style="font-size:11px;">{{ $agent->statut_agent }}</span>
-                        </td>
-                        <td>
-                            @php $countAbsences = $agent->demandes->count(); @endphp
-                            @if($countAbsences > 0)
-                                <span class="badge bg-danger">{{ $countAbsences }}</span>
-                            @else
-                                <span class="text-muted" style="font-size:12px;">0</span>
-                            @endif
-                        </td>
-                    </tr>
-                    @empty
-                    <tr>
-                        <td colspan="5" class="text-center py-5 text-muted">
-                            <i class="fas fa-users fa-2x mb-3 d-block"></i>
-                            Aucun agent dans ce service.
-                        </td>
-                    </tr>
-                    @endforelse
-                </tbody>
-            </table>
+                            </td>
+                            <td class="py-3 px-4 border-0" style="color:var(--theme-text);">{{ str_replace('_', ' ', $agent->famille_d_emploi ?? $agent->fonction ?? '-') }}</td>
+                            <td class="py-3 px-4 border-0">
+                                @if($agent->contratActif)
+                                    <span style="font-size:11px;background:#EFF6FF;color:#1E40AF;padding:2px 8px;border-radius:20px;font-weight:600;">{{ $agent->contratActif->type_contrat }}</span>
+                                @else
+                                    <span class="text-muted" style="font-size:12px;">-</span>
+                                @endif
+                            </td>
+                            <td class="py-3 px-4 border-0">
+                                @php
+                                    $sBadges = ['Actif'=>'badge-actif','En_congé'=>'badge-conge','Suspendu'=>'badge-suspendu','Retraité'=>'badge-retraite'];
+                                    $sLabels = ['Actif'=>'Actif','En_congé'=>'En congé','Suspendu'=>'Suspendu','Retraité'=>'Retraité'];
+                                @endphp
+                                <span class="{{ $sBadges[$agent->statut_agent] ?? 'badge-retraite' }}">
+                                    {{ $sLabels[$agent->statut_agent] ?? $agent->statut_agent }}
+                                </span>
+                            </td>
+                            <td class="py-3 px-4 border-0">
+                                @php $nbAbsences = $agent->demandes->count(); @endphp
+                                @if($nbAbsences > 0)
+                                    <span style="font-size:11px;background:#FEE2E2;color:#991B1B;padding:3px 10px;border-radius:20px;font-weight:700;">{{ $nbAbsences }}</span>
+                                @else
+                                    <span class="text-muted" style="font-size:12px;">0</span>
+                                @endif
+                            </td>
+                        </tr>
+                        @endforeach
+                    </tbody>
+                </table>
+            </div>
+            @else
+            <div class="text-center py-5">
+                <i class="fas fa-users" style="font-size:40px;color:#D1D5DB;margin-bottom:12px;display:block;"></i>
+                <p class="mb-0 text-muted">Aucun agent dans votre service.</p>
+            </div>
+            @endif
         </div>
     </div>
-</div>
 
 </div>
 @endsection

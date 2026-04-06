@@ -1,5 +1,5 @@
 @extends('layouts.master')
-@section('title', 'GED — Étagères')
+@section('title', 'GED - Étagères')
 @section('page-title', 'Gestion des Étagères')
 
 @section('breadcrumb')
@@ -290,7 +290,7 @@
                                     <div class="agent-mini-mat">{{ $ag?->matricule ?? $dos->reference }}</div>
                                 </div>
                                 <span class="agent-mini-docs">
-                                    {{ $dos->documents_count ?? '—' }}
+                                    {{ $dos->documents_count ?? '-' }}
                                 </span>
                             </a>
                             @endforeach

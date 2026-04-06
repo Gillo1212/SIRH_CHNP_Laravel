@@ -190,6 +190,7 @@ class PlanningManagerController extends Controller
             'transmis'   => Planning::where('id_service', $service->id_service)->where('statut_planning', 'Transmis')->count(),
             'valides'    => Planning::where('id_service', $service->id_service)->where('statut_planning', 'Validé')->count(),
             'rejetes'    => Planning::where('id_service', $service->id_service)->where('statut_planning', 'Rejeté')->count(),
+            'diffuses'   => Planning::where('id_service', $service->id_service)->where('statut_planning', 'Diffusé')->count(),
         ];
 
         // Données calendrier (toutes les lignes du service)
@@ -370,27 +371,76 @@ class PlanningManagerController extends Controller
     }
 
     /**
-     * Transmettre le planning à la RH
+     * Valider un planning (Brouillon ou Transmis → Validé)
      */
-    public function transmettre(Request $request, int $id)
+    public function valider(int $id)
     {
         $service  = $this->getManagerService();
-        $planning = Planning::where('id_service', $service->id_service)->findOrFail($id);
-
-        if (!$planning->est_modifiable) {
-            return back()->with('error', 'Ce planning ne peut pas être transmis (statut : ' . $planning->statut_planning . ').');
-        }
+        $planning = Planning::where('id_service', $service->id_service)
+            ->whereIn('statut_planning', ['Brouillon', 'Transmis'])
+            ->findOrFail($id);
 
         if ($planning->lignes()->count() === 0) {
-            return back()->with('error', 'Impossible de transmettre un planning vide. Ajoutez des lignes d\'abord.');
+            return back()->with('error', 'Impossible de valider un planning vide.');
         }
 
         DB::transaction(function () use ($planning) {
-            $planning->transmettre();
-            activity()->causedBy(auth()->user())->performedOn($planning)
-                ->log('Planning transmis à la RH');
+            $planning->valider();
+            activity()->causedBy(auth()->user())
+                ->performedOn($planning)
+                ->withProperties(['service' => $planning->service->nom_service ?? ''])
+                ->log('Planning validé par le Manager');
         });
 
-        return back()->with('success', 'Planning transmis au service RH pour validation.');
+        return back()->with('success', 'Planning validé avec succès. Il est maintenant opérationnel.');
+    }
+
+    /**
+     * Diffuser le planning validé au service RH (à titre informatif)
+     */
+    public function diffuser(int $id)
+    {
+        $service  = $this->getManagerService();
+        $planning = Planning::where('id_service', $service->id_service)
+            ->where('statut_planning', 'Validé')
+            ->findOrFail($id);
+
+        DB::transaction(function () use ($planning) {
+            $planning->diffuser();
+            activity()->causedBy(auth()->user())
+                ->performedOn($planning)
+                ->withProperties(['service' => $planning->service->nom_service ?? ''])
+                ->log('Planning diffusé au service RH par le Manager');
+        });
+
+        return back()->with('success', 'Planning transmis au service RH à titre informatif.');
+    }
+
+    /**
+     * Rejeter un planning avec motif (Transmis → Rejeté)
+     */
+    public function rejeter(Request $request, int $id)
+    {
+        $service  = $this->getManagerService();
+        $planning = Planning::where('id_service', $service->id_service)
+            ->where('statut_planning', 'Transmis')
+            ->findOrFail($id);
+
+        $request->validate([
+            'motif_rejet' => 'required|string|min:10|max:500',
+        ], [
+            'motif_rejet.required' => 'Le motif de rejet est obligatoire.',
+            'motif_rejet.min'      => 'Le motif doit contenir au moins 10 caractères.',
+        ]);
+
+        DB::transaction(function () use ($planning, $request) {
+            $planning->rejeter($request->motif_rejet);
+            activity()->causedBy(auth()->user())
+                ->performedOn($planning)
+                ->withProperties(['motif' => $request->motif_rejet])
+                ->log('Planning rejeté par le Manager');
+        });
+
+        return back()->with('success', 'Planning rejeté. Le major peut maintenant le corriger et le soumettre à nouveau.');
     }
 }

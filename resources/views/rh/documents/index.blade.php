@@ -1,6 +1,6 @@
 @extends('layouts.master')
-@section('title', 'GED — Gestion Électronique de Documents')
-@section('page-title', 'GED — Gestion Électronique de Documents')
+@section('title', 'GED - Gestion Électronique de Documents')
+@section('page-title', 'GED - Gestion Électronique de Documents')
 
 @section('breadcrumb')
     <li><a href="{{ route('rh.dashboard') }}" style="color:#1565C0;">RH</a></li>
@@ -10,7 +10,7 @@
 @push('styles')
 <style>
 /* ══════════════════════════════════════════════════════════
-   GED — DASHBOARD
+   GED - DASHBOARD
    ══════════════════════════════════════════════════════════ */
 
 /* KPI */
@@ -171,7 +171,7 @@
                                 <div class="ec-icon"><i class="ri-archive-drawer-line"></i></div>
                                 <div>
                                     <div class="fw-600" style="font-size:14px;color:#111827;">{{ $et->nom_etagere }}</div>
-                                    <div style="font-size:12px;color:#6B7280;">{{ $et->service?->nom_service ?? '—' }}</div>
+                                    <div style="font-size:12px;color:#6B7280;">{{ $et->service?->nom_service ?? '-' }}</div>
                                 </div>
                             </div>
                             <div class="ec-body">
@@ -234,7 +234,7 @@
                                     </div>
                                 </td>
                                 <td class="py-2" style="color:#374151;">
-                                    {{ $doc->dossier?->agent?->nom_complet ?? '—' }}
+                                    {{ $doc->dossier?->agent?->nom_complet ?? '-' }}
                                 </td>
                                 <td class="py-2">
                                     <span class="badge rounded-pill" style="background:{{ $doc->type_info['color'] }}18;color:{{ $doc->type_info['color'] }};font-size:11px;">

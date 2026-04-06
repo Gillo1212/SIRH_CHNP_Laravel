@@ -4,16 +4,25 @@ namespace App\Providers;
 
 use App\Models\Agent;
 use App\Models\Absence;
+use App\Models\Conge;
 use App\Models\Contrat;
+use App\Models\DemandeDocument;
 use App\Models\Document;
 use App\Models\Mouvement;
 use App\Models\Planning;
+use App\Models\PriseEnCharge;
 use App\Models\Service;
 use App\Models\User;
 use App\Observers\AuditObserver;
+use App\Policies\AbsencePolicy;
 use App\Policies\AgentPolicy;
+use App\Policies\CongePolicy;
 use App\Policies\ContratPolicy;
+use App\Policies\DemandeDocumentPolicy;
+use App\Policies\DocumentPolicy;
 use App\Policies\MouvementPolicy;
+use App\Policies\PlanningPolicy;
+use App\Policies\PriseEnChargePolicy;
 use App\Policies\ServicePolicy;
 use App\Repositories\AgentRepository;
 use App\Repositories\Contracts\AgentRepositoryInterface;
@@ -36,10 +45,16 @@ class AppServiceProvider extends ServiceProvider
     public function boot(): void
     {
         // ── Policies (Confidentialité CID) ───────────────────
-        Gate::policy(Agent::class,    AgentPolicy::class);
-        Gate::policy(Contrat::class,  ContratPolicy::class);
-        Gate::policy(Mouvement::class,MouvementPolicy::class);
-        Gate::policy(Service::class,  ServicePolicy::class);
+        Gate::policy(Agent::class,          AgentPolicy::class);
+        Gate::policy(Absence::class,        AbsencePolicy::class);
+        Gate::policy(Conge::class,          CongePolicy::class);
+        Gate::policy(Contrat::class,        ContratPolicy::class);
+        Gate::policy(DemandeDocument::class,DemandeDocumentPolicy::class);
+        Gate::policy(Document::class,       DocumentPolicy::class);
+        Gate::policy(Mouvement::class,      MouvementPolicy::class);
+        Gate::policy(Planning::class,       PlanningPolicy::class);
+        Gate::policy(PriseEnCharge::class,  PriseEnChargePolicy::class);
+        Gate::policy(Service::class,        ServicePolicy::class);
 
         // ── Gates granulaires (Confidentialité CID) ──────────
         $this->registerGates();

@@ -14,7 +14,7 @@
 {{--
     Cette page est conservée comme fallback.
     Le formulaire de complétion est désormais un modal dans comptes-a-completer.
-    Cette vue ne devrait plus être rendue directement — le contrôleur redirige.
+    Cette vue ne devrait plus être rendue directement - le contrôleur redirige.
 --}}
 <div style="max-width:520px;margin:80px auto;text-align:center;">
     <div style="width:72px;height:72px;border-radius:50%;background:#EFF6FF;display:flex;align-items:center;justify-content:center;margin:0 auto 20px;font-size:28px;">

@@ -18,6 +18,8 @@ class Demande extends Model
         'statut_demande',
         'motif_refus',
         'date_traitement',
+        'avis_major',
+        'avis_major_at',
     ];
 
     protected function casts(): array
@@ -25,6 +27,7 @@ class Demande extends Model
         return [
             'date_demande' => 'datetime',
             'date_traitement' => 'datetime',
+            'avis_major_at' => 'datetime',
         ];
     }
 

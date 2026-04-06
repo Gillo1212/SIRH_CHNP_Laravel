@@ -17,7 +17,7 @@
                 <i class="fas fa-folder-open me-2" style="color:#0A4D8C;"></i>Dossiers agents
             </h4>
             <p class="mb-0 text-muted" style="font-size:13.5px;">
-                Consultation lecture seule — Service : <strong>{{ $service->nom_service }}</strong>
+                Consultation lecture seule - Service : <strong>{{ $service->nom_service }}</strong>
             </p>
         </div>
         <a href="{{ route('manager.equipe') }}" class="btn btn-outline-secondary btn-sm">
@@ -46,7 +46,7 @@
                         </div>
                     </div>
                     <div style="font-size:13px;color:#374151;margin-bottom:8px;">
-                        <i class="fas fa-briefcase me-1" style="color:#9CA3AF;width:14px;"></i>{{ str_replace('_',' ',$agent->famille_d_emploi ?? '—') }}
+                        <i class="fas fa-briefcase me-1" style="color:#9CA3AF;width:14px;"></i>{{ str_replace('_',' ',$agent->famille_d_emploi ?? '-') }}
                     </div>
                     <div style="font-size:13px;color:#374151;margin-bottom:8px;">
                         <i class="fas fa-file-contract me-1" style="color:#9CA3AF;width:14px;"></i>

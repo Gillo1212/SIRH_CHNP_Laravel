@@ -5,7 +5,6 @@ namespace App\Http\Controllers\Agent;
 use App\Http\Controllers\Controller;
 use App\Models\Absence;
 use App\Models\Demande;
-use App\Models\PieceJustificative;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -23,7 +22,7 @@ class AbsenceAgentController extends Controller
                 ->with('warning', 'Veuillez compléter votre profil.');
         }
 
-        $absences = Absence::with(['demande', 'piecesJustificatives'])
+        $absences = Absence::with(['demande'])
             ->whereHas('demande', fn($q) => $q->where('id_agent', $agent->id_agent))
             ->orderByDesc('date_absence')
             ->paginate(20);
@@ -96,7 +95,7 @@ class AbsenceAgentController extends Controller
     {
         $agent = auth()->user()->agent;
 
-        $absence = Absence::with(['demande', 'piecesJustificatives'])->findOrFail($id);
+        $absence = Absence::with(['demande'])->findOrFail($id);
 
         // Vérifier que cette absence appartient bien à cet agent
         if (!$absence->demande || $absence->demande->id_agent !== $agent->id_agent) {
@@ -104,23 +103,22 @@ class AbsenceAgentController extends Controller
         }
 
         $request->validate([
-            'type_piece' => ['required', 'in:Certificat médical,Acte décès,Convocation'],
-            'fichier'    => ['required', 'file', 'mimes:pdf,jpg,jpeg,png', 'max:5120'],
+            'fichier' => ['required', 'file', 'mimes:pdf,jpg,jpeg,png', 'max:5120'],
         ]);
+
+        // Supprimer l'ancien fichier si existant
+        if ($absence->justificatif_path) {
+            \Illuminate\Support\Facades\Storage::disk('public')->delete($absence->justificatif_path);
+        }
 
         $path = $request->file('fichier')->store('justificatifs/' . $agent->matricule, 'public');
 
-        PieceJustificative::create([
-            'id_absence'  => $absence->id_absence,
-            'type_piece'  => $request->type_piece,
-            'fichier_url' => $path,
-            'date_depot'  => now(),
-            'valide'      => false,
-        ]);
+        $absence->update(['justificatif_path' => $path]);
 
         activity()
             ->causedBy(auth()->user())
-            ->withProperties(['absence_id' => $id, 'type_piece' => $request->type_piece])
+            ->performedOn($absence)
+            ->withProperties(['absence_id' => $id])
             ->log("Agent a soumis un justificatif pour l'absence #{$id}");
 
         return redirect()->route('agent.absences.index')

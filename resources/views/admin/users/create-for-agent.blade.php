@@ -1,6 +1,6 @@
 @extends('layouts.master')
 
-@section('title', 'Créer un compte — ' . $agent->prenom . ' ' . $agent->nom)
+@section('title', 'Créer un compte - ' . $agent->prenom . ' ' . $agent->nom)
 @section('page-title', 'Création compte utilisateur')
 
 @section('breadcrumb')
@@ -24,8 +24,8 @@
                     <div style="font-size:16px;font-weight:700;">{{ $agent->prenom }} {{ $agent->nom }}</div>
                     <div style="font-size:13px;" class="text-muted">
                         <code>{{ $agent->matricule }}</code>
-                        &nbsp;·&nbsp;{{ str_replace('_',' ',$agent->famille_d_emploi ?? '—') ?? '—' }}
-                        &nbsp;·&nbsp;{{ $agent->service?->nom_service ?? '—' }}
+                        &nbsp;·&nbsp;{{ str_replace('_',' ',$agent->famille_d_emploi ?? '-') ?? '-' }}
+                        &nbsp;·&nbsp;{{ $agent->service?->nom_service ?? '-' }}
                     </div>
                 </div>
                 <div class="ms-auto">

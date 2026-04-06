@@ -9,7 +9,7 @@
             <span style="font-size: 0.875rem; color: #6B7280;">
                 © {{ date('Y') }} 
                 <strong style="color: #0A4D8C;">SIRH CHNP</strong> 
-                — Centre Hospitalier National de Pikine
+                - Centre Hospitalier National de Pikine
             </span>
             
             <span style="color: #D1D5DB;">|</span>
@@ -78,7 +78,7 @@
             <i class="fas fa-code" style="margin-right: 0.25rem;"></i>
             Développé avec <span style="color: #EF4444;">♥</span> par 
             <span style="color: #6B7280; font-weight: 500;">Étudiant Master 2</span>
-            — Projet de Mémoire 2025-2026
+            - Projet de Mémoire 2025-2026
         </div>
 
         <div style="display: flex; align-items: center; gap: 0.75rem;">

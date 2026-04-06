@@ -1,5 +1,5 @@
 @extends('layouts.master')
-@section('title', 'Rapport Effectifs — DRH')
+@section('title', 'Rapport Effectifs - DRH')
 @section('page-title', 'Rapport Effectifs')
 
 @section('breadcrumb')
@@ -24,7 +24,7 @@
     <div class="d-flex align-items-center justify-content-between mb-4 flex-wrap gap-3">
         <div>
             <h4 class="mb-1 fw-bold" style="color:var(--theme-text);">
-                <i class="fas fa-users me-2" style="color:#0A4D8C;"></i>Rapport Effectifs — Direction
+                <i class="fas fa-users me-2" style="color:#0A4D8C;"></i>Rapport Effectifs - Direction
             </h4>
             <p class="mb-0 text-muted" style="font-size:13.5px;">Vue consolidée des effectifs pour la direction</p>
         </div>
@@ -73,7 +73,7 @@
                             @php $pct = $totalActifs > 0 ? round($svc->actifs / $totalActifs * 100) : 0; @endphp
                             <tr>
                                 <td class="py-2 px-3 border-0 fw-600">{{ $svc->nom_service }}</td>
-                                <td class="py-2 px-3 border-0 text-muted">{{ $svc->divisions_count ?? '—' }}</td>
+                                <td class="py-2 px-3 border-0 text-muted">{{ $svc->divisions_count ?? '-' }}</td>
                                 <td class="py-2 px-3 border-0 text-center" style="font-weight:700;color:#0A4D8C;">{{ $svc->actifs }}</td>
                                 <td class="py-2 px-3 border-0">
                                     <div style="background:#E5E7EB;border-radius:4px;height:8px;overflow:hidden;width:80px;">

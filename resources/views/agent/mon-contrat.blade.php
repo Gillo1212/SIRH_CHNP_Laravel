@@ -79,7 +79,7 @@
     <div class="row g-3">
         <div class="col-6 col-md-3">
             <div style="opacity:.7;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;margin-bottom:2px;">Date début</div>
-            <div style="font-size:14px;font-weight:600;">{{ $contratActif->date_debut?->format('d/m/Y') ?? '—' }}</div>
+            <div style="font-size:14px;font-weight:600;">{{ $contratActif->date_debut?->format('d/m/Y') ?? '-' }}</div>
         </div>
         <div class="col-6 col-md-3">
             <div style="opacity:.7;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;margin-bottom:2px;">Date fin</div>
@@ -159,7 +159,7 @@
         </div>
         <div class="col-md-6">
             <div class="info-label">Date de début</div>
-            <div class="info-value">{{ $contratActif->date_debut?->isoFormat('DD MMMM YYYY') ?? '—' }}</div>
+            <div class="info-value">{{ $contratActif->date_debut?->isoFormat('DD MMMM YYYY') ?? '-' }}</div>
         </div>
         <div class="col-md-6">
             <div class="info-label">Date de fin</div>

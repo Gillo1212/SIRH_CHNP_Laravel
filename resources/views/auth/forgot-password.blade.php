@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    <meta name="description" content="Réinitialisation du mot de passe — SIRH CHNP">
+    <meta name="description" content="Réinitialisation du mot de passe - SIRH CHNP">
 
     <title>Mot de passe oublié | SIRH CHNP</title>
 
@@ -360,7 +360,7 @@
 
             {{-- Footer --}}
             <div class="login-footer">
-                <p>© {{ date('Y') }} SIRH CHNP — Centre Hospitalier National de Pikine</p>
+                <p>© {{ date('Y') }} SIRH CHNP - Centre Hospitalier National de Pikine</p>
                 <div class="login-footer-badges">
                     <div class="footer-badge secure"><i class="fas fa-lock"></i><span>SSL/TLS</span></div>
                     <div class="footer-badge"><i class="fas fa-shield-alt"></i><span>RGPD</span></div>

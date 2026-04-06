@@ -868,15 +868,6 @@
                     this.currentTheme = theme;
                     localStorage.setItem('sirh_theme', theme);
                     this.applyTheme(theme);
-                    // Sauvegarder en base via API
-                    fetch('{{ route("preferences.theme") }}', {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
-                        },
-                        body: JSON.stringify({ theme })
-                    }).catch(() => {});
                 },
 
                 applyTheme(theme) {
@@ -1024,7 +1015,7 @@
     @stack('scripts')
 
     {{-- ═══════════════════════════════════════════════════════════════════════
-         TOASTS GLOBAUX — Flash messages en popup SweetAlert2
+         TOASTS GLOBAUX - Flash messages en popup SweetAlert2
          ═══════════════════════════════════════════════════════════════════════ --}}
     @php
         $toastMsg   = session('success') ?? session('error') ?? session('info') ?? session('warning') ?? null;

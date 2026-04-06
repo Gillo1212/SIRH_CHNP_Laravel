@@ -154,7 +154,7 @@
                                 <i class="fas fa-lock ms-1 text-danger" style="font-size:10px;" title="Verrouillé"></i>
                             @endif
                         </td>
-                        <td style="color:#6B7280;font-size:13px;">{{ $user->email ?? '—' }}</td>
+                        <td style="color:#6B7280;font-size:13px;">{{ $user->email ?? '-' }}</td>
                         <td>
                             @foreach($user->roles as $role)
                                 <span class="badge-role me-1">{{ $role->name }}</span>
@@ -237,7 +237,7 @@
 </div>
 
 {{-- ═══════════════════════════════════════════════════════════
-     MODAL — CRÉER UN COMPTE
+     MODAL - CRÉER UN COMPTE
      ═══════════════════════════════════════════════════════════ --}}
 <div class="modal fade modal-sirh" id="modalCreate" tabindex="-1" data-bs-backdrop="static">
     <div class="modal-dialog modal-lg modal-dialog-centered">
@@ -347,14 +347,14 @@
 </div>
 
 {{-- ═══════════════════════════════════════════════════════════
-     MODAL — MODIFIER UN COMPTE
+     MODAL - MODIFIER UN COMPTE
      ═══════════════════════════════════════════════════════════ --}}
 <div class="modal fade modal-sirh" id="modalEdit" tabindex="-1" data-bs-backdrop="static">
     <div class="modal-dialog modal-lg modal-dialog-centered">
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title fw-700 mb-0" style="color:#111827;">
-                    <i class="fas fa-edit me-2" style="color:#0A4D8C;"></i>Modifier le compte — <span id="edit_login_title"></span>
+                    <i class="fas fa-edit me-2" style="color:#0A4D8C;"></i>Modifier le compte - <span id="edit_login_title"></span>
                 </h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
             </div>

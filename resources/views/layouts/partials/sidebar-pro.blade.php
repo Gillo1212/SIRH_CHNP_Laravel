@@ -4,7 +4,7 @@
 
 <style>
 /* ══════════════════════════════════════════════════════════════
-   SIDEBAR MINIMALISTE — Charte Graphique CHNP
+   SIDEBAR MINIMALISTE - Charte Graphique CHNP
    ══════════════════════════════════════════════════════════════ */
 
 .sidebar {
@@ -372,7 +372,7 @@
 }
 
 /* ══════════════════════════════════════════════════════════════
-   THÈME SOMBRE — Sidebar (injecté ici pour overrider l'ordre CSS)
+   THÈME SOMBRE - Sidebar (injecté ici pour overrider l'ordre CSS)
    ══════════════════════════════════════════════════════════════ */
 [data-theme="dark"] .sidebar {
     background: #010409 !important;
@@ -711,10 +711,16 @@
                     <span class="sb-tooltip">Plannings</span>
                 </button>
                 <div class="sb-submenu" x-show="open" x-transition:enter="transition ease-out duration-150" x-transition:enter-start="opacity-0" x-transition:enter-end="opacity-100" x-transition:leave="transition ease-in duration-100" x-transition:leave-start="opacity-100" x-transition:leave-end="opacity-0">
-                    <a href="{{ route('rh.plannings.pending') }}" class="sb-subitem {{ request()->routeIs('rh.plannings.pending') ? 'active' : '' }}">À valider</a>
+                    <a href="{{ route('rh.plannings.pending') }}" class="sb-subitem {{ request()->routeIs('rh.plannings.pending') ? 'active' : '' }}">Reçus</a>
                     <a href="{{ route('rh.plannings.index') }}" class="sb-subitem {{ request()->routeIs('rh.plannings.index') ? 'active' : '' }}">Tous les plannings</a>
                 </div>
             </div>
+
+            <a href="{{ route('rh.heures-sup.index') }}" class="sb-item {{ request()->routeIs('rh.heures-sup.*') ? 'active' : '' }}">
+                <span class="sb-icon"><i class="fas fa-business-time"></i></span>
+                <span class="sb-label">Heures sup</span>
+                <span class="sb-tooltip">Heures supplémentaires</span>
+            </a>
 
             <div class="sb-section-title">GED & Archives</div>
 
@@ -830,12 +836,6 @@
                 <span class="sb-tooltip">Mouvements stratégiques</span>
             </a>
 
-            <a href="{{ route('drh.validations.pec') }}" class="sb-item {{ request()->routeIs('drh.validations.pec') ? 'active' : '' }}">
-                <span class="sb-icon"><i class="fas fa-hospital-user"></i></span>
-                <span class="sb-label">PEC exceptionnelles</span>
-                <span class="sb-tooltip">PEC exceptionnelles</span>
-            </a>
-
             <div class="sb-section-title">Gestion du Personnel</div>
 
             {{-- Personnel (DRH) --}}
@@ -928,7 +928,7 @@
                     <span class="sb-tooltip">Plannings</span>
                 </button>
                 <div class="sb-submenu" x-show="open" x-transition:enter="transition ease-out duration-150" x-transition:enter-start="opacity-0" x-transition:enter-end="opacity-100" x-transition:leave="transition ease-in duration-100" x-transition:leave-start="opacity-100" x-transition:leave-end="opacity-0">
-                    <a href="{{ route('rh.plannings.pending') }}" class="sb-subitem">À valider</a>
+                    <a href="{{ route('rh.plannings.pending') }}" class="sb-subitem">Reçus</a>
                     <a href="{{ route('rh.plannings.index') }}" class="sb-subitem">Tous les plannings</a>
                 </div>
             </div>
@@ -983,20 +983,6 @@
                     <a href="{{ route('drh.rapports.bilan') }}" class="sb-subitem {{ request()->routeIs('drh.rapports.bilan') ? 'active' : '' }}">Bilan social</a>
                     <a href="{{ route('drh.rapports.effectifs') }}" class="sb-subitem {{ request()->routeIs('drh.rapports.effectifs') ? 'active' : '' }}">Rapport effectifs</a>
                     <a href="{{ route('drh.rapports.previsions') }}" class="sb-subitem {{ request()->routeIs('drh.rapports.previsions') ? 'active' : '' }}">Prévisions départs</a>
-                </div>
-            </div>
-
-            {{-- Exports Direction --}}
-            <div x-data="{ open: {{ request()->routeIs('drh.exports.*') ? 'true' : 'false' }} }">
-                <button @click="open = !open" class="sb-item w-100 border-0 text-start {{ request()->routeIs('drh.exports.*') ? 'active' : '' }}" style="background: transparent;">
-                    <span class="sb-icon"><i class="fas fa-file-export"></i></span>
-                    <span class="sb-label">Exports direction</span>
-                    <i class="fas fa-chevron-right sb-chevron" :class="{ 'sb-open': open }"></i>
-                    <span class="sb-tooltip">Exports direction</span>
-                </button>
-                <div class="sb-submenu" x-show="open" x-transition:enter="transition ease-out duration-150" x-transition:enter-start="opacity-0" x-transition:enter-end="opacity-100" x-transition:leave="transition ease-in duration-100" x-transition:leave-start="opacity-100" x-transition:leave-end="opacity-0">
-                    <a href="{{ route('drh.rapports.export') }}" class="sb-subitem {{ request()->routeIs('drh.rapports.export') ? 'active' : '' }}">Export consolidé</a>
-                    <a href="{{ route('drh.validations.decisions') }}" class="sb-subitem {{ request()->routeIs('drh.validations.decisions') ? 'active' : '' }}">Historique décisions</a>
                 </div>
             </div>
 
@@ -1091,18 +1077,23 @@
 
             <div class="sb-section-title">Gestion</div>
 
-            <div x-data="{ open: {{ request()->routeIs('major.absences.*') ? 'true' : 'false' }} }">
-                <button @click="open = !open" class="sb-item w-100 border-0 text-start {{ request()->routeIs('major.absences.*') ? 'active' : '' }}" style="background: transparent;">
-                    <span class="sb-icon"><i class="fas fa-calendar-times"></i></span>
-                    <span class="sb-label">Absences</span>
-                    <i class="fas fa-chevron-right sb-chevron" :class="{ 'sb-open': open }"></i>
-                    <span class="sb-tooltip">Absences</span>
-                </button>
-                <div class="sb-submenu" x-show="open" x-transition:enter="transition ease-out duration-150" x-transition:enter-start="opacity-0" x-transition:enter-end="opacity-100" x-transition:leave="transition ease-in duration-100" x-transition:leave-start="opacity-100" x-transition:leave-end="opacity-0">
-                    <a href="{{ route('major.absences.index') }}" class="sb-subitem {{ request()->routeIs('major.absences.index') ? 'active' : '' }}">Liste des absences</a>
-                    <a href="{{ route('major.absences.create') }}" class="sb-subitem {{ request()->routeIs('major.absences.create') ? 'active' : '' }}">Enregistrer absence</a>
-                </div>
-            </div>
+            <a href="{{ route('major.absences.index') }}" class="sb-item {{ request()->routeIs('major.absences.*') ? 'active' : '' }}">
+                <span class="sb-icon"><i class="fas fa-calendar-times"></i></span>
+                <span class="sb-label">Absences</span>
+                <span class="sb-tooltip">Absences</span>
+            </a>
+
+            <a href="{{ route('major.conges.index') }}" class="sb-item {{ request()->routeIs('major.conges.*') ? 'active' : '' }}">
+                <span class="sb-icon"><i class="fas fa-umbrella-beach"></i></span>
+                <span class="sb-label">Congés équipe</span>
+                <span class="sb-tooltip">Congés équipe</span>
+            </a>
+
+            <a href="{{ route('major.heures-sup.index') }}" class="sb-item {{ request()->routeIs('major.heures-sup.*') ? 'active' : '' }}">
+                <span class="sb-icon"><i class="fas fa-business-time"></i></span>
+                <span class="sb-label">Heures sup</span>
+                <span class="sb-tooltip">Heures supplémentaires</span>
+            </a>
 
             <div x-data="{ open: {{ request()->routeIs('major.planning.*') ? 'true' : 'false' }} }">
                 <button @click="open = !open" class="sb-item w-100 border-0 text-start {{ request()->routeIs('major.planning.*') ? 'active' : '' }}" style="background: transparent;">
@@ -1195,9 +1186,9 @@
 
         {{-- ══════════════════════════════════════
              MON ESPACE PERSONNEL
-             (Manager, AgentRH, DRH — aussi agents de l'hôpital)
+             (Major, Manager, AgentRH, DRH - aussi agents de l'hôpital)
              ══════════════════════════════════════ --}}
-        @hasanyrole('Manager|AgentRH|DRH')
+        @hasanyrole('Major|Manager|AgentRH|DRH')
 
             <div class="sb-divider" style="margin-top:12px;"></div>
             <div class="sb-section-title" style="display:flex;align-items:center;gap:6px;">

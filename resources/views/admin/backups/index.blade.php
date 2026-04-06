@@ -23,7 +23,7 @@
                 <i class="fas fa-database me-2" style="color:#0A4D8C;"></i>Gestion des sauvegardes
             </h4>
             <p class="mb-0 text-muted" style="font-size:13.5px;">
-                Disponibilité des données — <strong>Triade CID</strong>
+                Disponibilité des données - <strong>Triade CID</strong>
             </p>
         </div>
         @can('backups.create')
@@ -79,7 +79,7 @@
     {{-- ── Bannière CID Disponibilité ───────────────────── --}}
     <div style="background:linear-gradient(135deg,#EFF6FF,#E0F2FE);border:1px solid #BFDBFE;border-radius:12px;padding:20px;margin-bottom:24px;">
         <div style="font-weight:600;color:#0A4D8C;margin-bottom:10px;font-size:14px;">
-            <i class="fas fa-cloud me-2"></i>Stratégie de sauvegarde — Disponibilité (D de CID)
+            <i class="fas fa-cloud me-2"></i>Stratégie de sauvegarde - Disponibilité (D de CID)
         </div>
         <div class="row g-3">
             <div class="col-md-4">
@@ -87,7 +87,7 @@
                     <div style="font-weight:600;font-size:12px;color:#0A4D8C;margin-bottom:4px;">
                         <i class="fas fa-clock me-1"></i>Automatique (cron)
                     </div>
-                    <div style="font-size:12px;color:#374151;">Sauvegarde quotidienne — 02h00 du matin</div>
+                    <div style="font-size:12px;color:#374151;">Sauvegarde quotidienne - 02h00 du matin</div>
                 </div>
             </div>
             <div class="col-md-4">

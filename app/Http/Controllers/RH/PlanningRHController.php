@@ -78,28 +78,28 @@ class PlanningRHController extends Controller
      */
     public function index(Request $request)
     {
-        $query = Planning::with(['service'])->withCount('lignes');
+        $query = Planning::with(['service'])->withCount('lignes')
+            ->where('statut_planning', 'Diffusé');
 
         if ($request->filled('service_id')) {
             $query->where('id_service', $request->service_id);
-        }
-        if ($request->filled('statut')) {
-            $query->where('statut_planning', $request->statut);
         }
 
         $plannings = $query->orderByDesc('periode_debut')->paginate(15)->withQueryString();
 
         $stats = [
-            'total'      => Planning::count(),
-            'brouillons' => Planning::where('statut_planning', 'Brouillon')->count(),
-            'transmis'   => Planning::where('statut_planning', 'Transmis')->count(),
-            'valides'    => Planning::where('statut_planning', 'Validé')->count(),
-            'rejetes'    => Planning::where('statut_planning', 'Rejeté')->count(),
+            'total'             => Planning::where('statut_planning', 'Diffusé')->count(),
+            'ce_mois'           => Planning::where('statut_planning', 'Diffusé')
+                                       ->whereMonth('periode_debut', now()->month)
+                                       ->whereYear('periode_debut', now()->year)->count(),
+            'services_couverts' => Planning::where('statut_planning', 'Diffusé')
+                                       ->distinct('id_service')->count('id_service'),
+            'valides'           => Planning::where('statut_planning', 'Diffusé')->count(),
         ];
 
-        // Calendrier : plannings validés et transmis
+        // Calendrier : uniquement les plannings diffusés au RH
         $allValidated   = Planning::with(['lignes.agent', 'lignes.typePoste', 'service'])
-            ->whereIn('statut_planning', ['Validé', 'Transmis'])
+            ->where('statut_planning', 'Diffusé')
             ->get();
         $calendarEvents = $this->buildCalendarEvents($allValidated);
 
@@ -109,17 +109,17 @@ class PlanningRHController extends Controller
     }
 
     /**
-     * Plannings en attente de validation (statut = Transmis)
+     * Plannings diffusés au RH à titre informatif (transmis par les Managers après validation)
      */
     public function pending()
     {
         $plannings = Planning::with(['service'])
             ->withCount('lignes')
-            ->where('statut_planning', 'Transmis')
-            ->orderBy('periode_debut')
+            ->where('statut_planning', 'Diffusé')
+            ->orderByDesc('updated_at')
             ->paginate(20);
 
-        $count = Planning::where('statut_planning', 'Transmis')->count();
+        $count = Planning::where('statut_planning', 'Diffusé')->count();
 
         return view('rh.plannings.pending', compact('plannings', 'count'));
     }
@@ -144,47 +144,4 @@ class PlanningRHController extends Controller
         ));
     }
 
-    /**
-     * Valider un planning (POST)
-     */
-    public function valider(int $id)
-    {
-        $planning = Planning::where('statut_planning', 'Transmis')->findOrFail($id);
-
-        DB::transaction(function () use ($planning) {
-            $planning->valider();
-            activity()->causedBy(auth()->user())
-                ->performedOn($planning)
-                ->withProperties(['service' => $planning->service->nom_service ?? ''])
-                ->log('Planning validé par RH');
-        });
-
-        return back()->with('success', 'Planning validé avec succès. Le manager a été notifié.');
-    }
-
-    /**
-     * Rejeter un planning avec motif (POST)
-     */
-    public function rejeter(Request $request, int $id)
-    {
-        $planning = Planning::where('statut_planning', 'Transmis')->findOrFail($id);
-
-        $request->validate([
-            'motif_rejet' => 'required|string|min:10|max:500',
-        ], [
-            'motif_rejet.required' => 'Le motif de rejet est obligatoire.',
-            'motif_rejet.min'      => 'Le motif doit contenir au moins 10 caractères.',
-            'motif_rejet.max'      => 'Le motif ne peut pas dépasser 500 caractères.',
-        ]);
-
-        DB::transaction(function () use ($planning, $request) {
-            $planning->rejeter($request->motif_rejet);
-            activity()->causedBy(auth()->user())
-                ->performedOn($planning)
-                ->withProperties(['motif' => $request->motif_rejet])
-                ->log('Planning rejeté par RH');
-        });
-
-        return back()->with('success', 'Planning rejeté. Le manager peut maintenant le corriger et le soumettre à nouveau.');
-    }
 }

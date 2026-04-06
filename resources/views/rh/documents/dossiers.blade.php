@@ -1,5 +1,5 @@
 @extends('layouts.master')
-@section('title', 'GED — Dossiers Agents')
+@section('title', 'GED - Dossiers Agents')
 @section('page-title', 'Dossiers Agents')
 
 @section('breadcrumb')
@@ -93,7 +93,7 @@
     border-radius: 5px 5px 0 0;
     white-space: nowrap;
     line-height: 1;
-    /* Coin coupé côté droit — effet onglet de classeur */
+    /* Coin coupé côté droit - effet onglet de classeur */
     clip-path: polygon(0 0, calc(100% - 10px) 0, 100% 100%, 0 100%);
 }
 
@@ -192,7 +192,7 @@
     <div class="d-flex align-items-center gap-3 mb-4">
         <span style="font-size:13px;color:#6B7280;">
             <strong style="color:#111827;">{{ $agents->count() }}</strong> agent{{ $agents->count() > 1 ? 's' : '' }}
-            — <strong style="color:#111827;">{{ $dossiersByService->count() }}</strong> service{{ $dossiersByService->count() > 1 ? 's' : '' }}
+            - <strong style="color:#111827;">{{ $dossiersByService->count() }}</strong> service{{ $dossiersByService->count() > 1 ? 's' : '' }}
         </span>
     </div>
 
@@ -264,7 +264,7 @@
                                 <div class="overflow-hidden flex-grow-1">
                                     <div class="dossier-name">{{ $agent->nom_complet }}</div>
                                     <div class="dossier-mat">{{ $agent->matricule }}</div>
-                                    <div class="dossier-sub">{{ $agent->service?->nom_service }} · {{ str_replace('_',' ',$agent->famille_d_emploi ?? '—') }}</div>
+                                    <div class="dossier-sub">{{ $agent->service?->nom_service }} · {{ str_replace('_',' ',$agent->famille_d_emploi ?? '-') }}</div>
                                 </div>
                                 <span class="db-badge {{ $badgeCls }}">{{ $statut }}</span>
                             </div>

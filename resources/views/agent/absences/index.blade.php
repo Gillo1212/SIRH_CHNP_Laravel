@@ -167,9 +167,8 @@
                             @php
                                 $demande = $absence->demande;
                                 $statutDemande = $demande?->statut_demande ?? 'En_attente';
-                                $pieces = $absence->piecesJustificatives ?? collect();
-                                $hasPending = $pieces->where('valide', false)->isNotEmpty();
-                                $hasValid   = $pieces->where('valide', true)->isNotEmpty();
+                                $hasPending = $absence->justificatif_path && !$absence->justifie;
+                                $hasValid   = $absence->justifie;
                                 $typeColors = [
                                     'Maladie'         => 'background:#FEF3C7;color:#92400E',
                                     'Personnelle'     => 'background:#DBEAFE;color:#1E40AF',
@@ -196,8 +195,14 @@
                                 </td>
                                 <td class="py-3 border-0">
                                     <span style="font-size:11px;{{ $typeColors[$absence->type_absence] ?? 'background:#F3F4F6;color:#374151' }};padding:3px 10px;border-radius:20px;font-weight:700;">
+                                        @if($absence->type_absence === 'Maladie')<i class="fas fa-stethoscope me-1"></i>@endif
                                         {{ $absence->type_absence }}
                                     </span>
+                                    @if($absence->type_absence === 'Maladie' && !$absence->justifie && !$absence->justificatif_path)
+                                        <div style="font-size:10px;color:#DC2626;margin-top:3px;font-weight:600;">
+                                            <i class="fas fa-file-medical me-1"></i>Certificat requis
+                                        </div>
+                                    @endif
                                 </td>
                                 <td class="py-3 border-0">
                                     <span style="font-size:11px;{{ $statutColors[$statutDemande] ?? 'background:#F3F4F6;color:#374151' }};padding:3px 10px;border-radius:20px;font-weight:600;">
@@ -234,17 +239,28 @@
                                             <i class="fas fa-paperclip me-1"></i>À soumettre
                                         </span>
                                     @else
-                                        <span style="font-size:11px;background:#F3F4F6;color:#6B7280;padding:3px 10px;border-radius:20px;font-weight:600;">—</span>
+                                        <span style="font-size:11px;background:#F3F4F6;color:#6B7280;padding:3px 10px;border-radius:20px;font-weight:600;">-</span>
                                     @endif
                                 </td>
                                 <td class="py-3 border-0 text-end pe-4">
                                     @if(!$absence->justifie && !$hasPending && $statutDemande !== 'Rejeté')
-                                        <button type="button"
-                                                class="btn-icon btn-icon-upload"
-                                                title="Soumettre un justificatif"
-                                                onclick="openJustifierModal({{ $absence->id_absence }}, '{{ $absence->date_absence->format('d/m/Y') }}', '{{ $absence->type_absence }}')">
-                                            <i class="fas fa-paperclip"></i>
-                                        </button>
+                                        @if($absence->type_absence === 'Maladie')
+                                            <button type="button"
+                                                    style="background:#FEE2E2;color:#DC2626;border:none;padding:5px 12px;border-radius:7px;font-size:12px;font-weight:600;cursor:pointer;display:inline-flex;align-items:center;gap:5px;transition:all 150ms;"
+                                                    title="Soumettre votre certificat médical"
+                                                    onmouseover="this.style.background='#FECACA'"
+                                                    onmouseout="this.style.background='#FEE2E2'"
+                                                    onclick="openJustifierModal({{ $absence->id_absence }}, '{{ $absence->date_absence->format('d/m/Y') }}', '{{ $absence->type_absence }}')">
+                                                <i class="fas fa-file-medical"></i>Certificat
+                                            </button>
+                                        @else
+                                            <button type="button"
+                                                    class="btn-icon btn-icon-upload"
+                                                    title="Soumettre un justificatif"
+                                                    onclick="openJustifierModal({{ $absence->id_absence }}, '{{ $absence->date_absence->format('d/m/Y') }}', '{{ $absence->type_absence }}')">
+                                                <i class="fas fa-paperclip"></i>
+                                            </button>
+                                        @endif
                                     @else
                                         <span style="width:30px;display:inline-block;"></span>
                                     @endif
@@ -313,7 +329,7 @@
                         <div class="col-12 col-md-6">
                             <label class="modal-label">Type <span class="text-danger">*</span></label>
                             <select name="type_absence" class="form-select form-select-sm" style="border-radius:7px;" required>
-                                <option value="">— Choisir —</option>
+                                <option value="">- Choisir -</option>
                                 <option value="Maladie">Maladie</option>
                                 <option value="Personnelle">Personnelle</option>
                                 <option value="Professionnelle">Professionnelle (formation, mission…)</option>
@@ -325,6 +341,15 @@
                         <label class="modal-label">Motif / Observations <span class="text-muted fw-normal">(optionnel)</span></label>
                         <textarea name="commentaire" rows="2" class="form-control form-control-sm" style="border-radius:7px;resize:vertical;"
                                   placeholder="Décrivez brièvement le contexte…"></textarea>
+                    </div>
+                    <div id="notice-maladie" class="p-3 rounded-3 mb-3" style="background:#FEF2F2;border-left:3px solid #DC2626;display:none;">
+                        <div class="d-flex gap-2 align-items-start" style="font-size:12px;">
+                            <i class="fas fa-stethoscope mt-1" style="color:#DC2626;flex-shrink:0;"></i>
+                            <span style="color:#991B1B;">
+                                Pour une absence médicale, un <strong>certificat médical</strong> sera requis.
+                                Vous pourrez le soumettre depuis cette page après enregistrement.
+                            </span>
+                        </div>
                     </div>
                     <div class="p-3 rounded-3" style="background:#FFFBEB;border-left:3px solid #D97706;">
                         <div class="d-flex gap-2 align-items-start" style="font-size:12px;">
@@ -353,14 +378,14 @@
 <div class="modal fade" id="modal-justifier-absence" tabindex="-1">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content border-0" style="border-radius:16px;overflow:hidden;">
-            <div class="modal-header border-0 px-4 pt-4 pb-3" style="background:#ECFDF5;">
+            <div id="justifier-modal-header" class="modal-header border-0 px-4 pt-4 pb-3" style="background:#ECFDF5;">
                 <div class="d-flex align-items-center gap-3">
-                    <div style="width:44px;height:44px;background:#D1FAE5;border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
-                        <i class="fas fa-paperclip" style="color:#059669;font-size:18px;"></i>
+                    <div id="justifier-modal-icon" style="width:44px;height:44px;background:#D1FAE5;border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+                        <i id="justifier-icon-el" class="fas fa-paperclip" style="color:#059669;font-size:18px;"></i>
                     </div>
                     <div>
-                        <h5 class="modal-title fw-bold mb-0">Soumettre un justificatif</h5>
-                        <p class="text-muted small mb-0" id="justifier-absence-info">—</p>
+                        <h5 id="justifier-modal-title" class="modal-title fw-bold mb-0">Soumettre un justificatif</h5>
+                        <p class="text-muted small mb-0" id="justifier-absence-info">-</p>
                     </div>
                 </div>
                 <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
@@ -368,14 +393,12 @@
             <form id="form-justifier-absence" action="" method="POST" enctype="multipart/form-data">
                 @csrf
                 <div class="modal-body p-4">
-                    <div class="mb-3">
-                        <label class="modal-label">Type de pièce <span class="text-danger">*</span></label>
-                        <select name="type_piece" class="form-select form-select-sm" style="border-radius:7px;" required>
-                            <option value="">— Choisir le type de document —</option>
-                            <option value="Certificat médical">Certificat médical</option>
-                            <option value="Acte décès">Acte de décès (décès familial)</option>
-                            <option value="Convocation">Convocation officielle</option>
-                        </select>
+                    {{-- Bandeau médical (visible uniquement pour Maladie) --}}
+                    <div id="banner-medical" class="d-flex align-items-start gap-2 p-3 rounded-3 mb-3" style="background:#FEF2F2;border-left:3px solid #DC2626;display:none !important;">
+                        <i class="fas fa-stethoscope mt-1" style="color:#DC2626;flex-shrink:0;font-size:14px;"></i>
+                        <span style="font-size:12px;color:#991B1B;">
+                            Pour une absence médicale, fournissez un <strong>certificat médical</strong> délivré par un praticien agréé.
+                        </span>
                     </div>
                     <div class="mb-3">
                         <label class="modal-label">Document justificatif <span class="text-danger">*</span></label>
@@ -384,7 +407,7 @@
                             <p style="font-size:13px;font-weight:500;color:#374151;margin:0 0 4px;">
                                 Cliquez ou glissez votre fichier ici
                             </p>
-                            <p style="font-size:11px;color:#9CA3AF;margin:0;">PDF, JPG, PNG — max. 5 Mo</p>
+                            <p style="font-size:11px;color:#9CA3AF;margin:0;">PDF, JPG, PNG - max. 5 Mo</p>
                             <div id="file-name-preview" class="mt-2" style="display:none;">
                                 <span style="background:#D1FAE5;color:#065F46;font-size:12px;padding:3px 10px;border-radius:20px;font-weight:600;">
                                     <i class="fas fa-file me-1"></i><span id="file-name-text"></span>
@@ -447,9 +470,46 @@ function showToast(message, type) {
 
 /* ─── Modal justifier ────────────────────────────────────── */
 function openJustifierModal(id, date, type) {
+    var isMaladie = (type === 'Maladie');
+
     document.getElementById('form-justifier-absence').action = '/agent/absences/' + id + '/justifier';
-    document.getElementById('justifier-absence-info').textContent = 'Absence du ' + date + ' — ' + type;
-    // reset file
+    document.getElementById('justifier-absence-info').textContent = 'Absence du ' + date + ' · ' + type;
+
+    // Adapter l'en-tête selon le type
+    var header = document.getElementById('justifier-modal-header');
+    var iconWrap = document.getElementById('justifier-modal-icon');
+    var iconEl   = document.getElementById('justifier-icon-el');
+    var title    = document.getElementById('justifier-modal-title');
+    var banner   = document.getElementById('banner-medical');
+    var select   = document.getElementById('select-type-piece');
+
+    if (isMaladie) {
+        header.style.background  = '#FEF2F2';
+        iconWrap.style.background = '#FEE2E2';
+        iconEl.className = 'fas fa-file-medical';
+        iconEl.style.color = '#DC2626';
+        title.textContent = 'Soumettre un certificat médical';
+        banner.style.setProperty('display', 'flex', 'important');
+
+        // Pré-sélectionner "Certificat médical" et désactiver les autres
+        Array.from(select.options).forEach(function(opt) {
+            opt.disabled = (opt.value !== '' && opt.value !== 'Certificat médical');
+        });
+        select.value = 'Certificat médical';
+    } else {
+        header.style.background  = '#ECFDF5';
+        iconWrap.style.background = '#D1FAE5';
+        iconEl.className = 'fas fa-paperclip';
+        iconEl.style.color = '#059669';
+        title.textContent = 'Soumettre un justificatif';
+        banner.style.setProperty('display', 'none', 'important');
+
+        // Réactiver toutes les options
+        Array.from(select.options).forEach(function(opt) { opt.disabled = false; });
+        select.value = '';
+    }
+
+    // Reset file
     document.getElementById('fichier-input').value = '';
     document.getElementById('file-name-preview').style.display = 'none';
     new bootstrap.Modal(document.getElementById('modal-justifier-absence')).show();
@@ -461,6 +521,12 @@ document.getElementById('fichier-input').addEventListener('change', function(){
         document.getElementById('file-name-text').textContent = this.files[0].name;
         document.getElementById('file-name-preview').style.display = 'block';
     }
+});
+
+/* ─── Notice médicale dans le modal de déclaration ──────── */
+document.querySelector('select[name="type_absence"]').addEventListener('change', function(){
+    var notice = document.getElementById('notice-maladie');
+    notice.style.display = (this.value === 'Maladie') ? 'block' : 'none';
 });
 
 // Drag & drop

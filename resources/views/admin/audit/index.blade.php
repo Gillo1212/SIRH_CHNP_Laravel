@@ -1,6 +1,6 @@
 @extends('layouts.master')
 @section('title', 'Journal d\'audit')
-@section('page-title', 'Journal d\'audit — Intégrité CID')
+@section('page-title', 'Journal d\'audit')
 
 @section('breadcrumb')
     <li><a href="{{ route('admin.dashboard') }}" style="color:#1565C0;">Admin</a></li>
@@ -35,7 +35,7 @@
                 <i class="fas fa-shield-alt me-2" style="color:#0A4D8C;"></i>Journal d'audit
             </h4>
             <p class="mb-0 text-muted" style="font-size:13.5px;">
-                Traçabilité immuable de toutes les actions — <strong>Intégrité CID</strong>
+                Traçabilité immuable de toutes les actions du système
             </p>
         </div>
         <a href="{{ route('admin.audit.export', request()->query()) }}" class="btn btn-outline-secondary btn-sm">
@@ -179,14 +179,14 @@
                     </td>
                     <td class="py-2 px-3 border-0">
                         <code style="font-size:10px;background:rgba(10,77,140,.07);color:#0A4D8C;padding:1px 6px;border-radius:4px;">
-                            {{ $log->log_name ?? '—' }}
+                            {{ $log->log_name ?? '-' }}
                         </code>
                     </td>
                     <td class="py-2 px-3 border-0">
                         @if($log->event)
                             <span class="event-badge {{ $cls }}">{{ ucfirst($log->event) }}</span>
                         @else
-                            <span class="event-badge ev-default">—</span>
+                            <span class="event-badge ev-default">-</span>
                         @endif
                     </td>
                     <td class="py-2 px-3 border-0" style="max-width:260px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:var(--theme-text);">
@@ -195,7 +195,7 @@
                     <td class="py-2 px-3 border-0" style="white-space:nowrap;">
                         @if($log->causer)
                             <span style="color:var(--theme-text);font-weight:500;">
-                                {{ $log->causer->login ?? $log->causer->name ?? '—' }}
+                                {{ $log->causer->login ?? $log->causer->name ?? '-' }}
                             </span>
                         @else
                             <span style="color:var(--theme-text-muted);">Système</span>
@@ -206,12 +206,12 @@
                             <span>{{ class_basename($log->subject_type) }}</span>
                             <span style="color:#9CA3AF;">#{{ $log->subject_id }}</span>
                         @else
-                            —
+                            -
                         @endif
                     </td>
                     <td class="py-2 px-3 border-0" style="white-space:nowrap;">
                         <code style="font-size:10px;color:var(--theme-text-muted);">
-                            {{ $props['ip'] ?? '—' }}
+                            {{ $props['ip'] ?? '-' }}
                         </code>
                     </td>
                 </tr>
@@ -236,7 +236,7 @@
     <div class="mt-3 p-3 rounded d-flex align-items-center gap-3 flex-wrap"
          style="background:rgba(10,77,140,.04);border:1px dashed #BFDBFE;font-size:12px;color:#1D4ED8;">
         <i class="fas fa-lock me-1"></i>
-        <strong>Intégrité CID</strong> — Ce journal est géré par Spatie Activity Log.
+        <strong>Intégrité CID</strong>Ce journal est géré par Spatie Activity Log.
         Les entrées sont immuables et ne peuvent pas être modifiées par les utilisateurs.
         Audit signé avec IP + User-Agent pour chaque action.
     </div>

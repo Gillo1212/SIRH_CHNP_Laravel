@@ -618,7 +618,7 @@
                 </p>
 
                 {{-- Badges sécurité --}}
-                <div class="security-badges">
+                <!-- <div class="security-badges">
                     <div class="security-badge">
                         <i class="fas fa-lock"></i>
                         <span>Chiffrement AES-256</span>
@@ -631,7 +631,7 @@
                         <i class="fas fa-user-shield"></i>
                         <span>RBAC</span>
                     </div>
-                </div>
+                </div> -->
             </div>
         </div>
 
@@ -761,9 +761,9 @@
 
                 {{-- Footer --}}
                 <div class="login-footer">
-                    <p>© {{ date('Y') }} SIRH CHNP — Centre Hospitalier National de Pikine</p>
+                    <p>© {{ date('Y') }} SIRH CHNP - Centre Hospitalier National de Pikine</p>
                     <div class="login-footer-badges">
-                        <div class="footer-badge secure">
+                        <!-- <div class="footer-badge secure">
                             <i class="fas fa-lock"></i>
                             <span>SSL/TLS</span>
                         </div>
@@ -774,7 +774,7 @@
                         <div class="footer-badge">
                             <i class="fas fa-key"></i>
                             <span>AES-256</span>
-                        </div>
+                        </div> -->
                     </div>
                 </div>
 

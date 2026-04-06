@@ -17,7 +17,7 @@
         $statut = $demande->statut_demande;
         $config = match($statut) {
             'En_attente' => ['bg'=>'#FEF3C7','color'=>'#92400E','icon'=>'fa-clock','label'=>'En attente (validation Manager)'],
-            'Validé'     => ['bg'=>'#DBEAFE','color'=>'#1E40AF','icon'=>'fa-user-check','label'=>'Validé Manager — En attente approbation RH'],
+            'Validé'     => ['bg'=>'#DBEAFE','color'=>'#1E40AF','icon'=>'fa-user-check','label'=>'Validé Manager - En attente approbation RH'],
             'Approuvé'   => ['bg'=>'#D1FAE5','color'=>'#065F46','icon'=>'fa-check-double','label'=>'Approuvé définitivement'],
             'Rejeté'     => ['bg'=>'#FEE2E2','color'=>'#991B1B','icon'=>'fa-times-circle','label'=>'Rejeté'],
             default      => ['bg'=>'#F3F4F6','color'=>'#374151','icon'=>'fa-question','label'=>$statut],
@@ -37,7 +37,7 @@
                         </div>
                         <div>
                             <div class="fw-bold" style="color:{{ $config['color'] }};font-size:15px;">{{ $config['label'] }}</div>
-                            <div class="text-muted small">Demande #{{ $demande->id_demande }} — {{ $demande->created_at->format('d/m/Y à H:i') }}</div>
+                            <div class="text-muted small">Demande #{{ $demande->id_demande }} - {{ $demande->created_at->format('d/m/Y à H:i') }}</div>
                         </div>
                     </div>
 
@@ -81,8 +81,8 @@
                             </div>
                         <div>
                             <div class="fw-bold" style="color:var(--theme-text);">{{ $agent->nom_complet }}</div>
-                            <div class="text-muted small">{{ $agent->matricule }} — {{ str_replace('_', ' ', $agent->famille_d_emploi ?? '—') }}</div>
-                            <div class="text-muted small">{{ $agent->service->nom_service ?? '—' }}</div>
+                            <div class="text-muted small">{{ $agent->matricule }} - {{ str_replace('_', ' ', $agent->famille_d_emploi ?? '-') }}</div>
+                            <div class="text-muted small">{{ $agent->service->nom_service ?? '-' }}</div>
                         </div>
                         <div class="ms-auto">
                             <a href="{{ route('rh.agents.show', $agent->id_agent) }}" class="btn btn-sm" style="background:var(--theme-bg-secondary);border:1px solid var(--theme-border);border-radius:8px;font-size:11px;color:var(--theme-text);">
@@ -104,22 +104,22 @@
                     <div class="row g-3">
                         <div class="col-sm-6">
                             <div class="text-muted" style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;">Type</div>
-                            <div class="fw-600 mt-1" style="color:var(--theme-text);">{{ $conge->typeConge->libelle ?? '—' }}</div>
+                            <div class="fw-600 mt-1" style="color:var(--theme-text);">{{ $conge->typeConge->libelle ?? '-' }}</div>
                             @if($conge->typeConge)
                                 <div class="small text-muted">{{ $conge->typeConge->deductible ? 'Déductible du solde' : 'Non déductible' }}</div>
                             @endif
                         </div>
                         <div class="col-sm-6">
                             <div class="text-muted" style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;">Durée</div>
-                            <div class="fw-bold mt-1" style="color:#0A4D8C;font-size:22px;">{{ $conge->nbres_jours ?? '—' }} <span style="font-size:13px;font-weight:500;color:var(--theme-text-muted);">jour(s)</span></div>
+                            <div class="fw-bold mt-1" style="color:#0A4D8C;font-size:22px;">{{ $conge->nbres_jours ?? '-' }} <span style="font-size:13px;font-weight:500;color:var(--theme-text-muted);">jour(s)</span></div>
                         </div>
                         <div class="col-sm-6">
                             <div class="text-muted" style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;">Début</div>
-                            <div class="fw-600 mt-1" style="color:var(--theme-text);">{{ $conge->date_debut?->format('d/m/Y') ?? '—' }}</div>
+                            <div class="fw-600 mt-1" style="color:var(--theme-text);">{{ $conge->date_debut?->format('d/m/Y') ?? '-' }}</div>
                         </div>
                         <div class="col-sm-6">
                             <div class="text-muted" style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;">Fin</div>
-                            <div class="fw-600 mt-1" style="color:var(--theme-text);">{{ $conge->date_fin?->format('d/m/Y') ?? '—' }}</div>
+                            <div class="fw-600 mt-1" style="color:var(--theme-text);">{{ $conge->date_fin?->format('d/m/Y') ?? '-' }}</div>
                         </div>
                         @if($demande->date_traitement)
                             <div class="col-sm-6">
@@ -136,6 +136,79 @@
                     </div>
                 </div>
             </div>
+
+            {{-- Certificat médical (maternité) --}}
+            @if($conge->typeConge && $conge->typeConge->est_maternite)
+                <div class="card border-0 shadow-sm mb-4" style="border-radius:14px;border-left:4px solid #F59E0B;">
+                    <div class="card-header border-0 px-4 pt-3 pb-2" style="background:#FFFBEB;">
+                        <div class="d-flex align-items-center justify-content-between flex-wrap gap-2">
+                            <h6 class="fw-bold mb-0 small" style="color:#92400E;">
+                                <i class="fas fa-file-medical me-2" style="color:#F59E0B;"></i>Certificat médical - À étudier
+                            </h6>
+                            @if($conge->justificatif_path)
+                                <div class="d-flex gap-2">
+                                    <a href="{{ route('rh.conges.justificatif', $demande->id_demande) }}?inline=1"
+                                        target="_blank"
+                                        class="btn btn-sm d-inline-flex align-items-center gap-2"
+                                        style="background:#FEF3C7;border:1px solid #FCD34D;border-radius:8px;font-size:11px;color:#92400E;padding:6px 14px;">
+                                        <i class="fas fa-eye"></i> Consulter
+                                    </a>
+                                    <a href="{{ route('rh.conges.justificatif', $demande->id_demande) }}"
+                                        class="btn btn-sm d-inline-flex align-items-center gap-2"
+                                        style="background:#EFF6FF;border:1px solid #BFDBFE;border-radius:8px;font-size:11px;color:#1E40AF;padding:6px 14px;">
+                                        <i class="fas fa-download"></i> Télécharger
+                                    </a>
+                                </div>
+                            @endif
+                        </div>
+                    </div>
+                    <div class="card-body px-4 py-3" style="background:#FFFBEB;">
+                        @if($conge->justificatif_path)
+                            @php
+                                $ext = strtolower(pathinfo($conge->justificatif_path, PATHINFO_EXTENSION));
+                            @endphp
+                            <p class="mb-2 small" style="color:#78350F;">
+                                <i class="fas fa-info-circle me-1"></i>
+                                Ce congé de maternité nécessite l'étude du certificat médical avant approbation.
+                                Veuillez consulter le document ci-dessous pour déterminer la date prévisionnelle de départ et le nombre de jours accordés.
+                            </p>
+                            @if(in_array($ext, ['jpg', 'jpeg', 'png']))
+                                <div class="mt-3 text-center">
+                                    <img src="{{ route('rh.conges.justificatif', $demande->id_demande) }}?inline=1"
+                                        alt="Certificat médical"
+                                        style="max-width:100%;max-height:500px;border-radius:8px;border:1px solid #FCD34D;box-shadow:0 2px 8px rgba(0,0,0,.1);">
+                                </div>
+                            @elseif($ext === 'pdf')
+                                <div class="mt-3">
+                                    <iframe src="{{ route('rh.conges.justificatif', $demande->id_demande) }}?inline=1"
+                                        width="100%" height="480"
+                                        style="border-radius:8px;border:1px solid #FCD34D;"
+                                        title="Certificat médical">
+                                    </iframe>
+                                </div>
+                            @else
+                                <div class="mt-2 d-flex align-items-center gap-3 p-3 rounded" style="background:#FEF9C3;border:1px solid #FCD34D;">
+                                    <i class="fas fa-file-alt" style="color:#F59E0B;font-size:28px;"></i>
+                                    <div>
+                                        <div class="fw-bold small" style="color:#78350F;">Document joint</div>
+                                        <div class="text-muted" style="font-size:11px;">Cliquez sur "Consulter" ou "Télécharger" pour accéder au fichier.</div>
+                                    </div>
+                                </div>
+                            @endif
+                        @else
+                            <div class="d-flex align-items-center gap-3">
+                                <div class="rounded-circle d-flex align-items-center justify-content-center" style="width:40px;height:40px;background:#FEE2E2;flex-shrink:0;">
+                                    <i class="fas fa-exclamation-triangle" style="color:#EF4444;"></i>
+                                </div>
+                                <div>
+                                    <div class="fw-bold small" style="color:#991B1B;">Certificat médical manquant</div>
+                                    <div class="text-muted" style="font-size:11px;">L'agent n'a pas joint de certificat médical avec sa demande.</div>
+                                </div>
+                            </div>
+                        @endif
+                    </div>
+                </div>
+            @endif
 
             {{-- Motif rejet --}}
             @if($statut === 'Rejeté' && $demande->motif_refus)
@@ -161,9 +234,9 @@
                         @foreach($historique as $h)
                             <div class="d-flex align-items-center px-4 py-2 border-bottom gap-3">
                                 <div class="flex-grow-1 small" style="color:var(--theme-text);">
-                                    {{ $h->conge->typeConge->libelle ?? '—' }}
+                                    {{ $h->conge->typeConge->libelle ?? '-' }}
                                     @if($h->conge)
-                                        — {{ $h->conge->date_debut?->format('d/m/Y') }} → {{ $h->conge->date_fin?->format('d/m/Y') }}
+                                        - {{ $h->conge->date_debut?->format('d/m/Y') }} → {{ $h->conge->date_fin?->format('d/m/Y') }}
                                         ({{ $h->conge->nbres_jours }}j)
                                     @endif
                                 </div>
@@ -180,7 +253,7 @@
 
         </div>
 
-        {{-- Colonne latérale — Solde --}}
+        {{-- Colonne latérale - Solde --}}
         <div class="col-lg-4">
             @if($solde)
                 <div class="card border-0 shadow-sm mb-4" style="border-radius:14px;">

@@ -1,5 +1,5 @@
 @extends('layouts.master')
-@section('title', 'Validation Mouvements — DRH')
+@section('title', 'Validation Mouvements - DRH')
 @section('page-title', 'Validation des Mouvements')
 
 @section('breadcrumb')
@@ -153,7 +153,7 @@
                                         <div style="width:34px;height:34px;border-radius:50%;background:linear-gradient(135deg,#0A4D8C,#1565C0);color:white;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex-shrink:0;">{{ $initiales }}</div>
                                         <div>
                                             <div style="font-weight:600;color:var(--theme-text);">{{ $m->agent->nom_complet }}</div>
-                                            <div style="font-size:11px;color:#9CA3AF;">{{ $m->agent->matricule }} · {{ $m->agent->fontion }}</div>
+                                            <div style="font-size:11px;color:#9CA3AF;">{{ $m->agent->matricule }} · {{ $m->agent->fonction }}</div>
                                         </div>
                                     </div>
                                 </td>
@@ -172,16 +172,16 @@
                                     @elseif($m->type_mouvement === 'Départ')
                                         <span style="color:#DC2626;font-weight:600;">Départ définitif</span>
                                     @else
-                                        <span class="text-muted">—</span>
+                                        <span class="text-muted">-</span>
                                     @endif
                                 </td>
-                                <td class="py-3 border-0" style="font-weight:500;">{{ $m->date_mouvement?->format('d/m/Y') ?? '—' }}</td>
+                                <td class="py-3 border-0" style="font-weight:500;">{{ $m->date_mouvement?->format('d/m/Y') ?? '-' }}</td>
                                 <td class="py-3 border-0">
                                     <span style="font-size:11px;background:{{ $statutCfg['bg'] }};color:{{ $statutCfg['color'] }};padding:3px 10px;border-radius:20px;font-weight:700;">
                                         {{ $statutCfg['label'] }}
                                     </span>
                                 </td>
-                                <td class="py-3 border-0" style="font-size:12px;color:#6B7280;">{{ $m->createur?->name ?? '—' }}</td>
+                                <td class="py-3 border-0" style="font-size:12px;color:#6B7280;">{{ $m->createur?->name ?? '-' }}</td>
                                 <td class="py-3 border-0 text-end pe-4">
                                     <div class="d-flex align-items-center justify-content-end gap-1">
                                         @if($m->statut === 'en_attente')
@@ -273,7 +273,7 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
             </div>
             <div class="modal-body px-4 py-4">
-                <div class="p-3 rounded-3" style="background:#FFFBEB;font-size:13.5px;" id="motif-content">—</div>
+                <div class="p-3 rounded-3" style="background:#FFFBEB;font-size:13.5px;" id="motif-content">-</div>
             </div>
             <div class="modal-footer border-0 px-4 pb-4 pt-0">
                 <button type="button" class="action-btn action-btn-outline" data-bs-dismiss="modal">Fermer</button>
@@ -308,7 +308,7 @@ function rejeterMouvement(id) {
 }
 
 function voirMotif(id, motif) {
-    document.getElementById('motif-content').textContent = motif || '—';
+    document.getElementById('motif-content').textContent = motif || '-';
     new bootstrap.Modal(document.getElementById('modal-motif')).show();
 }
 </script>

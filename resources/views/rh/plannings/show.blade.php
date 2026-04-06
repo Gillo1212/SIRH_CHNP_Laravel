@@ -1,13 +1,13 @@
 @extends('layouts.master')
 
-@section('title', 'Planning — ' . ($planning->service->nom_service ?? '') . ' · ' . $planning->periode_debut->format('d/m/Y'))
+@section('title', 'Planning - ' . ($planning->service->nom_service ?? '') . ' · ' . $planning->periode_debut->format('d/m/Y'))
 @section('page-title', 'Détail du Planning')
 
 @section('breadcrumb')
     <li><a href="{{ route('rh.dashboard') }}" style="color:#1565C0;">RH</a></li>
     <li><a href="{{ route('rh.plannings.index') }}" style="color:#1565C0;">Plannings</a></li>
     @if($planning->statut_planning === 'Transmis')
-        <li><a href="{{ route('rh.plannings.pending') }}" style="color:#1565C0;">À valider</a></li>
+        <li><a href="{{ route('rh.plannings.pending') }}" style="color:#1565C0;">Reçus</a></li>
     @endif
     <li>{{ $planning->service->nom_service ?? 'Planning' }}</li>
 @endsection
@@ -66,6 +66,7 @@
             'Transmis'  => ['bg'=>'#FFFBEB','c'=>'#D97706','ic'=>'fa-paper-plane'],
             'Validé'    => ['bg'=>'#ECFDF5','c'=>'#059669','ic'=>'fa-check-double'],
             'Rejeté'    => ['bg'=>'#FEF2F2','c'=>'#DC2626','ic'=>'fa-times-circle'],
+            'Diffusé'   => ['bg'=>'#EFF6FF','c'=>'#1D4ED8','ic'=>'fa-share-square'],
             default     => ['bg'=>'#F3F4F6','c'=>'#6B7280','ic'=>'fa-circle'],
         };
     @endphp
@@ -89,18 +90,11 @@
                 </div>
             </div>
             <div class="d-flex align-items-center gap-2 flex-wrap">
-                @if($planning->statut_planning === 'Transmis')
-                    <button type="button" class="action-btn" style="background:#059669;color:white;border:none;"
-                            onclick="openModalValider()">
-                        <i class="fas fa-check-double"></i>Valider
-                    </button>
-                    <button type="button" class="action-btn" style="background:#DC2626;color:white;border:none;"
-                            onclick="openModalRejeter()">
-                        <i class="fas fa-times-circle"></i>Rejeter
-                    </button>
-                @endif
                 <a href="{{ route('rh.plannings.pending') }}" class="action-btn action-btn-outline">
                     <i class="fas fa-arrow-left"></i>Retour
+                </a>
+                <a href="{{ route('rh.plannings.index') }}" class="action-btn action-btn-outline">
+                    <i class="fas fa-th-list"></i>Tous les plannings
                 </a>
             </div>
         </div>
@@ -110,11 +104,10 @@
                 <i class="fas fa-check-double me-1"></i>
                 Ce planning a été <strong>validé</strong>. Il est maintenant visible par les agents concernés.
             </div>
-        @elseif($planning->statut_planning === 'Transmis')
-            <div class="mt-3" style="background:#FFFBEB;border-left:4px solid #D97706;border-radius:8px;padding:12px 16px;font-size:13px;color:#92400E;">
-                <i class="fas fa-hourglass-half me-1"></i>
-                Ce planning est <strong>en attente de votre validation</strong>.
-                Vérifiez les lignes ci-dessous avant de valider ou rejeter.
+        @elseif($planning->statut_planning === 'Diffusé')
+            <div class="mt-3" style="background:#EFF6FF;border-left:4px solid #1D4ED8;border-radius:8px;padding:12px 16px;font-size:13px;color:#1E40AF;">
+                <i class="fas fa-share-square me-1"></i>
+                Ce planning a été <strong>transmis par le Manager</strong> à titre informatif.
             </div>
         @endif
     </div>
@@ -193,7 +186,7 @@
                         <tbody>
                             @foreach($lignes as $ligne)
                                 @php
-                                    $typeLib = $ligne->typePoste->libelle ?? '—';
+                                    $typeLib = $ligne->typePoste->libelle ?? '-';
                                     $cpMap = ['Jour'=>['#EFF6FF','#1E40AF'],'Nuit'=>['#EEF2FF','#3730A3'],'Garde'=>['#FFFBEB','#92400E'],'Repos'=>['#F3F4F6','#374151'],'Astreinte'=>['#F5F3FF','#5B21B6'],'Permanence'=>['#F0FDFA','#134E4A']];
                                     $cp = $cpMap[$typeLib] ?? ['#F3F4F6','#374151'];
                                     $hd = is_string($ligne->heure_debut) ? substr($ligne->heure_debut,0,5) : $ligne->heure_debut->format('H:i');
@@ -205,7 +198,7 @@
                                             <div style="width:28px;height:28px;border-radius:50%;background:linear-gradient(135deg,#0A4D8C,#1565C0);display:flex;align-items:center;justify-content:center;color:white;font-weight:700;font-size:10px;flex-shrink:0;">
                                                 {{ substr($ligne->agent->prenom ?? '?', 0, 1) }}{{ substr($ligne->agent->nom ?? '', 0, 1) }}
                                             </div>
-                                            <span style="font-weight:500;color:#111827;">{{ $ligne->agent->nom_complet ?? '—' }}</span>
+                                            <span style="font-weight:500;color:#111827;">{{ $ligne->agent->nom_complet ?? '-' }}</span>
                                         </div>
                                     </td>
                                     <td class="py-2 border-0">
@@ -235,89 +228,6 @@
 {{-- MODALS                                                              --}}
 {{-- ════════════════════════════════════════════════════════════════════ --}}
 
-{{-- ── Modal : Valider ─────────────────────────────────────────────── --}}
-@if($planning->statut_planning === 'Transmis')
-<div class="modal fade" id="modalValider" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content" style="border-radius:16px;border:none;box-shadow:0 20px 60px rgba(0,0,0,.15);">
-            <form action="{{ route('rh.plannings.valider', $planning->id_planning) }}" method="POST">
-                @csrf
-                <div class="modal-header border-0" style="padding:24px 24px 4px;">
-                    <div class="d-flex align-items-center gap-3">
-                        <div style="width:42px;height:42px;border-radius:50%;background:#ECFDF5;display:flex;align-items:center;justify-content:center;">
-                            <i class="fas fa-check-double" style="color:#059669;font-size:18px;"></i>
-                        </div>
-                        <div>
-                            <h5 class="modal-title fw-bold mb-0" style="color:#111827;">Valider ce planning ?</h5>
-                            <p class="text-muted mb-0" style="font-size:12px;">{{ $planning->service->nom_service ?? '' }}</p>
-                        </div>
-                    </div>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                </div>
-                <div class="modal-body" style="padding:16px 24px;">
-                    <div style="background:#F9FAFB;border-radius:10px;padding:14px 16px;margin-bottom:14px;font-size:13px;color:#374151;">
-                        <div class="fw-600 mb-1">Récapitulatif</div>
-                        <div style="color:#6B7280;line-height:1.8;">
-                            <div><i class="fas fa-calendar me-2" style="width:14px;"></i>{{ $planning->periode_debut->isoFormat('D MMMM') }} → {{ $planning->periode_fin->isoFormat('D MMMM YYYY') }}</div>
-                            <div><i class="fas fa-list me-2" style="width:14px;"></i>{{ $planning->lignes->count() }} ligne(s) · {{ $agentsUniques }} agent(s)</div>
-                        </div>
-                    </div>
-                    <div style="background:#ECFDF5;border-left:3px solid #059669;border-radius:6px;padding:10px 12px;font-size:12px;color:#065F46;">
-                        <i class="fas fa-info-circle me-1"></i>
-                        En validant, le planning sera mis en vigueur et visible par les agents.
-                    </div>
-                </div>
-                <div class="modal-footer border-0" style="padding:4px 24px 24px;gap:8px;">
-                    <button type="button" class="action-btn action-btn-outline" data-bs-dismiss="modal">Annuler</button>
-                    <button type="submit" class="action-btn" style="background:#059669;color:white;border:none;">
-                        <i class="fas fa-check-double"></i>Confirmer la validation
-                    </button>
-                </div>
-            </form>
-        </div>
-    </div>
-</div>
-
-{{-- ── Modal : Rejeter ──────────────────────────────────────────────── --}}
-<div class="modal fade" id="modalRejeter" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content" style="border-radius:16px;border:none;box-shadow:0 20px 60px rgba(0,0,0,.15);">
-            <form action="{{ route('rh.plannings.rejeter', $planning->id_planning) }}" method="POST">
-                @csrf
-                <div class="modal-header border-0" style="padding:24px 24px 4px;">
-                    <div class="d-flex align-items-center gap-3">
-                        <div style="width:42px;height:42px;border-radius:50%;background:#FEF2F2;display:flex;align-items:center;justify-content:center;">
-                            <i class="fas fa-times-circle" style="color:#DC2626;font-size:18px;"></i>
-                        </div>
-                        <div>
-                            <h5 class="modal-title fw-bold mb-0" style="color:#111827;">Rejeter ce planning</h5>
-                            <p class="text-muted mb-0" style="font-size:12px;">Le manager devra corriger et soumettre à nouveau</p>
-                        </div>
-                    </div>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                </div>
-                <div class="modal-body" style="padding:16px 24px;">
-                    <div>
-                        <label class="form-label fw-600" style="font-size:13px;">
-                            Motif du rejet <span class="text-danger">*</span>
-                        </label>
-                        <textarea name="motif_rejet" class="form-control" rows="4" required
-                                  placeholder="Expliquez clairement les raisons du rejet et ce que le manager doit corriger..."
-                                  style="border-radius:8px;font-size:13px;resize:vertical;"></textarea>
-                        <div style="font-size:11px;color:#9CA3AF;margin-top:4px;">Minimum 10 caractères. Ce message sera transmis au manager.</div>
-                    </div>
-                </div>
-                <div class="modal-footer border-0" style="padding:4px 24px 24px;gap:8px;">
-                    <button type="button" class="action-btn action-btn-outline" data-bs-dismiss="modal">Annuler</button>
-                    <button type="submit" class="action-btn" style="background:#DC2626;color:white;border:none;">
-                        <i class="fas fa-times-circle"></i>Confirmer le rejet
-                    </button>
-                </div>
-            </form>
-        </div>
-    </div>
-</div>
-@endif
 
 <div id="eventPopover"><div id="popoverContent"></div></div>
 
@@ -382,7 +292,5 @@ function switchTab(tab) {
     if (tab === 'calendar' && calendar) setTimeout(() => calendar.updateSize(), 100);
 }
 
-function openModalValider() { new bootstrap.Modal(document.getElementById('modalValider')).show(); }
-function openModalRejeter() { new bootstrap.Modal(document.getElementById('modalRejeter')).show(); }
 </script>
 @endpush

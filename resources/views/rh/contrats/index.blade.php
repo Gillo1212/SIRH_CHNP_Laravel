@@ -310,7 +310,7 @@
                                 @endif
                                 <div>
                                     <div class="fw-600" style="color:var(--theme-text);font-size:13px;">
-                                        {{ $agent?->nom_complet ?? '—' }}
+                                        {{ $agent?->nom_complet ?? '-' }}
                                     </div>
                                     <div class="text-muted" style="font-size:11px;">{{ $agent?->matricule }}</div>
                                 </div>
@@ -318,7 +318,7 @@
                         </td>
                         <td>
                             <span style="font-size:12px;color:var(--theme-text);">
-                                {{ $agent?->service?->nom_service ?? '—' }}
+                                {{ $agent?->service?->nom_service ?? '-' }}
                             </span>
                         </td>
                         <td>
@@ -328,7 +328,7 @@
                         </td>
                         <td>
                             <span style="font-size:12px;color:var(--theme-text);">
-                                {{ $contrat->date_debut?->format('d/m/Y') ?? '—' }}
+                                {{ $contrat->date_debut?->format('d/m/Y') ?? '-' }}
                             </span>
                         </td>
                         <td>
@@ -446,7 +446,7 @@
 
 
 {{-- ══════════════════════════════════════════════════════════════════
-     MODAL — CRÉER UN CONTRAT
+     MODAL - CRÉER UN CONTRAT
 ══════════════════════════════════════════════════════════════════ --}}
 <div class="modal fade" id="modalCreer" tabindex="-1" aria-labelledby="modalCreerLabel">
     <div class="modal-dialog modal-lg modal-dialog-centered">
@@ -483,10 +483,10 @@
                     <div class="mb-3">
                         <label class="form-label-up">Agent <span class="text-danger">*</span></label>
                         <select name="id_agent" class="form-select-sirh form-select" required>
-                            <option value="">— Sélectionner un agent —</option>
+                            <option value="">- Sélectionner un agent -</option>
                             @foreach($agents as $ag)
                                 <option value="{{ $ag->id_agent }}" {{ old('id_agent') == $ag->id_agent ? 'selected' : '' }}>
-                                    {{ $ag->matricule }} — {{ $ag->nom_complet }}
+                                    {{ $ag->matricule }} - {{ $ag->nom_complet }}
                                     @if($ag->contratActif) (contrat actif : {{ $ag->contratActif->type_contrat }}) @endif
                                 </option>
                             @endforeach
@@ -502,7 +502,7 @@
                         <div class="col-md-6">
                             <label class="form-label-up">Type de contrat <span class="text-danger">*</span></label>
                             <select name="type_contrat" class="form-select-sirh form-select" required>
-                                <option value="">— Choisir —</option>
+                                <option value="">- Choisir -</option>
                                 @foreach(\App\Models\Contrat::TYPES as $val => $label)
                                     <option value="{{ $val }}" {{ old('type_contrat') === $val ? 'selected' : '' }}>
                                         {{ $label }}
@@ -557,7 +557,7 @@
 
 
 {{-- ══════════════════════════════════════════════════════════════════
-     MODAL — VOIR LES DÉTAILS
+     MODAL - VOIR LES DÉTAILS
 ══════════════════════════════════════════════════════════════════ --}}
 <div class="modal fade" id="modalVoir" tabindex="-1" aria-labelledby="modalVoirLabel">
     <div class="modal-dialog modal-lg modal-dialog-centered">
@@ -650,7 +650,7 @@
 
 
 {{-- ══════════════════════════════════════════════════════════════════
-     MODAL — MODIFIER UN CONTRAT
+     MODAL - MODIFIER UN CONTRAT
 ══════════════════════════════════════════════════════════════════ --}}
 <div class="modal fade" id="modalEditer" tabindex="-1" aria-labelledby="modalEditerLabel">
     <div class="modal-dialog modal-lg modal-dialog-centered">
@@ -719,7 +719,7 @@
 
 
 {{-- ══════════════════════════════════════════════════════════════════
-     MODAL — RENOUVELER UN CONTRAT
+     MODAL - RENOUVELER UN CONTRAT
 ══════════════════════════════════════════════════════════════════ --}}
 <div class="modal fade" id="modalRenouveler" tabindex="-1" aria-labelledby="modalRenouvelerLabel">
     <div class="modal-dialog modal-dialog-centered">
@@ -789,7 +789,7 @@
 
 
 {{-- ══════════════════════════════════════════════════════════════════
-     MODAL — CLÔTURER UN CONTRAT
+     MODAL - CLÔTURER UN CONTRAT
 ══════════════════════════════════════════════════════════════════ --}}
 <div class="modal fade" id="modalCloturer" tabindex="-1" aria-labelledby="modalCloturerLabel">
     <div class="modal-dialog modal-dialog-centered modal-sm">
@@ -892,10 +892,10 @@ document.querySelectorAll('.btn-voir').forEach(btn => {
             const statuts = @json(\App\Models\Contrat::STATUTS);
             document.getElementById('voirType').textContent = types[data.type_contrat] || data.type_contrat;
             document.getElementById('voirDateDebut').textContent = data.date_debut
-                ? new Date(data.date_debut).toLocaleDateString('fr-FR') : '—';
+                ? new Date(data.date_debut).toLocaleDateString('fr-FR') : '-';
             document.getElementById('voirDateFin').textContent = data.date_fin
                 ? new Date(data.date_fin).toLocaleDateString('fr-FR') : 'Indéterminée (CDI/PE)';
-            document.getElementById('voirObs').textContent = data.observation || '—';
+            document.getElementById('voirObs').textContent = data.observation || '-';
 
             // Badge statut
             const st = statuts[data.statut_contrat] || { label: data.statut_contrat, color: '#374151', bg: '#F3F4F6' };
@@ -914,11 +914,11 @@ document.querySelectorAll('.btn-voir').forEach(btn => {
                     </div>`;
                 } else if (jr <= 30) {
                     echeanceHTML = `<div class="alert mb-0" style="background:#FEE2E2;border:none;border-radius:10px;color:#991B1B;font-size:13px;">
-                        <i class="fas fa-exclamation-circle me-2"></i>Expire dans <strong>${jr} jours</strong> — Action urgente requise
+                        <i class="fas fa-exclamation-circle me-2"></i>Expire dans <strong>${jr} jours</strong> - Action urgente requise
                     </div>`;
                 } else if (jr <= 60) {
                     echeanceHTML = `<div class="alert mb-0" style="background:#FEF3C7;border:none;border-radius:10px;color:#92400E;font-size:13px;">
-                        <i class="fas fa-clock me-2"></i>Expire dans <strong>${jr} jours</strong> — À renouveler bientôt
+                        <i class="fas fa-clock me-2"></i>Expire dans <strong>${jr} jours</strong> - À renouveler bientôt
                     </div>`;
                 } else {
                     echeanceHTML = `<div class="alert mb-0" style="background:#D1FAE5;border:none;border-radius:10px;color:#065F46;font-size:13px;">

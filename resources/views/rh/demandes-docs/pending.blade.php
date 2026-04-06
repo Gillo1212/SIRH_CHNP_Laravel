@@ -1,6 +1,6 @@
 @extends('layouts.master')
 @section('title', 'Demandes en attente')
-@section('page-title', 'Demandes documents — En attente')
+@section('page-title', 'Demandes documents - En attente')
 
 @section('breadcrumb')
     <li><a href="{{ route('rh.dashboard') }}" style="color:#1565C0;">RH</a></li>
@@ -42,7 +42,7 @@
         <div class="d-flex align-items-center justify-content-between flex-wrap gap-3">
             <div>
                 <div style="font-weight:600;font-size:14px;color:var(--theme-text);">
-                    {{ $dem->agent?->nom_complet ?? '—' }}
+                    {{ $dem->agent?->nom_complet ?? '-' }}
                     <span style="font-size:12px;color:#9CA3AF;font-weight:400;margin-left:8px;">{{ $dem->agent?->matricule }}</span>
                 </div>
                 <div style="font-size:13px;color:#6B7280;margin-top:3px;">

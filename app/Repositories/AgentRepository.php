@@ -17,18 +17,18 @@ class AgentRepository implements AgentRepositoryInterface
     public function paginate(int $perPage = 15, array $filters = []): LengthAwarePaginator
     {
         $query = Agent::with(['service:id_service,nom_service', 'user:id,statut_compte'])
-            ->select('id_agent', 'matricule', 'nom', 'prenom', 'fontion', 'grade',
+            ->select('id_agent', 'matricule', 'nom', 'prenom', 'fonction', 'grade',
                      'categorie_cp', 'statut_agent', 'photo', 'id_service', 'user_id',
                      'date_prise_service', 'created_at');
 
-        // Filtre texte : nom, prénom, matricule, fontion
+        // Filtre texte : nom, prénom, matricule, fonction
         if (!empty($filters['recherche'])) {
             $terme = $filters['recherche'];
             $query->where(function ($q) use ($terme) {
                 $q->where('nom', 'like', "%{$terme}%")
                   ->orWhere('prenom', 'like', "%{$terme}%")
                   ->orWhere('matricule', 'like', "%{$terme}%")
-                  ->orWhere('fontion', 'like', "%{$terme}%");
+                  ->orWhere('fonction', 'like', "%{$terme}%");
             });
         }
 
@@ -61,7 +61,7 @@ class AgentRepository implements AgentRepositoryInterface
     public function allActifs(): Collection
     {
         return Agent::actif()
-            ->select('id_agent', 'matricule', 'nom', 'prenom', 'fontion')
+            ->select('id_agent', 'matricule', 'nom', 'prenom', 'fonction')
             ->orderBy('nom')->orderBy('prenom')
             ->get();
     }

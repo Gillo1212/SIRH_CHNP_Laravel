@@ -25,7 +25,6 @@
                     ['anchor' => 'documents', 'icon' => 'file-alt', 'label' => 'Documents admin.'],
                     ['anchor' => 'pec', 'icon' => 'heartbeat', 'label' => 'Prise en charge'],
                     ['anchor' => 'profil', 'icon' => 'user-cog', 'label' => 'Profil & Sécurité'],
-                    ['anchor' => 'preferences', 'icon' => 'sliders-h', 'label' => 'Préférences'],
                 ] as $item)
                 <a href="#{{ $item['anchor'] }}" style="display:flex;align-items:center;gap:10px;padding:9px 12px;border-radius:8px;text-decoration:none;color:#374151;font-size:13px;transition:all 150ms;"
                    onmouseover="this.style.background='#EFF6FF';this.style.color='#0A4D8C'"
@@ -121,7 +120,7 @@
                         <ol style="margin-top:8px;line-height:2;padding-left:20px;">
                             <li>Dans le menu gauche, cliquez sur <strong>Mes Congés</strong>.</li>
                             <li>Cliquez sur le bouton <strong>Nouvelle demande</strong>.</li>
-                            <li>Sélectionnez le <strong>type de congé</strong> (annuel, maladie, etc.).</li>
+                            <li>Sélectionnez le <strong>type de congé</strong> (Administratif, Maternité ou Rayon X).</li>
                             <li>Choisissez les <strong>dates de début et de fin</strong>.</li>
                             <li>Ajoutez un <strong>motif</strong> si nécessaire.</li>
                             <li>Cliquez sur <strong>Soumettre la demande</strong>.</li>
@@ -154,7 +153,6 @@
                     <p style="font-size:13.5px;color:#374151;line-height:1.7;">
                         La prise en charge médicale peut être demandée pour vous-même, votre conjoint ou vos enfants
                         enregistrés dans votre dossier. Renseignez l'établissement médical et le motif médical.
-                        Les prises en charge exceptionnelles (montant élevé) nécessitent une validation DRH supplémentaire.
                     </p>
                 </div>
 
@@ -174,24 +172,6 @@
                     </p>
                 </div>
 
-                <hr style="border-color:#F3F4F6;margin-bottom:36px;">
-
-                {{-- SECTION 7 : Préférences --}}
-                <div id="preferences">
-                    <h5 style="color:#0A4D8C;font-weight:700;margin-bottom:16px;display:flex;align-items:center;gap:10px;">
-                        <span style="width:28px;height:28px;background:#EFF6FF;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:#0A4D8C;flex-shrink:0;">7</span>
-                        Préférences
-                    </h5>
-                    <p style="font-size:13.5px;color:#374151;line-height:1.7;">
-                        Personnalisez votre expérience depuis <a href="{{ route('preferences.index') }}" style="color:#1565C0;">Préférences</a> :
-                    </p>
-                    <ul style="font-size:13.5px;color:#374151;line-height:2;padding-left:20px;">
-                        <li><strong>Langue</strong> : Français ou English</li>
-                        <li><strong>Thème</strong> : Clair ou Sombre</li>
-                        <li><strong>Notifications</strong> : Email et/ou système</li>
-                        <li><strong>Affichage</strong> : Nombre d'éléments par page, format de date</li>
-                    </ul>
-                </div>
 
             </div>
         </div>

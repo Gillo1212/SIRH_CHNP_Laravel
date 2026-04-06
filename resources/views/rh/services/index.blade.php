@@ -93,7 +93,7 @@
 .view-toggle button.active { background:#0A4D8C;color:#fff; }
 
 /* ════════════════════════════════════════════════════════════
-   MODALS — Charte SIRH
+   MODALS - Charte SIRH
    ════════════════════════════════════════════════════════════ */
 .modal-content { border-radius:16px;border:none;box-shadow:0 20px 60px rgba(0,0,0,.18); }
 .modal-label { font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;margin-bottom:5px;color:var(--theme-text-muted); }
@@ -292,7 +292,7 @@
                                 <i class="fas fa-sitemap" style="font-size:9px;"></i> {{ $service->divisions_count }}
                             </span>
                         @else
-                            <span style="color:var(--theme-text-muted);font-size:12px;">—</span>
+                            <span style="color:var(--theme-text-muted);font-size:12px;">-</span>
                         @endif
                     </td>
                     <td class="d-none d-md-table-cell">
@@ -301,7 +301,7 @@
                                 <div style="width:26px;height:26px;border-radius:50%;background:linear-gradient(135deg,#0A4D8C,#1565C0);display:flex;align-items:center;justify-content:center;color:white;font-size:9px;font-weight:700;flex-shrink:0;">
                                     {{ strtoupper(substr($service->manager->agent->prenom ?? 'M', 0, 1)) }}
                                 </div>
-                                <span style="font-size:12px;font-weight:500;">{{ $service->manager->agent->nom ?? '—' }}</span>
+                                <span style="font-size:12px;font-weight:500;">{{ $service->manager->agent->nom ?? '-' }}</span>
                             </div>
                         @else
                             <span style="font-size:12px;color:var(--theme-text-muted);"><i class="fas fa-user-slash me-1"></i>Non assigné</span>
@@ -313,7 +313,7 @@
                         </span>
                     </td>
                     <td class="d-none d-md-table-cell" style="color:var(--theme-text-muted);font-size:12.5px;">
-                        {{ $service->tel_service ?? '—' }}
+                        {{ $service->tel_service ?? '-' }}
                     </td>
                     <td class="text-end pe-3">
                         <div class="d-flex justify-content-end gap-1">
@@ -496,7 +496,7 @@
 
 
 {{-- ═══════════════════════════════════════════════════════════════════════
-     MODAL — CRÉER UN SERVICE
+     MODAL - CRÉER UN SERVICE
      ═══════════════════════════════════════════════════════════════════════ --}}
 @can('create', App\Models\Service::class)
 <div class="modal fade" id="modalCreateService" tabindex="-1" data-bs-backdrop="static">
@@ -530,7 +530,7 @@
                         <div class="col-12 col-md-4">
                             <label class="modal-label">Type <span class="text-danger">*</span></label>
                             <select name="type_service" class="modal-input @error('type_service') is-invalid @enderror" required>
-                                <option value="">— Choisir —</option>
+                                <option value="">- Choisir -</option>
                                 <option value="Clinique"        {{ old('type_service') == 'Clinique' ? 'selected' : '' }}>Clinique</option>
                                 <option value="Administratif"   {{ old('type_service') == 'Administratif' ? 'selected' : '' }}>Administratif</option>
                                 <option value="Aide_diagnostic" {{ old('type_service') == 'Aide_diagnostic' ? 'selected' : '' }}>Aide au diagnostic</option>
@@ -545,7 +545,7 @@
                         <div class="col-12">
                             <label class="modal-label">Manager responsable</label>
                             <select name="id_agent_manager" class="modal-input">
-                                <option value="">— Aucun pour l'instant —</option>
+                                <option value="">- Aucun pour l'instant -</option>
                                 @foreach($managers as $mgr)
                                     <option value="{{ $mgr->id }}" {{ old('id_agent_manager') == $mgr->id ? 'selected' : '' }}>
                                         {{ $mgr->agent?->nom_complet ?? $mgr->login }}
@@ -569,7 +569,7 @@
 
 
 {{-- ═══════════════════════════════════════════════════════════════════════
-     MODAL — MODIFIER UN SERVICE + GÉRER LES AGENTS
+     MODAL - MODIFIER UN SERVICE + GÉRER LES AGENTS
      ═══════════════════════════════════════════════════════════════════════ --}}
 <div class="modal fade" id="modalEditService" tabindex="-1" data-bs-backdrop="static">
     <div class="modal-dialog modal-dialog-centered modal-lg modal-dialog-scrollable">
@@ -583,7 +583,7 @@
                             <i class="fas fa-edit" style="font-size:18px;color:#D97706;"></i>
                         </div>
                         <h5 class="fw-bold mb-1" style="color:var(--theme-text);" id="editModalTitle">Modifier le service</h5>
-                        <p style="font-size:13px;color:var(--theme-text-muted);margin:0;" id="editModalSubtitle">—</p>
+                        <p style="font-size:13px;color:var(--theme-text-muted);margin:0;" id="editModalSubtitle">-</p>
                     </div>
                     <button type="button" class="btn-close mt-1" data-bs-dismiss="modal"></button>
                 </div>
@@ -626,7 +626,7 @@
                         <div class="col-12">
                             <label class="modal-label">Manager responsable</label>
                             <select id="editManager" name="id_agent_manager" class="modal-input">
-                                <option value="">— Aucun —</option>
+                                <option value="">- Aucun -</option>
                                 @foreach($managers as $mgr)
                                     <option value="{{ $mgr->id }}">{{ $mgr->agent?->nom_complet ?? $mgr->login }}</option>
                                 @endforeach
@@ -646,7 +646,7 @@
                         @csrf
                         <div class="d-flex gap-2">
                             <select id="addAgentSelect" name="agent_id" class="modal-input" style="flex:1;">
-                                <option value="">— Sélectionner un agent —</option>
+                                <option value="">- Sélectionner un agent -</option>
                             </select>
                             <button type="submit" class="action-btn action-btn-primary" style="white-space:nowrap;">
                                 <i class="fas fa-plus"></i> Affecter
@@ -674,7 +674,7 @@
 
 
 {{-- ═══════════════════════════════════════════════════════════════════════
-     MODAL — ASSIGNER / CHANGER DE MANAGER
+     MODAL - ASSIGNER / CHANGER DE MANAGER
      ═══════════════════════════════════════════════════════════════════════ --}}
 <div class="modal fade" id="modalAssignManager" tabindex="-1">
     <div class="modal-dialog modal-dialog-centered modal-sm">
@@ -691,7 +691,7 @@
                     <p id="managerModalSubtitle" class="text-muted small mb-3"></p>
                     <label class="modal-label">Manager</label>
                     <select id="managerSelect" name="id_agent_manager" class="modal-input">
-                        <option value="">— Retirer le manager —</option>
+                        <option value="">- Retirer le manager -</option>
                         @foreach($managers as $mgr)
                             <option value="{{ $mgr->id }}">{{ $mgr->agent?->nom_complet ?? $mgr->login }}</option>
                         @endforeach
@@ -710,7 +710,7 @@
 
 
 {{-- ═══════════════════════════════════════════════════════════════════════
-     MODAL — ASSIGNER MAJOR
+     MODAL - ASSIGNER MAJOR
      ═══════════════════════════════════════════════════════════════════════ --}}
 <div class="modal fade" id="modalAssignMajor" tabindex="-1">
     <div class="modal-dialog modal-dialog-centered modal-sm">
@@ -727,7 +727,7 @@
                     <p id="majorModalSubtitle" class="text-muted small mb-3"></p>
                     <label class="modal-label">Major paramédical</label>
                     <select id="majorSelect" name="id_agent_major" class="modal-input">
-                        <option value="">— Retirer le major —</option>
+                        <option value="">- Retirer le major -</option>
                         @foreach($majors as $maj)
                             <option value="{{ $maj->id }}">{{ $maj->agent?->nom_complet ?? $maj->login }}</option>
                         @endforeach
@@ -746,7 +746,7 @@
 
 
 {{-- ═══════════════════════════════════════════════════════════════════════
-     MODAL — SUPPRIMER UN SERVICE
+     MODAL - SUPPRIMER UN SERVICE
      ═══════════════════════════════════════════════════════════════════════ --}}
 <div class="modal fade" id="modalDeleteService" tabindex="-1">
     <div class="modal-dialog modal-dialog-centered modal-sm">
@@ -792,7 +792,7 @@
                     'nom'       => $a->nom,
                     'prenom'    => $a->prenom,
                     'matricule' => $a->matricule,
-                    'fontion'   => $a->fontion,
+                    'fonction'   => $a->fonction,
                     'statut'    => $a->statut,
                 ];
             })->values()->all(),
@@ -806,7 +806,7 @@
             'nom'        => $a->nom,
             'prenom'     => $a->prenom,
             'matricule'  => $a->matricule,
-            'fontion'    => $a->fontion,
+            'fonction'    => $a->fonction,
         ];
     })->values()->all();
 @endphp
@@ -875,7 +875,7 @@ function resetFilters() {
 }
 
 /* ══════════════════════════════════════════════════════════
-   MODAL EDIT — Ouvrir + peupler
+   MODAL EDIT - Ouvrir + peupler
    ══════════════════════════════════════════════════════════ */
 let currentEditId = null;
 let currentEditTab = 'info';
@@ -917,7 +917,7 @@ function switchEditTab(tab, btn) {
 }
 
 /* ══════════════════════════════════════════════════════════
-   ONGLET AGENTS — Rendu dynamique
+   ONGLET AGENTS - Rendu dynamique
    ══════════════════════════════════════════════════════════ */
 const AVATAR_COLORS = ['#0A4D8C','#059669','#7C3AED','#D97706','#0891B2','#DC2626'];
 
@@ -937,13 +937,13 @@ function renderAgentsTab(service) {
             const initials = (a.prenom[0] + a.nom[0]).toUpperCase();
             const badge    = a.statut === 'actif'
                 ? '<span style="background:#D1FAE5;color:#065F46;font-size:10px;font-weight:700;padding:2px 8px;border-radius:20px;">Actif</span>'
-                : `<span style="background:#F3F4F6;color:#374151;font-size:10px;font-weight:700;padding:2px 8px;border-radius:20px;">${a.statut ?? '—'}</span>`;
+                : `<span style="background:#F3F4F6;color:#374151;font-size:10px;font-weight:700;padding:2px 8px;border-radius:20px;">${a.statut ?? '-'}</span>`;
             return `
                 <div class="agent-modal-row">
                     <div class="agent-avatar-xs me-2" style="background:${color};">${initials}</div>
                     <div class="flex-grow-1">
                         <div style="font-size:13px;font-weight:600;">${a.prenom} ${a.nom}</div>
-                        <div style="font-size:11px;color:var(--theme-text-muted);">${a.matricule} — ${a.fontion || '—'}</div>
+                        <div style="font-size:11px;color:var(--theme-text-muted);">${a.matricule} - ${a.fonction || '-'}</div>
                     </div>
                     ${badge}
                     <form action="${ROUTES.detach(service.id, a.id)}" method="POST" style="display:inline;margin-left:8px;">
@@ -961,7 +961,7 @@ function renderAgentsTab(service) {
     // 2. Select des agents disponibles (pas dans ce service)
     const available = allAgents.filter(a => a.id_service != service.id);
     const sel = document.getElementById('addAgentSelect');
-    sel.innerHTML = '<option value="">— Sélectionner un agent —</option>'
+    sel.innerHTML = '<option value="">- Sélectionner un agent -</option>'
         + available.map(a => `<option value="${a.id}">${a.prenom} ${a.nom} (${a.matricule})</option>`).join('');
 
     // 3. Action du formulaire d'ajout

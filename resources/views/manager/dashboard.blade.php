@@ -1,6 +1,6 @@
 @extends('layouts.master')
 
-@section('title', 'Tableau de bord — Manager')
+@section('title', 'Tableau de bord - Manager')
 @section('page-title', 'Gestion de mon équipe')
 
 @section('breadcrumb')
@@ -69,7 +69,7 @@
         </h4>
         <p class="mb-0 text-muted" style="font-size:13.5px;">
             {{ now()->isoFormat('dddd D MMMM YYYY') }}
-            — Service {{ $service->nom_service }}
+            - Service {{ $service->nom_service }}
         </p>
     </div>
     <div class="d-flex gap-2 flex-wrap">
@@ -86,7 +86,7 @@
 </div>
 
 {{-- ─── KPIs ÉQUIPE ──────────────────────────────────────────────── --}}
-<div class="section-title" style="color:#9CA3AF;">Mon équipe — Vue d'ensemble</div>
+<div class="section-title" style="color:#9CA3AF;">Mon équipe - Vue d'ensemble</div>
 <div class="row g-3 mb-4">
     <div class="col-12 col-sm-6 col-xl-3">
         <div class="kpi-card blue">
@@ -150,7 +150,7 @@
         <div class="panel">
             <div class="d-flex align-items-center justify-content-between mb-3">
                 <div>
-                    <div class="fw-600" style="color:#111827;">Planning équipe — Semaine {{ now()->weekOfYear }}</div>
+                    <div class="fw-600" style="color:#111827;">Planning équipe - Semaine {{ now()->weekOfYear }}</div>
                     <div style="font-size:12px;color:#9CA3AF;">
                         Du {{ now()->startOfWeek()->isoFormat('D MMM') }} au {{ now()->endOfWeek()->isoFormat('D MMM YYYY') }}
                     </div>
@@ -194,7 +194,7 @@
                             @endif
                             <div style="font-size:9px;color:#6B7280;margin-top:3px;">{{ $nbAgents }} agent{{ $nbAgents > 1 ? 's' : '' }}</div>
                         @else
-                            <span style="display:block;background:#F3F4F6;color:#D1D5DB;border-radius:4px;font-size:10px;padding:3px 4px;">—</span>
+                            <span style="display:block;background:#F3F4F6;color:#D1D5DB;border-radius:4px;font-size:10px;padding:3px 4px;">-</span>
                         @endif
                     </div>
                 </div>
@@ -252,14 +252,14 @@
 <div class="row g-3 mb-4">
     <div class="col-12 col-lg-7">
         <div class="panel">
-            <div class="fw-600 mb-1" style="color:#111827;">Absentéisme — 6 derniers mois</div>
+            <div class="fw-600 mb-1" style="color:#111827;">Absentéisme - 6 derniers mois</div>
             <div style="font-size:12px;color:#9CA3AF;margin-bottom:14px;">Nombre de jours d'absence par mois</div>
             <canvas id="chartAbsenteisme" style="max-height:200px;"></canvas>
         </div>
     </div>
     <div class="col-12 col-lg-5">
         <div class="panel h-100">
-            <div class="fw-600 mb-3" style="color:#111827;">Répartition postes — {{ now()->isoFormat('MMMM YYYY') }}</div>
+            <div class="fw-600 mb-3" style="color:#111827;">Répartition postes - {{ now()->isoFormat('MMMM YYYY') }}</div>
             @if(empty($postesData))
                 <div class="text-center py-4" style="color:#9CA3AF;font-size:12px;">
                     <i class="fas fa-calendar-times fa-2x mb-2 d-block" style="color:#D1D5DB;"></i>

@@ -1,5 +1,5 @@
 @extends('layouts.master')
-@section('title', $filtreActif ? $filtreActif . 's — Mouvements' : 'Tous les mouvements')
+@section('title', $filtreActif ? $filtreActif . 's - Mouvements' : 'Tous les mouvements')
 @section('page-title', 'Gestion des Mouvements')
 
 @section('breadcrumb')
@@ -79,7 +79,7 @@
                 {{ $filtreActif ? $filtreActif . 's' : 'Mouvements du personnel' }}
             </h4>
             <p class="mb-0 text-muted" style="font-size:13.5px;">
-                Affectations, mutations, retours et départs — {{ now()->isoFormat('D MMMM YYYY') }}
+                Affectations, mutations, retours et départs - {{ now()->isoFormat('D MMMM YYYY') }}
             </p>
         </div>
         <div class="d-flex gap-2 flex-wrap">
@@ -242,7 +242,7 @@
     <div class="section-title" style="color:var(--theme-text);">
         Liste des mouvements
         @if(request()->hasAny(['search','type_mouvement','statut']))
-            <span style="font-weight:400;color:#6B7280;text-transform:none;letter-spacing:0;font-size:12px;">— filtres actifs</span>
+            <span style="font-weight:400;color:#6B7280;text-transform:none;letter-spacing:0;font-size:12px;">- filtres actifs</span>
         @endif
     </div>
 
@@ -293,7 +293,7 @@
                                         <div style="width:34px;height:34px;border-radius:50%;background:linear-gradient(135deg,#0A4D8C,#1565C0);color:white;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex-shrink:0;">{{ $ini }}</div>
                                         <div>
                                             <div style="font-weight:600;color:var(--theme-text);">{{ $m->agent->nom_complet }}</div>
-                                            <div style="font-size:11px;color:#9CA3AF;">{{ $m->agent->matricule }} · {{ $m->agent->fontion }}</div>
+                                            <div style="font-size:11px;color:#9CA3AF;">{{ $m->agent->matricule }} · {{ $m->agent->fonction }}</div>
                                         </div>
                                     </div>
                                 </td>
@@ -316,13 +316,13 @@
                                     @elseif($m->type_mouvement === 'Départ')
                                         <span style="color:#DC2626;font-weight:600;">Départ définitif</span>
                                     @else
-                                        <span class="text-muted">—</span>
+                                        <span class="text-muted">-</span>
                                     @endif
                                 </td>
 
                                 {{-- Date --}}
                                 <td class="py-3 border-0" style="font-weight:500;color:var(--theme-text);white-space:nowrap;">
-                                    {{ $m->date_mouvement?->format('d/m/Y') ?? '—' }}
+                                    {{ $m->date_mouvement?->format('d/m/Y') ?? '-' }}
                                 </td>
 
                                 {{-- Statut --}}
@@ -447,7 +447,7 @@
                         <div class="col-12 col-md-8">
                             <label class="modal-label">Agent concerné <span class="text-danger">*</span></label>
                             <select name="id_agent" class="form-select form-select-sm" style="border-radius:7px;" required>
-                                <option value="">— Sélectionner un agent —</option>
+                                <option value="">- Sélectionner un agent -</option>
                                 @foreach($agents as $agent)
                                     <option value="{{ $agent->id_agent }}" {{ old('id_agent') == $agent->id_agent ? 'selected' : '' }}>
                                         {{ $agent->nom_complet }} ({{ $agent->matricule }})
@@ -469,7 +469,7 @@
                         <div class="col-12 col-md-6" id="field-service-origine" style="display:none;">
                             <label class="modal-label">Service d'origine <span class="text-danger">*</span></label>
                             <select name="id_service_origine" class="form-select form-select-sm" style="border-radius:7px;">
-                                <option value="">— Service d'origine —</option>
+                                <option value="">- Service d'origine -</option>
                                 @foreach($services as $svc)
                                     <option value="{{ $svc->id_service }}" {{ old('id_service_origine') == $svc->id_service ? 'selected' : '' }}>
                                         {{ $svc->nom_service }}
@@ -481,7 +481,7 @@
                         <div class="col-12 col-md-6" id="field-service-destination" style="display:none;">
                             <label class="modal-label">Service de destination <span class="text-danger">*</span></label>
                             <select name="id_service" class="form-select form-select-sm" style="border-radius:7px;">
-                                <option value="">— Service de destination —</option>
+                                <option value="">- Service de destination -</option>
                                 @foreach($services as $svc)
                                     <option value="{{ $svc->id_service }}" {{ old('id_service') == $svc->id_service ? 'selected' : '' }}>
                                         {{ $svc->nom_service }}
@@ -524,7 +524,7 @@
                     </div>
                     <div>
                         <h5 class="modal-title fw-bold mb-0">Modifier le mouvement</h5>
-                        <p class="text-muted small mb-0" id="edit-subtitle">—</p>
+                        <p class="text-muted small mb-0" id="edit-subtitle">-</p>
                     </div>
                 </div>
                 <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
@@ -550,7 +550,7 @@
                         <div class="col-12 col-md-6" id="edit-field-origine" style="display:none;">
                             <label class="modal-label">Service d'origine</label>
                             <select name="id_service_origine" id="edit-service-origine" class="form-select form-select-sm" style="border-radius:7px;">
-                                <option value="">— Service d'origine —</option>
+                                <option value="">- Service d'origine -</option>
                                 @foreach($services as $svc)
                                     <option value="{{ $svc->id_service }}">{{ $svc->nom_service }}</option>
                                 @endforeach
@@ -559,7 +559,7 @@
                         <div class="col-12 col-md-6" id="edit-field-destination" style="display:none;">
                             <label class="modal-label">Service de destination</label>
                             <select name="id_service" id="edit-service-destination" class="form-select form-select-sm" style="border-radius:7px;">
-                                <option value="">— Service de destination —</option>
+                                <option value="">- Service de destination -</option>
                                 @foreach($services as $svc)
                                     <option value="{{ $svc->id_service }}">{{ $svc->nom_service }}</option>
                                 @endforeach
@@ -726,14 +726,14 @@ function voirMouvement(id) {
             '<div class="col-12"><div class="p-3 rounded-3" style="background:#F8FAFC;border:1px solid #E5E7EB;"><div class="row g-2">'+
             '<div class="col-6 col-md-3"><div class="modal-label">Agent</div><div style="font-weight:600;font-size:13.5px;">'+d.agent.nom_complet+'</div></div>'+
             '<div class="col-6 col-md-3"><div class="modal-label">Matricule</div><div style="font-weight:600;font-size:13.5px;">'+d.agent.matricule+'</div></div>'+
-            '<div class="col-6 col-md-3"><div class="modal-label">Fonction</div><div style="font-size:13px;color:#6B7280;">'+d.agent.fontion+'</div></div>'+
+            '<div class="col-6 col-md-3"><div class="modal-label">Fonction</div><div style="font-size:13px;color:#6B7280;">'+d.agent.fonction+'</div></div>'+
             '<div class="col-6 col-md-3"><div class="modal-label">Service actuel</div><div style="font-size:13px;color:#6B7280;">'+d.agent.service+'</div></div>'+
             '</div></div></div>'+
             '<div class="col-12 col-md-6"><div class="modal-label">Direction</div><div style="font-size:13.5px;">'+dir+'</div></div>'+
-            '<div class="col-12 col-md-6"><div class="modal-label">Date d\'effet</div><div style="font-size:13.5px;font-weight:600;">'+(d.date_mouvement_fr||'—')+'</div></div>'+
+            '<div class="col-12 col-md-6"><div class="modal-label">Date d\'effet</div><div style="font-size:13.5px;font-weight:600;">'+(d.date_mouvement_fr||'-')+'</div></div>'+
             '<div class="col-12 col-md-6"><div class="modal-label">Statut</div><span class="badge-status" style="background:'+d.statut_bg+';color:'+d.statut_color+';">'+d.statut_label+'</span></div>'+
             '<div class="col-12 col-md-6"><div class="modal-label">Créé par</div><div style="font-size:13px;color:#6B7280;">'+d.cree_par_nom+'</div></div>'+
-            (d.valide_par_nom!=='—'?'<div class="col-12 col-md-6"><div class="modal-label">Validé DRH</div><div style="font-size:13px;color:#6B7280;">'+d.valide_par_nom+(d.date_validation_fr?' · '+d.date_validation_fr:'')+'</div></div>':'')+
+            (d.valide_par_nom!=='-'?'<div class="col-12 col-md-6"><div class="modal-label">Validé DRH</div><div style="font-size:13px;color:#6B7280;">'+d.valide_par_nom+(d.date_validation_fr?' · '+d.date_validation_fr:'')+'</div></div>':'')+
             (d.motif?'<div class="col-12"><div class="modal-label">Motif</div><div class="p-3 rounded-3" style="background:#FFFBEB;font-size:13px;">'+d.motif+'</div></div>':'')+
             '</div>';
     })

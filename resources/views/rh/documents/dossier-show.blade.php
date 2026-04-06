@@ -1,5 +1,5 @@
 @extends('layouts.master')
-@section('title', 'Dossier — ' . ($dossier->agent?->nom_complet ?? 'Agent'))
+@section('title', 'Dossier - ' . ($dossier->agent?->nom_complet ?? 'Agent'))
 @section('page-title', 'Dossier Agent')
 
 @section('breadcrumb')
@@ -373,7 +373,7 @@
                             <div class="env-card-icon">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
                             </div>
-                            <div class="env-card-label">Confidentiel — Accès restreint</div>
+                            <div class="env-card-label">Confidentiel - Accès restreint</div>
                             <div class="env-card-footer">
                                 <span class="env-card-count">{{ $docsConf->count() }} document{{ $docsConf->count() > 1 ? 's' : '' }}</span>
                                 <svg class="env-card-arrow" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
@@ -397,7 +397,7 @@
                     @if($catDocs->isEmpty())
                         <div class="env-empty">
                             <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#E5E7EB" stroke-width="1.5" style="display:block;margin:0 auto 8px;"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
-                            Aucun document dans cette catégorie —
+                            Aucun document dans cette catégorie -
                             <a href="{{ route('rh.ged.documents.create', ['dossier' => $dossier->id_dossier]) }}" style="color:{{ $cat['color'] }};font-size:12px;">Ajouter</a>
                         </div>
                     @else
@@ -415,7 +415,7 @@
                         <span style="color:#d97706;">
                             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
                         </span>
-                        <span>Confidentiel — Accès restreint</span>
+                        <span>Confidentiel - Accès restreint</span>
                         <button type="button" class="close-env" onclick="toggleEnv('confidentiel')" title="Fermer">
                             <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
                         </button>
@@ -449,10 +449,10 @@
                     </dd>
 
                     <dt class="text-muted fw-normal">Étagère</dt>
-                    <dd class="mb-2">{{ $dossier->etagere?->reference_complete ?? '—' }}</dd>
+                    <dd class="mb-2">{{ $dossier->etagere?->reference_complete ?? '-' }}</dd>
 
                     <dt class="text-muted fw-normal">Service</dt>
-                    <dd class="mb-2">{{ $dossier->etagere?->service?->nom_service ?? '—' }}</dd>
+                    <dd class="mb-2">{{ $dossier->etagere?->service?->nom_service ?? '-' }}</dd>
 
                     <dt class="text-muted fw-normal">Créé le</dt>
                     <dd class="mb-0">{{ $dossier->date_creation?->format('d/m/Y à H:i') }}</dd>
@@ -494,7 +494,7 @@
                     <div class="audit-dot mt-1"></div>
                     <div class="audit-body">
                         <span class="av-user">{{ $act->causer?->name ?? $act->causer?->login ?? 'Système' }}</span>
-                        <span class="text-muted"> — </span>
+                        <span class="text-muted"> - </span>
                         <span>{{ $act->description }}</span>
                         <div class="av-time mt-1">{{ $act->created_at->diffForHumans() }}</div>
                     </div>

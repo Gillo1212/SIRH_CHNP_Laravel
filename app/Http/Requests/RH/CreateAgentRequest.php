@@ -32,8 +32,8 @@ class CreateAgentRequest extends FormRequest
             'cni'                => ['nullable', 'string', 'max:50'],
 
             // Professionnel
-            'date_prise_service' => ['nullable', 'date'],
-            'fontion'            => ['nullable', 'string', 'max:100'],
+            'date_prise_service' => ['required', 'date', 'before_or_equal:today'],
+            'fonction'            => ['nullable', 'string', 'max:100'],
             'grade'              => ['nullable', 'string', 'max:100'],
             'categorie_cp'       => ['nullable', 'in:Cadre_Superieur,Cadre_Moyen,Technicien_Superieur,Technicien,Agent_Administratif,Agent_de_Service,Commis_Administration,Ouvrier,Sans_Diplome'],
             'famille_d_emploi'   => ['nullable', 'string', 'max:100'],
@@ -72,7 +72,9 @@ class CreateAgentRequest extends FormRequest
             'id_division.exists'      => 'La division sélectionnée n\'existe pas.',
             'matricule.required'      => 'Le matricule est obligatoire.',
             'matricule.unique'        => 'Ce matricule est déjà utilisé.',
-            'statut_agent.in'         => 'Statut agent invalide.',
+            'date_prise_service.required' => 'La date de prise de service est obligatoire.',
+            'date_prise_service.date'     => 'La date de prise de service est invalide.',
+            'statut_agent.in'             => 'Statut agent invalide.',
             'categorie_cp.in'         => 'Catégorie socio-professionnelle invalide.',
         ];
     }

@@ -20,7 +20,7 @@
             </div>
             <div>
                 <h5 class="fw-bold mb-0">Enregistrer une absence</h5>
-                <p class="text-muted small mb-0">Saisie directe par le service RH — tous agents</p>
+                <p class="text-muted small mb-0">Saisie directe par le service RH - tous agents</p>
             </div>
         </div>
         <div class="card-body p-4">
@@ -42,7 +42,7 @@
                     <div class="col-12 col-md-5">
                         <label class="form-label fw-600 small">Filtrer par service</label>
                         <select id="filterService" class="form-select" style="border-radius:8px;font-size:13px;">
-                            <option value="">— Tous les services —</option>
+                            <option value="">- Tous les services -</option>
                             @foreach($services as $svc)
                                 <option value="{{ $svc->id_service }}">{{ $svc->nom_service }}</option>
                             @endforeach
@@ -53,7 +53,7 @@
                         <select name="id_agent" id="selectAgent"
                                 class="form-select @error('id_agent') is-invalid @enderror"
                                 style="border-radius:8px;font-size:13px;" required>
-                            <option value="">— Sélectionner un agent —</option>
+                            <option value="">- Sélectionner un agent -</option>
                             @foreach($agents as $agent)
                                 <option value="{{ $agent->id_agent }}"
                                         data-service="{{ $agent->id_service }}"
@@ -82,7 +82,7 @@
                         <select name="type_absence"
                                 class="form-select @error('type_absence') is-invalid @enderror"
                                 style="border-radius:8px;font-size:13px;" required>
-                            <option value="">— Choisir le type —</option>
+                            <option value="">- Choisir le type -</option>
                             @foreach([
                                 'Maladie'         => 'Maladie (certificat médical requis)',
                                 'Personnelle'     => 'Personnelle',
@@ -103,7 +103,7 @@
                                {{ old('justifie') ? 'checked' : '' }}>
                         <label class="form-check-label fw-600 small" for="justifie">
                             Absence justifiée
-                            <span class="text-muted fw-400 ms-1">— un document justificatif a été fourni par l'agent</span>
+                            <span class="text-muted fw-400 ms-1">- un document justificatif a été fourni par l'agent</span>
                         </label>
                     </div>
                 </div>

@@ -74,7 +74,7 @@
             Contrats à renouveler
         </h4>
         <p class="text-muted small mb-0">
-            Contrats actifs dont l'échéance approche — action requise
+            Contrats actifs dont l'échéance approche - action requise
         </p>
     </div>
     <a href="{{ route('rh.contrats.index') }}" class="action-btn action-btn-outline">
@@ -217,7 +217,7 @@
                                 </div>
                                 <div>
                                     <div class="fw-600" style="color:var(--theme-text);font-size:13px;">
-                                        {{ $agent?->nom_complet ?? '—' }}
+                                        {{ $agent?->nom_complet ?? '-' }}
                                     </div>
                                     <div class="text-muted" style="font-size:11px;">
                                         {{ $agent?->matricule }} · {{ $agent?->fonction }}
@@ -227,7 +227,7 @@
                         </td>
                         <td>
                             <span style="font-size:12px;color:var(--theme-text);">
-                                {{ $agent?->service?->nom_service ?? '—' }}
+                                {{ $agent?->service?->nom_service ?? '-' }}
                             </span>
                         </td>
                         <td>
@@ -242,7 +242,7 @@
                         </td>
                         <td>
                             <span style="font-size:12px;font-weight:600;color:{{ $jr <= 15 ? '#DC2626' : ($jr <= 30 ? '#D97706' : 'var(--theme-text)') }};">
-                                {{ $contrat->date_fin?->format('d/m/Y') ?? '—' }}
+                                {{ $contrat->date_fin?->format('d/m/Y') ?? '-' }}
                             </span>
                         </td>
                         <td style="min-width:140px;">
@@ -308,7 +308,7 @@
 </div>
 
 {{-- ══════════════════════════════════════════════════════════════════
-     MODAL — RENOUVELER UN CONTRAT
+     MODAL - RENOUVELER UN CONTRAT
 ══════════════════════════════════════════════════════════════════ --}}
 <div class="modal fade" id="modalRenouveler" tabindex="-1" aria-labelledby="modalRenouvelerLabel">
     <div class="modal-dialog modal-dialog-centered">

@@ -43,8 +43,8 @@
                     <div style="width:68px;height:68px;border-radius:50%;background:linear-gradient(135deg,#0A4D8C,#1565C0);color:white;display:flex;align-items:center;justify-content:center;font-size:22px;font-weight:700;margin:0 auto 14px;box-shadow:0 4px 15px rgba(10,77,140,.25);">
                         {{ strtoupper(substr($agent?->prenom ?? 'A',0,1).substr($agent?->nom ?? '',0,1)) }}
                     </div>
-                    <h6 class="fw-bold mb-1" style="color:var(--theme-text);">{{ $agent?->nom_complet ?? '—' }}</h6>
-                    <div class="text-muted small mb-1">{{ $agent?->fonction ?? '—' }}</div>
+                    <h6 class="fw-bold mb-1" style="color:var(--theme-text);">{{ $agent?->nom_complet ?? '-' }}</h6>
+                    <div class="text-muted small mb-1">{{ $agent?->fonction ?? '-' }}</div>
                     <div style="font-size:11px;color:#9CA3AF;margin-bottom:12px;">{{ $agent?->matricule }}</div>
                     <span style="background:#EFF6FF;color:#1E40AF;font-size:11px;font-weight:600;padding:3px 10px;border-radius:20px;">
                         <i class="fas fa-building me-1"></i>{{ $service->nom_service }}

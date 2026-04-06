@@ -1,5 +1,5 @@
 @extends('layouts.master')
-@section('title', 'Absences — Mon Service')
+@section('title', 'Absences - Mon Service')
 @section('page-title', 'Gestion des Absences')
 
 @section('breadcrumb')
@@ -46,7 +46,7 @@
     {{-- En-tête --}}
     <div class="d-flex align-items-center justify-content-between mb-4 flex-wrap gap-3">
         <div>
-            <h4 class="mb-0 fw-bold" style="color:var(--theme-text);">Absences — {{ $service->nom_service }}</h4>
+            <h4 class="mb-0 fw-bold" style="color:var(--theme-text);">Absences - {{ $service->nom_service }}</h4>
             <p class="mb-0 text-muted" style="font-size:13.5px;">Suivi des absences de votre équipe</p>
         </div>
         <button type="button" class="action-btn action-btn-danger"
@@ -171,7 +171,7 @@
                                     <div class="d-flex align-items-center gap-2">
                                         <div style="width:34px;height:34px;border-radius:50%;background:linear-gradient(135deg,#0A4D8C,#1565C0);color:white;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex-shrink:0;">{{ $initiales }}</div>
                                         <div>
-                                            <div style="font-weight:600;color:var(--theme-text);">{{ $ag?->nom_complet ?? '—' }}</div>
+                                            <div style="font-weight:600;color:var(--theme-text);">{{ $ag?->nom_complet ?? '-' }}</div>
                                             <div style="font-size:11px;color:#9CA3AF;">{{ $ag?->fonction ?? '' }}</div>
                                         </div>
                                     </div>
@@ -228,7 +228,7 @@
                     </div>
                     <div>
                         <h5 class="modal-title fw-bold mb-0">Enregistrer une absence</h5>
-                        <p class="text-muted small mb-0">{{ $service->nom_service }} — {{ now()->isoFormat('D MMMM YYYY') }}</p>
+                        <p class="text-muted small mb-0">{{ $service->nom_service }} - {{ now()->isoFormat('D MMMM YYYY') }}</p>
                     </div>
                 </div>
                 <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
@@ -240,7 +240,7 @@
                         <div class="col-12 col-md-7">
                             <label class="modal-label">Agent concerné <span class="text-danger">*</span></label>
                             <select name="id_agent" class="form-select form-select-sm" style="border-radius:7px;" required>
-                                <option value="">— Sélectionner un agent —</option>
+                                <option value="">- Sélectionner un agent -</option>
                                 @foreach($agents as $agent)
                                     <option value="{{ $agent->id_agent }}">
                                         {{ $agent->nom_complet }} ({{ $agent->matricule }})
@@ -257,7 +257,7 @@
                     <div class="mb-3">
                         <label class="modal-label">Type d'absence <span class="text-danger">*</span></label>
                         <select name="type_absence" class="form-select form-select-sm" style="border-radius:7px;" required>
-                            <option value="">— Choisir —</option>
+                            <option value="">- Choisir -</option>
                             <option value="Maladie">Maladie (certificat médical requis)</option>
                             <option value="Personnelle">Personnelle</option>
                             <option value="Professionnelle">Professionnelle (formation, mission…)</option>
@@ -269,7 +269,7 @@
                             <input class="form-check-input" type="checkbox" name="justifie" id="justifieManager" value="1">
                             <label class="form-check-label small fw-600" for="justifieManager">
                                 Absence justifiée
-                                <span class="text-muted fw-normal ms-1">— justificatif fourni par l'agent</span>
+                                <span class="text-muted fw-normal ms-1">- justificatif fourni par l'agent</span>
                             </label>
                         </div>
                     </div>

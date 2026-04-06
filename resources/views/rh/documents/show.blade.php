@@ -1,5 +1,5 @@
 @extends('layouts.master')
-@section('title', 'Document — ' . $document->titre)
+@section('title', 'Document - ' . $document->titre)
 @section('page-title', 'Document')
 
 @section('breadcrumb')
@@ -138,7 +138,7 @@
                     @if($document->statut_document === 'Détruit')
                         <div class="d-flex flex-column align-items-center justify-content-center h-100 py-5 text-muted">
                             <i class="ri-delete-bin-line" style="font-size:60px;opacity:.3;"></i>
-                            <p class="mt-3 fw-500">Document détruit — prévisualisation indisponible</p>
+                            <p class="mt-3 fw-500">Document détruit - prévisualisation indisponible</p>
                         </div>
                     @elseif($document->est_pdf)
                         <iframe src="{{ route('rh.ged.documents.preview', $document->id_document) }}"
@@ -206,11 +206,11 @@
                 </div>
                 <div class="meta-item">
                     <span class="mi-label">Date document</span>
-                    <span class="mi-val">{{ $document->date_creation?->format('d/m/Y') ?? '—' }}</span>
+                    <span class="mi-val">{{ $document->date_creation?->format('d/m/Y') ?? '-' }}</span>
                 </div>
                 <div class="meta-item">
                     <span class="mi-label">Archivé le</span>
-                    <span class="mi-val">{{ $document->date_archivage?->format('d/m/Y à H:i') ?? '—' }}</span>
+                    <span class="mi-val">{{ $document->date_archivage?->format('d/m/Y à H:i') ?? '-' }}</span>
                 </div>
                 <div class="meta-item">
                     <span class="mi-label">Version</span>
@@ -230,7 +230,7 @@
                 @endif
                 <div class="meta-item">
                     <span class="mi-label">Déposé par</span>
-                    <span class="mi-val">{{ $document->uploadePar?->name ?? $document->uploadePar?->login ?? '—' }}</span>
+                    <span class="mi-val">{{ $document->uploadePar?->name ?? $document->uploadePar?->login ?? '-' }}</span>
                 </div>
                 <div class="meta-item">
                     <span class="mi-label">Agent</span>
@@ -239,7 +239,7 @@
                             <a href="{{ route('rh.ged.dossier.show', $document->dossier->id_dossier) }}" class="text-decoration-none">
                                 {{ $document->dossier->agent->nom_complet }}
                             </a>
-                        @else —
+                        @else -
                         @endif
                     </span>
                 </div>
@@ -278,7 +278,7 @@
                         } }}"></div>
                         <div style="font-size:12.5px;flex:1;">
                             <span class="fw-600 text-dark">{{ $act->causer?->name ?? $act->causer?->login ?? 'Système' }}</span>
-                            <span class="text-muted"> — {{ $act->description }}</span>
+                            <span class="text-muted"> - {{ $act->description }}</span>
                             <div class="text-muted" style="font-size:11px;margin-top:2px;">
                                 {{ $act->created_at->format('d/m/Y à H:i') }}
                             </div>

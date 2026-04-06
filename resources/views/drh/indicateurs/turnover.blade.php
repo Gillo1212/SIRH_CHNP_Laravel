@@ -1,5 +1,5 @@
 @extends('layouts.master')
-@section('title', 'Indicateur Turnover — DRH')
+@section('title', 'Indicateur Turnover - DRH')
 @section('page-title', 'Indicateur : Turnover')
 
 @section('breadcrumb')
@@ -25,9 +25,9 @@
     <div class="d-flex align-items-center justify-content-between mb-4 flex-wrap gap-3">
         <div>
             <h4 class="mb-1 fw-bold" style="color:var(--theme-text);">
-                <i class="fas fa-exchange-alt me-2" style="color:#D97706;"></i>Indicateur — Turnover
+                <i class="fas fa-exchange-alt me-2" style="color:#D97706;"></i>Indicateur - Turnover
             </h4>
-            <p class="mb-0 text-muted" style="font-size:13.5px;">Analyse des entrées et sorties du personnel — 12 derniers mois</p>
+            <p class="mb-0 text-muted" style="font-size:13.5px;">Analyse des entrées et sorties du personnel - 12 derniers mois</p>
         </div>
         <a href="{{ route('drh.dashboard') }}" class="btn btn-outline-secondary btn-sm">
             <i class="fas fa-arrow-left me-1"></i>Tableau de bord
@@ -99,10 +99,10 @@
                     </div>
                     <div class="flex-grow-1">
                         <div style="font-size:13px;font-weight:600;color:var(--theme-text);">
-                            {{ $d->agent->nom_complet ?? '—' }}
+                            {{ $d->agent->nom_complet ?? '-' }}
                         </div>
                         <div style="font-size:12px;color:#9CA3AF;">
-                            {{ $d->agent->service->nom_service ?? '—' }} · {{ $d->date_mouvement?->format('d/m/Y') }}
+                            {{ $d->agent->service->nom_service ?? '-' }} · {{ $d->date_mouvement?->format('d/m/Y') }}
                         </div>
                     </div>
                     <span style="background:#FEE2E2;color:#991B1B;padding:2px 10px;border-radius:20px;font-size:11px;">{{ $d->motif }}</span>

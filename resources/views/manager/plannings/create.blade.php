@@ -23,8 +23,8 @@
 
 <div class="card border-0 shadow-sm" style="border-radius:14px;">
     <div class="card-header border-0 px-4 pt-4 pb-2">
-        <h5 class="fw-bold mb-0"><i class="fas fa-calendar-plus me-2 text-primary"></i>Nouveau Planning — {{ $service->nom_service }}</h5>
-        <p class="text-muted small mb-0">Le planning sera créé en brouillon. Transmettez-le à la RH quand il est prêt.</p>
+        <h5 class="fw-bold mb-0"><i class="fas fa-calendar-plus me-2 text-primary"></i>Nouveau Planning - {{ $service->nom_service }}</h5>
+        <p class="text-muted small mb-0">Le planning sera créé en brouillon. Validez-le directement ou attendez la transmission du Major.</p>
     </div>
     <div class="card-body p-4">
 
@@ -104,7 +104,7 @@ function createLigneHTML(idx) {
             <div class="col-12 col-md-3">
                 <label class="form-label small fw-500 mb-1">Agent</label>
                 <select name="lignes[${idx}][id_agent]" class="form-select form-select-sm" required style="border-radius:6px;">
-                    <option value="">— Agent —</option>${agentOpts}
+                    <option value="">- Agent -</option>${agentOpts}
                 </select>
             </div>
             <div class="col-6 col-md-2">
@@ -114,7 +114,7 @@ function createLigneHTML(idx) {
             <div class="col-6 col-md-2">
                 <label class="form-label small fw-500 mb-1">Type poste</label>
                 <select name="lignes[${idx}][id_typeposte]" class="form-select form-select-sm" required style="border-radius:6px;">
-                    <option value="">— Poste —</option>${posteOpts}
+                    <option value="">- Poste -</option>${posteOpts}
                 </select>
             </div>
             <div class="col-6 col-md-2">

@@ -97,6 +97,8 @@
             <span>Hiérarchie des rôles :</span>
             <span class="text-muted fw-400">Agent</span>
             <i class="fas fa-angle-right text-muted"></i>
+            <span class="text-muted fw-400">Major</span>
+            <i class="fas fa-angle-right text-muted"></i>
             <span class="text-muted fw-400">Manager</span>
             <i class="fas fa-angle-right text-muted"></i>
             <span class="text-muted fw-400">AgentRH</span>

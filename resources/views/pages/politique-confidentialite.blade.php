@@ -19,7 +19,7 @@
         </div>
         <div>
             <h5 class="mb-0" style="color:white;font-weight:700;">Politique de Confidentialité</h5>
-            <div style="font-size:12px;color:rgba(255,255,255,0.75);">SIRH CHNP — Centre Hospitalier National de Pikine</div>
+            <div style="font-size:12px;color:rgba(255,255,255,0.75);">SIRH CHNP - Centre Hospitalier National de Pikine</div>
         </div>
     </div>
     <div class="card-body" style="padding:28px 32px;">
@@ -27,7 +27,7 @@
         <div class="alert alert-info d-flex gap-2 mb-4" style="background:#EFF6FF;border:1px solid #BFDBFE;border-radius:8px;">
             <i class="fas fa-info-circle mt-1" style="color:#1565C0;flex-shrink:0;"></i>
             <div style="font-size:13px;color:#1E40AF;">
-                Dernière mise à jour : <strong>{{ now()->format('d/m/Y') }}</strong> —
+                Dernière mise à jour : <strong>{{ now()->format('d/m/Y') }}</strong> -
                 Ce document décrit comment le CHNP collecte, utilise et protège vos données personnelles.
             </div>
         </div>
@@ -64,7 +64,7 @@
         </ul>
 
         <h6 style="color:#0A4D8C;font-weight:700;margin-top:24px;padding-bottom:8px;border-bottom:2px solid #EFF6FF;">
-            2. Contrôle d'accès — RBAC à 5 niveaux
+            2. Contrôle d'accès - RBAC à 5 niveaux
         </h6>
         <div class="table-responsive">
             <table class="table table-sm" style="font-size:13px;">
@@ -110,7 +110,7 @@
         <div style="padding:16px;background:#F9FAFB;border-radius:8px;font-size:13.5px;">
             <p class="mb-1">Pour exercer vos droits ou toute question relative à vos données :</p>
             <p class="mb-1"><i class="fas fa-envelope me-2 text-primary"></i><a href="mailto:rh@chnp.sn">rh@chnp.sn</a></p>
-            <p class="mb-0"><i class="fas fa-map-marker-alt me-2 text-primary"></i>Service RH — Centre Hospitalier National de Pikine, Sénégal</p>
+            <p class="mb-0"><i class="fas fa-map-marker-alt me-2 text-primary"></i>Service RH - Centre Hospitalier National de Pikine, Sénégal</p>
         </div>
 
     </div>

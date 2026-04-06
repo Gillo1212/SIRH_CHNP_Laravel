@@ -56,7 +56,7 @@ class DemandeDocController extends Controller
             'date_traitement' => now(),
         ]);
 
-        activity()->causedBy(Auth::user())->on($demande)->log('Demande document traitée : ' . $demande->libelleType);
+        activity()->causedBy(Auth::user())->performedOn($demande)->log('Demande document traitée : ' . $demande->libelleType);
 
         return back()->with('success', 'Demande traitée. Le document est prêt pour l\'agent.');
     }
@@ -78,7 +78,7 @@ class DemandeDocController extends Controller
             'date_traitement' => now(),
         ]);
 
-        activity()->causedBy(Auth::user())->on($demande)->log('Demande document rejetée');
+        activity()->causedBy(Auth::user())->performedOn($demande)->log('Demande document rejetée');
 
         return back()->with('success', 'Demande rejetée.');
     }

@@ -40,6 +40,7 @@ class MajorRoleSeeder extends Seeder
         // Gestion équipe (lecture)
         'voir_equipe',
         'voir_conges_equipe',
+        'donner_avis_sur_conge',
         // Absences équipe
         'enregistrer_absence',
         // Planning
@@ -47,6 +48,8 @@ class MajorRoleSeeder extends Seeder
         'creer_planning',
         'modifier_planning',
         'transmettre_planning',
+        // Heures sup
+        'gerer_heures_sup',
         // Dashboard Major exclusif
         'voir_dashboard_major',
     ];

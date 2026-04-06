@@ -48,14 +48,6 @@ class ProfileController extends Controller
     }
 
     /**
-     * Redirect to preferences page.
-     */
-    public function settings(): RedirectResponse
-    {
-        return Redirect::route('preferences.index');
-    }
-
-    /**
      * Delete the user's account (Admin only / non utilisé en production CHNP).
      */
     public function destroy(Request $request): RedirectResponse

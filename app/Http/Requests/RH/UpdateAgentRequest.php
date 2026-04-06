@@ -38,7 +38,7 @@ class UpdateAgentRequest extends FormRequest
 
             // Professionnel
             'date_prise_service' => ['nullable', 'date'],
-            'fontion'            => ['nullable', 'string', 'max:100'],
+            'fonction'            => ['nullable', 'string', 'max:100'],
             'grade'              => ['nullable', 'string', 'max:100'],
             'categorie_cp'       => ['nullable', 'in:Cadre_Superieur,Cadre_Moyen,Technicien_Superieur,Technicien,Agent_Administratif,Agent_de_Service,Commis_Administration,Ouvrier,Sans_Diplome'],
             'famille_d_emploi'   => ['nullable', 'string', 'max:100'],

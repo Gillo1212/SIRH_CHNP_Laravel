@@ -79,7 +79,7 @@
                     ],
                     [
                         'q' => 'Quels documents puis-je demander en ligne ?',
-                        'r' => 'Vous pouvez demander : <ul style="margin-top:6px;"><li><strong>Attestation de travail</strong> — certifie votre emploi actuel</li><li><strong>Certificat de travail</strong> — lors d\'un départ</li><li><strong>Ordre de mission</strong> — pour les déplacements professionnels</li></ul>',
+                        'r' => 'Vous pouvez demander : <ul style="margin-top:6px;"><li><strong>Attestation de travail</strong> - certifie votre emploi actuel</li><li><strong>Certificat de travail</strong> - lors d\'un départ</li><li><strong>Ordre de mission</strong> - pour les déplacements professionnels</li></ul>',
                     ],
                     [
                         'q' => 'Comment demander une prise en charge médicale ?',

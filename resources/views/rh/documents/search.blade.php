@@ -1,5 +1,5 @@
 @extends('layouts.master')
-@section('title', 'GED — Recherche')
+@section('title', 'GED - Recherche')
 @section('page-title', 'Recherche de documents')
 
 @section('breadcrumb')
@@ -97,7 +97,7 @@
     <div class="d-flex justify-content-between align-items-center mb-3">
         <div style="font-size:14px;color:#374151;">
             @if($terme)
-                Résultats pour « <strong>{{ $terme }}</strong> » —
+                Résultats pour « <strong>{{ $terme }}</strong> » -
             @endif
             <strong>{{ $documents->total() }}</strong> document(s) trouvé(s)
         </div>
@@ -160,7 +160,7 @@
                                 </div>
                             </td>
                             <td class="py-2" style="color:#374151;">
-                                {{ $doc->dossier?->agent?->nom_complet ?? '—' }}
+                                {{ $doc->dossier?->agent?->nom_complet ?? '-' }}
                                 <div style="font-size:11px;color:#9CA3AF;">{{ $doc->dossier?->agent?->service?->nom_service }}</div>
                             </td>
                             <td class="py-2">
@@ -178,7 +178,7 @@
                                     {{ $doc->statut_document }}
                                 </span>
                             </td>
-                            <td class="py-2 text-muted">{{ $doc->date_creation?->format('d/m/Y') ?? '—' }}</td>
+                            <td class="py-2 text-muted">{{ $doc->date_creation?->format('d/m/Y') ?? '-' }}</td>
                             <td class="py-2 pe-4" onclick="event.stopPropagation()">
                                 <div class="d-flex gap-1">
                                     <a href="{{ route('rh.ged.documents.show', $doc->id_document) }}" class="btn btn-sm btn-light" title="Voir" style="color:#1D4ED8;">

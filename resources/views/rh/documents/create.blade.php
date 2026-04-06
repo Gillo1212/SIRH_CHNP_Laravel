@@ -1,5 +1,5 @@
 @extends('layouts.master')
-@section('title', 'GED — Déposer un document')
+@section('title', 'GED - Déposer un document')
 @section('page-title', 'Déposer un document')
 
 @section('breadcrumb')
@@ -84,7 +84,7 @@
                             <p class="fw-600 mt-3 mb-1" style="color:#374151;">Glissez votre document ici</p>
                             <p class="text-muted mb-3" style="font-size:13px;">ou cliquez pour sélectionner</p>
                             <span class="badge bg-light text-secondary" style="font-size:11px;">
-                                PDF, Word, Excel, JPG, PNG — max 20 Mo
+                                PDF, Word, Excel, JPG, PNG - max 20 Mo
                             </span>
                         </div>
                         <div id="filePreview" class="file-preview d-none">
@@ -111,7 +111,7 @@
                         <div class="col-12">
                             <label class="form-label-sm">Titre du document <span class="text-danger">*</span></label>
                             <input type="text" name="titre" class="form-control-ged w-100"
-                                   placeholder="Ex: Contrat à durée indéterminée — Dr. Diallo"
+                                   placeholder="Ex: Contrat à durée indéterminée - Dr. Diallo"
                                    value="{{ old('titre') }}" required>
                             @error('titre') <div class="text-danger mt-1" style="font-size:12px;">{{ $message }}</div> @enderror
                         </div>
@@ -177,7 +177,7 @@
                             <div>
                                 <div class="fw-600" style="font-size:14px;">{{ $dossier->agent->nom_complet }}</div>
                                 <div style="font-size:12px;color:#6B7280;">
-                                    {{ $dossier->agent->matricule }} — {{ $dossier->agent->service?->nom_service }}
+                                    {{ $dossier->agent->matricule }} - {{ $dossier->agent->service?->nom_service }}
                                 </div>
                             </div>
                         </div>
@@ -186,7 +186,7 @@
                             <option value="">-- Sélectionner un agent --</option>
                             @foreach($agents as $ag)
                                 <option value="{{ $ag->id_agent }}" {{ old('agent_id') == $ag->id_agent ? 'selected' : '' }}>
-                                    {{ $ag->nom_complet }} — {{ $ag->matricule }} ({{ $ag->service?->nom_service }})
+                                    {{ $ag->nom_complet }} - {{ $ag->matricule }} ({{ $ag->service?->nom_service }})
                                 </option>
                             @endforeach
                         </select>
@@ -239,7 +239,7 @@
                 <div class="mt-3 p-3" style="background:#EFF6FF;border-radius:10px;border:1px solid #DBEAFE;">
                     <div style="font-size:12px;color:#1D4ED8;">
                         <i class="ri-shield-check-line me-1"></i>
-                        <strong>Triade CID</strong> — Ce document sera stocké de façon sécurisée.
+                        <strong>Triade CID</strong> - Ce document sera stocké de façon sécurisée.
                         Choisissez le niveau de confidentialité approprié pour contrôler l'accès.
                     </div>
                 </div>

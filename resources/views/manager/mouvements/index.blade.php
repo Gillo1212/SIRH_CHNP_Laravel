@@ -1,5 +1,5 @@
 @extends('layouts.master')
-@section('title', 'Mouvements — ' . $service->nom_service)
+@section('title', 'Mouvements - ' . $service->nom_service)
 @section('page-title', 'Mouvements du Service')
 
 @section('breadcrumb')
@@ -37,12 +37,12 @@
     <div class="d-flex align-items-center justify-content-between mb-4 flex-wrap gap-3">
         <div>
             <h4 class="mb-0 fw-bold" style="color:var(--theme-text);">
-                <i class="fas fa-exchange-alt me-2" style="color:#0A4D8C;"></i>Mouvements — {{ $service->nom_service }}
+                <i class="fas fa-exchange-alt me-2" style="color:#0A4D8C;"></i>Mouvements - {{ $service->nom_service }}
             </h4>
             <p class="mb-0 text-muted" style="font-size:13.5px;">Historique des affectations, mutations et départs liés à votre service</p>
         </div>
         <div style="background:#EFF6FF;border:1px solid #BFDBFE;padding:8px 16px;border-radius:8px;font-size:12.5px;color:#1D4ED8;">
-            <i class="fas fa-eye me-1"></i>Consultation uniquement — les modifications se font via RH
+            <i class="fas fa-eye me-1"></i>Consultation uniquement - les modifications se font via RH
         </div>
     </div>
 
@@ -145,10 +145,10 @@
                                         @endif
                                         <span style="font-size:10px;background:#FEE2E2;color:#991B1B;padding:1px 6px;border-radius:10px;margin-left:4px;font-weight:600;">Sortant</span>
                                     @else
-                                        <span class="text-muted">—</span>
+                                        <span class="text-muted">-</span>
                                     @endif
                                 </td>
-                                <td class="py-3 border-0" style="font-weight:500;color:var(--theme-text);">{{ $m->date_mouvement?->format('d/m/Y') ?? '—' }}</td>
+                                <td class="py-3 border-0" style="font-weight:500;color:var(--theme-text);">{{ $m->date_mouvement?->format('d/m/Y') ?? '-' }}</td>
                                 <td class="py-3 border-0">
                                     <span style="font-size:11px;background:{{ $statutCfg['bg'] }};color:{{ $statutCfg['color'] }};padding:3px 10px;border-radius:20px;font-weight:700;">
                                         {{ $statutCfg['label'] }}
@@ -161,7 +161,7 @@
                                         <i class="fas fa-eye"></i>
                                     </button>
                                     @else
-                                    <span class="text-muted" style="font-size:12px;">—</span>
+                                    <span class="text-muted" style="font-size:12px;">-</span>
                                     @endif
                                 </td>
                             </tr>
@@ -193,7 +193,7 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
             </div>
             <div class="modal-body px-4 py-4">
-                <div class="p-3 rounded-3" style="background:#FFFBEB;font-size:13.5px;" id="motif-content">—</div>
+                <div class="p-3 rounded-3" style="background:#FFFBEB;font-size:13.5px;" id="motif-content">-</div>
             </div>
             <div class="modal-footer border-0 px-4 pb-4 pt-0">
                 <button type="button" class="action-btn action-btn-outline" data-bs-dismiss="modal">Fermer</button>
@@ -221,7 +221,7 @@ function showToast(message, type) {
 @if(session('error'))   showToast(@json(session('error')),   'error');   @endif
 
 function voirMotif(motif) {
-    document.getElementById('motif-content').textContent = motif || '—';
+    document.getElementById('motif-content').textContent = motif || '-';
     new bootstrap.Modal(document.getElementById('modal-motif')).show();
 }
 </script>

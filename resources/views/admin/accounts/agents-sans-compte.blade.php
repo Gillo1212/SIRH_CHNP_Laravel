@@ -41,7 +41,7 @@
     </div>
 
     {{-- ═══════════════════════════════════════════════════════
-         SECTION 1 — Comptes créés par Admin en attente RH
+         SECTION 1 - Comptes créés par Admin en attente RH
          ═══════════════════════════════════════════════════════ --}}
     <div class="panel mb-4">
         <div class="section-header">
@@ -80,7 +80,7 @@
                         @foreach($comptesSansDossier as $user)
                         <tr>
                             <td class="fw-600" style="color:#0A4D8C;">{{ $user->login }}</td>
-                            <td style="color:#6B7280;">{{ $user->email ?? '—' }}</td>
+                            <td style="color:#6B7280;">{{ $user->email ?? '-' }}</td>
                             <td>
                                 @foreach($user->roles as $role)
                                     <span class="badge-role me-1">{{ $role->name }}</span>
@@ -115,7 +115,7 @@
     </div>
 
     {{-- ═══════════════════════════════════════════════════════
-         SECTION 2 — Agents sans compte utilisateur
+         SECTION 2 - Agents sans compte utilisateur
          ═══════════════════════════════════════════════════════ --}}
     <div class="panel">
         <div class="section-header">
@@ -161,9 +161,9 @@
                                 <div class="fw-600" style="color:#111827;">{{ $agent->prenom }} {{ $agent->nom }}</div>
                                 <div style="font-size:11px;color:#9CA3AF;">{{ ucfirst(strtolower($agent->sexe === 'M' ? 'Homme' : 'Femme')) }}</div>
                             </td>
-                            <td style="color:#374151;font-size:12px;">{{ str_replace('_',' ',$agent->famille_d_emploi ?? '—') ?? '—' }}</td>
-                            <td style="color:#6B7280;font-size:12px;">{{ $agent->service->nom_service ?? '—' }}</td>
-                            <td style="color:#9CA3AF;font-size:12px;">{{ str_replace('_', ' ', $agent->statut_agent ?? '—') }}</td>
+                            <td style="color:#374151;font-size:12px;">{{ str_replace('_',' ',$agent->famille_d_emploi ?? '-') ?? '-' }}</td>
+                            <td style="color:#6B7280;font-size:12px;">{{ $agent->service->nom_service ?? '-' }}</td>
+                            <td style="color:#9CA3AF;font-size:12px;">{{ str_replace('_', ' ', $agent->statut_agent ?? '-') }}</td>
                             <td class="text-center">
                                 <button type="button"
                                         class="btn btn-sm btn-primary fw-600"
@@ -183,7 +183,7 @@
 </div>
 
 {{-- ═══════════════════════════════════════════════════════════
-     MODAL — Créer compte pour agent existant
+     MODAL - Créer compte pour agent existant
      ═══════════════════════════════════════════════════════════ --}}
 <div class="modal fade modal-sirh" id="modalCompteAgent" tabindex="-1" data-bs-backdrop="static">
     <div class="modal-dialog modal-dialog-centered">
@@ -210,14 +210,15 @@
                         <label class="form-label fw-600" style="font-size:13px;">Email professionnel</label>
                         <input type="email" name="email" id="modal_email" class="form-control"
                                placeholder="prenom.nom@chnp.sn">
-                        <div class="form-text">Optionnel — les identifiants seront envoyés à cet email.</div>
+                        <div class="form-text">Optionnel - les identifiants seront envoyés à cet email.</div>
                     </div>
                     <div class="mb-3">
                         <label class="form-label fw-600" style="font-size:13px;">Rôle <span class="text-danger">*</span></label>
                         <select name="role" class="form-select" required>
-                            <option value="">— Choisir un rôle —</option>
+                            <option value="">- Choisir un rôle -</option>
                             <option value="Agent">Agent</option>
                             <option value="Manager">Manager</option>
+                            <option value="Major">Major</option>
                             <option value="AgentRH">Agent RH</option>
                             <option value="DRH">DRH</option>
                             <option value="AdminSystème">Admin Système</option>

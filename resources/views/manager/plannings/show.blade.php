@@ -1,6 +1,6 @@
 @extends('layouts.master')
 
-@section('title', 'Planning — ' . $planning->periode_debut->isoFormat('D MMM') . ' au ' . $planning->periode_fin->isoFormat('D MMM YYYY'))
+@section('title', 'Planning - ' . $planning->periode_debut->isoFormat('D MMM') . ' au ' . $planning->periode_fin->isoFormat('D MMM YYYY'))
 @section('page-title', 'Détail du Planning')
 
 @section('breadcrumb')
@@ -18,6 +18,13 @@
 .action-btn-primary:hover { background:#1565C0;color:white;box-shadow:0 4px 12px rgba(10,77,140,.3);transform:translateY(-1px); }
 .action-btn-outline { background:white;color:#374151;border:1px solid #E5E7EB; }
 .action-btn-outline:hover { background:#F9FAFB;color:#111827; }
+.action-btn-success { background:#059669;color:white;border:none; }
+.action-btn-success:hover { background:#047857;color:white;box-shadow:0 4px 12px rgba(5,150,105,.3);transform:translateY(-1px); }
+.action-btn-danger { background:#DC2626;color:white;border:none; }
+.action-btn-danger:hover { background:#B91C1C;color:white;box-shadow:0 4px 12px rgba(220,38,38,.3);transform:translateY(-1px); }
+.action-btn-info { background:#1D4ED8;color:white;border:none; }
+.action-btn-info:hover { background:#1E40AF;color:white;box-shadow:0 4px 12px rgba(29,78,216,.3);transform:translateY(-1px); }
+.modal-actions { display:flex;align-items:center;justify-content:flex-end;gap:10px;padding:12px 24px 24px; }
 .tab-btn { padding:8px 18px;border-radius:8px;font-size:13px;font-weight:500;border:1px solid #E5E7EB;background:white;color:#6B7280;cursor:pointer;transition:all 180ms;display:inline-flex;align-items:center;gap:6px; }
 .tab-btn.active { background:#0A4D8C;color:white;border-color:#0A4D8C; }
 .tab-btn:hover:not(.active) { background:#F9FAFB; }
@@ -109,10 +116,18 @@
                     <button class="action-btn action-btn-primary" data-bs-toggle="modal" data-bs-target="#modalAjouterLigne">
                         <i class="fas fa-plus"></i>Ajouter une ligne
                     </button>
-                    <button class="action-btn"
-                            style="background:#FFFBEB;color:#D97706;border:1px solid #FDE68A;"
-                            onclick="openModalTransmettre()">
-                        <i class="fas fa-paper-plane"></i>Transmettre à la RH
+                @endif
+                @if($planning->statut_planning === 'Transmis')
+                    <button class="action-btn action-btn-success" onclick="openModalValider()">
+                        <i class="fas fa-check-double"></i>Valider
+                    </button>
+                    <button class="action-btn action-btn-danger" onclick="openModalRejeter()">
+                        <i class="fas fa-times-circle"></i>Rejeter
+                    </button>
+                @endif
+                @if($planning->statut_planning === 'Validé')
+                    <button class="action-btn action-btn-info" onclick="openModalDiffuser()">
+                        <i class="fas fa-share-square"></i>Transmettre à la RH
                     </button>
                 @endif
                 <a href="{{ route('manager.planning.index') }}" class="action-btn action-btn-outline">
@@ -124,11 +139,11 @@
         @if($planning->statut_planning === 'Rejeté' && $planning->motif_rejet)
             <div class="mt-3" style="background:#FEF2F2;border-left:4px solid #DC2626;border-radius:8px;padding:12px 16px;">
                 <div style="font-size:13px;font-weight:600;color:#DC2626;margin-bottom:4px;">
-                    <i class="fas fa-times-circle me-1"></i>Planning rejeté par la RH
+                    <i class="fas fa-times-circle me-1"></i>Planning rejeté
                 </div>
                 <div style="font-size:13px;color:#374151;">{{ $planning->motif_rejet }}</div>
                 <div class="mt-2" style="font-size:12px;color:#9CA3AF;">
-                    Corrigez les lignes concernées, puis retransmettez à la RH.
+                    Le major doit corriger les lignes concernées et retransmettre.
                 </div>
             </div>
         @endif
@@ -136,12 +151,17 @@
         @if($planning->statut_planning === 'Validé')
             <div class="mt-3" style="background:#ECFDF5;border-left:4px solid #059669;border-radius:8px;padding:12px 16px;font-size:13px;color:#065F46;">
                 <i class="fas fa-check-double me-1"></i>
-                Ce planning a été <strong>validé</strong> par le service RH. Il est maintenant en vigueur.
+                Ce planning a été <strong>validé</strong>. Vous pouvez maintenant le transmettre au service RH.
+            </div>
+        @elseif($planning->statut_planning === 'Diffusé')
+            <div class="mt-3" style="background:#EFF6FF;border-left:4px solid #1D4ED8;border-radius:8px;padding:12px 16px;font-size:13px;color:#1E40AF;">
+                <i class="fas fa-share-square me-1"></i>
+                Ce planning a été <strong>transmis au service RH</strong> à titre informatif.
             </div>
         @elseif($planning->statut_planning === 'Transmis')
             <div class="mt-3" style="background:#FFFBEB;border-left:4px solid #D97706;border-radius:8px;padding:12px 16px;font-size:13px;color:#92400E;">
                 <i class="fas fa-hourglass-half me-1"></i>
-                Ce planning est <strong>en attente de validation</strong> par la RH.
+                Ce planning a été transmis par le Major - <strong>en attente de votre validation</strong>.
             </div>
         @endif
     </div>
@@ -232,7 +252,7 @@
                         <tbody>
                             @foreach($lignes as $ligne)
                                 @php
-                                    $typeLib = $ligne->typePoste->libelle ?? '—';
+                                    $typeLib = $ligne->typePoste->libelle ?? '-';
                                     $cpMap = ['Jour'=>['#EFF6FF','#1E40AF'],'Nuit'=>['#EEF2FF','#3730A3'],'Garde'=>['#FFFBEB','#92400E'],'Repos'=>['#F3F4F6','#374151'],'Astreinte'=>['#F5F3FF','#5B21B6'],'Permanence'=>['#F0FDFA','#134E4A']];
                                     $cp = $cpMap[$typeLib] ?? ['#F3F4F6','#374151'];
                                     $hd = is_string($ligne->heure_debut) ? substr($ligne->heure_debut,0,5) : $ligne->heure_debut->format('H:i');
@@ -244,7 +264,7 @@
                                             <div style="width:28px;height:28px;border-radius:50%;background:linear-gradient(135deg,#0A4D8C,#1565C0);display:flex;align-items:center;justify-content:center;color:white;font-weight:700;font-size:10px;flex-shrink:0;">
                                                 {{ substr($ligne->agent->prenom ?? '?', 0, 1) }}{{ substr($ligne->agent->nom ?? '', 0, 1) }}
                                             </div>
-                                            <span style="font-weight:500;color:#111827;">{{ $ligne->agent->nom_complet ?? '—' }}</span>
+                                            <span style="font-weight:500;color:#111827;">{{ $ligne->agent->nom_complet ?? '-' }}</span>
                                         </div>
                                     </td>
                                     <td class="py-2 border-0">
@@ -319,9 +339,9 @@
                         <div class="col-12">
                             <label class="form-label fw-600" style="font-size:13px;">Agent <span class="text-danger">*</span></label>
                             <select name="id_agent" class="form-select" required style="border-radius:8px;font-size:13px;">
-                                <option value="">— Sélectionner un agent —</option>
+                                <option value="">- Sélectionner un agent -</option>
                                 @foreach($agents as $ag)
-                                    <option value="{{ $ag->id_agent }}">{{ $ag->nom }} {{ $ag->prenom }} — {{ $ag->fontion }}</option>
+                                    <option value="{{ $ag->id_agent }}">{{ $ag->nom }} {{ $ag->prenom }} - {{ $ag->fonction }}</option>
                                 @endforeach
                             </select>
                         </div>
@@ -329,9 +349,9 @@
                         <div class="col-12">
                             <label class="form-label fw-600" style="font-size:13px;">Type de poste <span class="text-danger">*</span></label>
                             <select name="id_typeposte" id="al_typeposte" class="form-select" required style="border-radius:8px;font-size:13px;" onchange="updatePosteColor()">
-                                <option value="">— Sélectionner —</option>
+                                <option value="">- Sélectionner -</option>
                                 @foreach($typesPoste as $tp)
-                                    <option value="{{ $tp->id_typeposte }}" data-libelle="{{ $tp->libelle }}">{{ $tp->libelle }}{{ $tp->description ? ' — ' . $tp->description : '' }}</option>
+                                    <option value="{{ $tp->id_typeposte }}" data-libelle="{{ $tp->libelle }}">{{ $tp->libelle }}{{ $tp->description ? ' - ' . $tp->description : '' }}</option>
                                 @endforeach
                             </select>
                             <div id="posteColorBar" style="height:3px;border-radius:2px;margin-top:6px;background:#E5E7EB;transition:background 200ms;"></div>
@@ -361,7 +381,7 @@
                     </div>
                     <div id="dureePosteInfo" class="mt-2" style="display:none;font-size:12px;color:#6B7280;"></div>
                 </div>
-                <div class="modal-footer border-0" style="padding:8px 24px 24px;gap:8px;">
+                <div class="modal-actions">
                     <button type="button" class="action-btn action-btn-outline" data-bs-dismiss="modal">Annuler</button>
                     <button type="submit" class="action-btn action-btn-primary">
                         <i class="fas fa-plus"></i>Ajouter la ligne
@@ -373,17 +393,59 @@
 </div>
 @endif
 
-{{-- ── Modal : Transmettre ──────────────────────────────────────────── --}}
-@if($planning->est_modifiable)
-<div class="modal fade" id="modalTransmettre" tabindex="-1" aria-hidden="true">
+{{-- ── Modal : Transmettre à la RH (Diffuser) ─────────────────────────── --}}
+@if($planning->statut_planning === 'Validé')
+<div class="modal fade" id="modalDiffuser" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content" style="border-radius:16px;border:none;box-shadow:0 20px 60px rgba(0,0,0,.15);">
-            <form action="{{ route('manager.planning.transmettre', $planning->id_planning) }}" method="POST">
+            <form action="{{ route('manager.planning.diffuser', $planning->id_planning) }}" method="POST">
                 @csrf
                 <div class="modal-header border-0" style="padding:24px 24px 4px;">
                     <div class="d-flex align-items-center gap-2">
-                        <i class="fas fa-paper-plane" style="color:#D97706;font-size:20px;"></i>
-                        <h5 class="modal-title fw-bold mb-0" style="color:#111827;">Transmettre à la RH</h5>
+                        <i class="fas fa-share-square" style="color:#1D4ED8;font-size:20px;"></i>
+                        <h5 class="modal-title fw-bold mb-0" style="color:#111827;">Transmettre au service RH</h5>
+                    </div>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body" style="padding:16px 24px;">
+                    <div class="mb-3" style="background:#F9FAFB;border-radius:10px;padding:14px 16px;">
+                        <div style="font-size:13px;color:#374151;margin-bottom:4px;">
+                            <i class="fas fa-calendar-week me-2" style="color:#0A4D8C;"></i>
+                            <strong>{{ $planning->periode_debut->isoFormat('D MMMM') }}</strong>
+                            → <strong>{{ $planning->periode_fin->isoFormat('D MMMM YYYY') }}</strong>
+                        </div>
+                        <div style="font-size:12px;color:#9CA3AF;">
+                            {{ $planning->duree_jours }} jour(s) · {{ $planning->lignes->count() }} ligne(s) · {{ $planning->lignes->pluck('id_agent')->unique()->count() }} agent(s)
+                        </div>
+                    </div>
+                    <div style="background:#EFF6FF;border-left:3px solid #1D4ED8;border-radius:6px;padding:10px 12px;font-size:12px;color:#1E40AF;">
+                        <i class="fas fa-info-circle me-1"></i>
+                        Le planning sera transmis au service RH à titre informatif uniquement. Cette action est définitive.
+                    </div>
+                </div>
+                <div class="modal-actions">
+                    <button type="button" class="action-btn action-btn-outline" data-bs-dismiss="modal">Annuler</button>
+                    <button type="submit" class="action-btn action-btn-info">
+                        <i class="fas fa-share-square"></i>Confirmer la transmission
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+@endif
+
+{{-- ── Modal : Valider ──────────────────────────────────────────────── --}}
+@if($planning->statut_planning === 'Transmis')
+<div class="modal fade" id="modalValider" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content" style="border-radius:16px;border:none;box-shadow:0 20px 60px rgba(0,0,0,.15);">
+            <form action="{{ route('manager.planning.valider', $planning->id_planning) }}" method="POST">
+                @csrf
+                <div class="modal-header border-0" style="padding:24px 24px 4px;">
+                    <div class="d-flex align-items-center gap-2">
+                        <i class="fas fa-check-double" style="color:#059669;font-size:20px;"></i>
+                        <h5 class="modal-title fw-bold mb-0" style="color:#111827;">Valider ce planning ?</h5>
                     </div>
                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
@@ -401,19 +463,60 @@
                     @if($planning->lignes->count() === 0)
                         <div style="background:#FEF2F2;border-left:3px solid #DC2626;border-radius:6px;padding:10px 12px;font-size:12px;color:#991B1B;">
                             <i class="fas fa-exclamation-circle me-1"></i>
-                            <strong>Impossible de transmettre :</strong> ce planning ne contient aucune ligne.
+                            <strong>Impossible de valider :</strong> ce planning ne contient aucune ligne.
                         </div>
                     @else
-                        <div style="background:#FFFBEB;border-left:3px solid #F59E0B;border-radius:6px;padding:10px 12px;font-size:12px;color:#92400E;">
+                        <div style="background:#ECFDF5;border-left:3px solid #059669;border-radius:6px;padding:10px 12px;font-size:12px;color:#065F46;">
                             <i class="fas fa-info-circle me-1"></i>
-                            Une fois transmis, ce planning ne pourra plus être modifié jusqu'à la décision de la RH.
+                            Le planning sera mis en vigueur et visible par les agents concernés.
                         </div>
                     @endif
                 </div>
-                <div class="modal-footer border-0" style="padding:4px 24px 24px;gap:8px;">
+                <div class="modal-actions">
                     <button type="button" class="action-btn action-btn-outline" data-bs-dismiss="modal">Annuler</button>
-                    <button type="submit" class="action-btn action-btn-primary" {{ $planning->lignes->count() === 0 ? 'disabled' : '' }}>
-                        <i class="fas fa-paper-plane"></i>Transmettre
+                    <button type="submit" class="action-btn action-btn-success" {{ $planning->lignes->count() === 0 ? 'disabled' : '' }}>
+                        <i class="fas fa-check-double"></i>Confirmer la validation
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+@endif
+
+{{-- ── Modal : Rejeter ──────────────────────────────────────────────── --}}
+@if($planning->statut_planning === 'Transmis')
+<div class="modal fade" id="modalRejeter" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content" style="border-radius:16px;border:none;box-shadow:0 20px 60px rgba(0,0,0,.15);">
+            <form action="{{ route('manager.planning.rejeter', $planning->id_planning) }}" method="POST">
+                @csrf
+                <div class="modal-header border-0" style="padding:24px 24px 4px;">
+                    <div class="d-flex align-items-center gap-2">
+                        <i class="fas fa-times-circle" style="color:#DC2626;font-size:20px;"></i>
+                        <h5 class="modal-title fw-bold mb-0" style="color:#111827;">Rejeter ce planning</h5>
+                    </div>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body" style="padding:16px 24px;">
+                    <div class="mb-3" style="background:#F9FAFB;border-radius:10px;padding:12px 14px;font-size:13px;color:#374151;">
+                        <i class="fas fa-calendar-week me-2" style="color:#0A4D8C;"></i>
+                        <strong>{{ $planning->periode_debut->isoFormat('D MMMM') }}</strong>
+                        → <strong>{{ $planning->periode_fin->isoFormat('D MMMM YYYY') }}</strong>
+                    </div>
+                    <label class="form-label fw-600" style="font-size:13px;">Motif du rejet <span class="text-danger">*</span></label>
+                    <textarea name="motif_rejet" id="motifRejetText" class="form-control" rows="4" required
+                              placeholder="Expliquez clairement pourquoi ce planning est rejeté et ce que le major doit corriger..."
+                              style="border-radius:8px;font-size:13px;resize:vertical;"></textarea>
+                    <div class="d-flex justify-content-between mt-1">
+                        <div style="font-size:11px;color:#9CA3AF;">Minimum 10 caractères</div>
+                        <div id="charCount" style="font-size:11px;color:#9CA3AF;">0/500</div>
+                    </div>
+                </div>
+                <div class="modal-actions">
+                    <button type="button" class="action-btn action-btn-outline" data-bs-dismiss="modal">Annuler</button>
+                    <button type="submit" class="action-btn action-btn-danger">
+                        <i class="fas fa-times-circle"></i>Confirmer le rejet
                     </button>
                 </div>
             </form>
@@ -492,9 +595,26 @@ function switchTab(tab) {
     }
 }
 
-function openModalTransmettre() {
-    new bootstrap.Modal(document.getElementById('modalTransmettre')).show();
+function openModalDiffuser() {
+    new bootstrap.Modal(document.getElementById('modalDiffuser')).show();
 }
+
+function openModalValider() {
+    new bootstrap.Modal(document.getElementById('modalValider')).show();
+}
+
+function openModalRejeter() {
+    document.getElementById('motifRejetText').value = '';
+    document.getElementById('charCount').textContent = '0/500';
+    new bootstrap.Modal(document.getElementById('modalRejeter')).show();
+}
+
+document.getElementById('motifRejetText')?.addEventListener('input', function() {
+    const n = this.value.length;
+    const el = document.getElementById('charCount');
+    el.textContent = n + '/500';
+    el.style.color = n < 10 ? '#DC2626' : n > 450 ? '#D97706' : '#9CA3AF';
+});
 
 // Couleur du type de poste
 const posteColors = {
@@ -520,7 +640,7 @@ function calcDureePoste() {
     if (diff <= 0) diff += 24 * 60; // poste de nuit
     const h = Math.floor(diff / 60), m = diff % 60;
     const isNight = hf < hd;
-    el.innerHTML = `<i class="fas fa-clock me-1" style="color:#3B82F6;"></i>Durée : <strong>${h}h${m > 0 ? m + 'min' : ''}</strong>${isNight ? ' <span style="color:#4F46E5;font-weight:600;">(poste de nuit — fin le lendemain)</span>' : ''}`;
+    el.innerHTML = `<i class="fas fa-clock me-1" style="color:#3B82F6;"></i>Durée : <strong>${h}h${m > 0 ? m + 'min' : ''}</strong>${isNight ? ' <span style="color:#4F46E5;font-weight:600;">(poste de nuit - fin le lendemain)</span>' : ''}`;
     el.style.display = '';
 }
 </script>

@@ -1,6 +1,6 @@
 @extends('layouts.master')
 
-@section('title', 'Mon Espace — Agent')
+@section('title', 'Mon Espace - Agent')
 @section('page-title', 'Mon Espace Personnel')
 
 @section('breadcrumb')
@@ -72,7 +72,7 @@
         </h4>
         <p class="mb-0 text-muted" style="font-size:13.5px;">
             {{ now()->isoFormat('dddd D MMMM YYYY') }}
-            — {{ $agent->service->nom_service ?? 'Mon service' }}
+            - {{ $agent->service->nom_service ?? 'Mon service' }}
         </p>
     </div>
     <div class="d-flex gap-2 flex-wrap">
@@ -115,7 +115,7 @@
                 @if($prochainPoste)
                     {{ $prochainPoste->date_poste->isoFormat('D MMM') }}
                 @else
-                    —
+                    -
                 @endif
             </div>
             <div class="kpi-label" style="color:#5B21B6;">Prochain poste</div>
@@ -145,10 +145,10 @@
             </div>
             <div style="display:flex;gap:6px;justify-content:center;flex-wrap:wrap;margin-bottom:14px;">
                 <span class="badge-status" style="background:#EFF6FF;color:#1E40AF;">
-                    <i class="fas fa-building me-1"></i>{{ $agent->service->nom_service ?? '—' }}
+                    <i class="fas fa-building me-1"></i>{{ $agent->service->nom_service ?? '-' }}
                 </span>
                 <span class="badge-status" style="background:#F3F4F6;color:#374151;">
-                    {{ $agent->fontion }}
+                    {{ $agent->fonction }}
                 </span>
             </div>
             <a href="{{ route('agent.profil') }}" class="action-btn action-btn-outline w-100" style="justify-content:center;">
@@ -166,7 +166,7 @@
     <div class="col-12 col-lg-9">
         <div class="panel h-100">
             <div class="d-flex align-items-center justify-content-between mb-3">
-                <div class="fw-600" style="color:#111827;"><i class="fas fa-umbrella-beach me-2" style="color:#D97706;"></i>Mes soldes de congés — {{ date('Y') }}</div>
+                <div class="fw-600" style="color:#111827;"><i class="fas fa-umbrella-beach me-2" style="color:#D97706;"></i>Mes soldes de congés - {{ date('Y') }}</div>
                 <a href="{{ route('agent.conges.index') }}" style="font-size:12px;color:#1565C0;text-decoration:none;font-weight:500;">Historique <i class="fas fa-arrow-right ms-1"></i></a>
             </div>
             @if($soldesConges->isEmpty())
@@ -178,11 +178,9 @@
             @else
             @php
                 $soldeColors = [
-                    'Annuel'        => ['#0A4D8C','#EFF6FF','fa-sun'],
-                    'Maladie'       => ['#059669','#ECFDF5','fa-briefcase-medical'],
-                    'Maternité'     => ['#7C3AED','#F5F3FF','fa-baby'],
-                    'Exceptionnel'  => ['#D97706','#FFFBEB','fa-star'],
-                    'Récupération'  => ['#6B7280','#F3F4F6','fa-clock'],
+                    'Administratif' => ['#0A4D8C','#EFF6FF','fa-briefcase'],
+                    'Maternit'      => ['#7C3AED','#F5F3FF','fa-baby'],
+                    'Rayon'         => ['#DC2626','#FEF2F2','fa-radiation'],
                 ];
             @endphp
             <div class="row g-3 mb-3">
@@ -224,9 +222,9 @@
         <div class="panel">
             <div class="d-flex align-items-center justify-content-between mb-3">
                 <div>
-                    <div class="fw-600" style="color:#111827;">Mon planning — Semaine {{ now()->weekOfYear }}</div>
+                    <div class="fw-600" style="color:#111827;">Mon planning - Semaine {{ now()->weekOfYear }}</div>
                     <div style="font-size:12px;color:#9CA3AF;">
-                        {{ now()->startOfWeek()->isoFormat('D MMM') }} — {{ now()->endOfWeek()->isoFormat('D MMM YYYY') }}
+                        {{ now()->startOfWeek()->isoFormat('D MMM') }} - {{ now()->endOfWeek()->isoFormat('D MMM YYYY') }}
                     </div>
                 </div>
                 <a href="{{ route('agent.planning') }}" class="action-btn action-btn-outline" style="font-size:12px;padding:7px 14px;">
@@ -280,13 +278,13 @@
             <div style="background:#ECFDF5;border-radius:8px;padding:10px 14px;margin-top:14px;font-size:12.5px;color:#065F46;">
                 <i class="fas fa-calendar-check me-2"></i>
                 <strong>Prochain poste :</strong>
-                {{ $prochainPoste->date_poste->isoFormat('dddd D MMM') }} —
+                {{ $prochainPoste->date_poste->isoFormat('dddd D MMM') }} -
                 @php
                     $hd2 = is_string($prochainPoste->heure_debut) ? substr($prochainPoste->heure_debut,0,5) : $prochainPoste->heure_debut->format('H:i');
                     $hf2 = is_string($prochainPoste->heure_fin) ? substr($prochainPoste->heure_fin,0,5) : $prochainPoste->heure_fin->format('H:i');
                 @endphp
                 {{ $hd2 }} à {{ $hf2 }}
-                ({{ $prochainPoste->typePoste->libelle ?? '—' }})
+                ({{ $prochainPoste->typePoste->libelle ?? '-' }})
             </div>
             @endif
         </div>

@@ -78,9 +78,9 @@
                 @endphp
                 <tr style="border-bottom:1px solid #F3F4F6;">
                     <td class="py-3 px-4 border-0">
-                        <div style="font-weight:600;color:var(--theme-text);">{{ $pec->type_prise ?? '—' }}</div>
+                        <div style="font-weight:600;color:var(--theme-text);">{{ $pec->type_prise ?? '-' }}</div>
                     </td>
-                    <td class="py-3 px-4 border-0 text-muted">{{ ucfirst($pec->ayant_droit ?? '—') }}</td>
+                    <td class="py-3 px-4 border-0 text-muted">{{ ucfirst($pec->ayant_droit ?? '-') }}</td>
                     <td class="py-3 px-4 border-0 text-muted">{{ $pec->created_at?->format('d/m/Y') }}</td>
                     <td class="py-3 px-4 border-0">
                         <span class="{{ $badgeClass }}">{{ $statutLabel }}</span>

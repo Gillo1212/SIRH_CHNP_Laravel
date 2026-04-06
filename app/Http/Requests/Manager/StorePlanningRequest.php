@@ -8,7 +8,7 @@ class StorePlanningRequest extends FormRequest
 {
     public function authorize(): bool
     {
-        return $this->user()->hasRole('Manager');
+        return $this->user()->hasAnyRole(['Manager', 'Major']);
     }
 
     public function rules(): array

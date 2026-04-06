@@ -7,7 +7,6 @@ use App\Http\Requests\RH\StoreAbsenceRHRequest;
 use App\Models\Absence;
 use App\Models\Agent;
 use App\Models\Demande;
-use App\Models\PieceJustificative;
 use App\Models\Service;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -57,6 +56,10 @@ class AbsenceRHController extends Controller
                     1
                 )
                 : 0,
+            'certificats_en_attente' => Absence::where('type_absence', 'Maladie')
+                ->where('justifie', false)
+                ->whereNotNull('justificatif_path')
+                ->count(),
         ];
 
         $services = Service::orderBy('nom_service')->get();
@@ -137,9 +140,29 @@ class AbsenceRHController extends Controller
      */
     public function show($id)
     {
-        $absence = Absence::with(['demande.agent.service', 'piecesJustificatives'])->findOrFail($id);
+        $absence = Absence::with(['demande.agent.service'])->findOrFail($id);
 
-        return view('rh.absences.show', compact('absence'));
+        $agent = $absence->demande->agent ?? null;
+
+        $baseAgent = $agent
+            ? Absence::whereHas('demande', fn($q) => $q->where('id_agent', $agent->id_agent))
+                     ->whereYear('date_absence', now()->year)
+            : collect();
+
+        $statsAgent = [
+            'total'        => $agent ? (clone $baseAgent)->count() : 0,
+            'justifiees'   => $agent ? (clone $baseAgent)->where('justifie', true)->count() : 0,
+            'injustifiees' => $agent ? (clone $baseAgent)->where('justifie', false)->count() : 0,
+        ];
+
+        $historiqueAgent = $agent
+            ? Absence::whereHas('demande', fn($q) => $q->where('id_agent', $agent->id_agent))
+                     ->orderByDesc('date_absence')
+                     ->limit(10)
+                     ->get()
+            : collect();
+
+        return view('rh.absences.show', compact('absence', 'statsAgent', 'historiqueAgent'));
     }
 
     /**
@@ -242,28 +265,6 @@ class AbsenceRHController extends Controller
             ->log('Justificatif rejeté');
 
         return back()->with('success', 'Justificatif rejeté.');
-    }
-
-    /**
-     * Valider une pièce justificative spécifique
-     */
-    public function validerPiece($id, $pieceId)
-    {
-        $piece = PieceJustificative::where('id_absence', $id)->findOrFail($pieceId);
-        $piece->update(['valide' => true]);
-
-        return back()->with('success', 'Pièce validée.');
-    }
-
-    /**
-     * Rejeter une pièce justificative spécifique
-     */
-    public function rejeterPiece($id, $pieceId)
-    {
-        $piece = PieceJustificative::where('id_absence', $id)->findOrFail($pieceId);
-        $piece->update(['valide' => false]);
-
-        return back()->with('success', 'Pièce rejetée.');
     }
 
     /**

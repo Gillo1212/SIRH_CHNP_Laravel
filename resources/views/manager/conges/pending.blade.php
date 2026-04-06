@@ -48,22 +48,22 @@
                         <div class="card-body py-3 px-4">
                             <div class="row align-items-center g-3">
                                 {{-- Agent info --}}
-                                <div class="col-lg-4">
+                                <div class="col-lg-4 col-xl-4">
                                     <div class="d-flex align-items-center gap-3">
                                             <div class="avatar-placeholder" style="background:#EFF6FF;color:#0A4D8C;">
                                                 {{ strtoupper(substr($agent->prenom ?? 'A', 0, 1) . substr($agent->nom ?? '', 0, 1)) }}
                                             </div>
                                         <div>
                                             <div class="fw-bold small" style="color:var(--theme-text);">{{ $agent->nom_complet }}</div>
-                                            <div class="text-muted" style="font-size:11px;">{{ $agent->matricule }} — {{ str_replace('_', ' ', $agent->famille_d_emploi ?? '—') }}</div>
-                                            <div class="text-muted" style="font-size:11px;">{{ $agent->service->nom_service ?? '—' }}</div>
+                                            <div class="text-muted" style="font-size:11px;">{{ $agent->matricule }} - {{ str_replace('_', ' ', $agent->famille_d_emploi ?? '-') }}</div>
+                                            <div class="text-muted" style="font-size:11px;">{{ $agent->service->nom_service ?? '-' }}</div>
                                         </div>
                                     </div>
                                 </div>
 
                                 {{-- Détails congé --}}
-                                <div class="col-lg-4">
-                                    <div class="fw-600 small" style="color:var(--theme-text);">{{ $conge->typeConge->libelle ?? '—' }}</div>
+                                <div class="col-lg-3">
+                                    <div class="fw-600 small" style="color:var(--theme-text);">{{ $conge->typeConge->libelle ?? '-' }}</div>
                                     <div class="text-muted small">
                                         Du {{ $conge->date_debut?->format('d/m/Y') }} au {{ $conge->date_fin?->format('d/m/Y') }}
                                     </div>
@@ -77,8 +77,32 @@
                                     </div>
                                 </div>
 
+                                {{-- Avis Major --}}
+                                <div class="col-lg-3">
+                                    @if($demande->avis_major)
+                                        <div style="background:#ECFDF5;border:1px solid #A7F3D0;border-radius:8px;padding:8px 12px;">
+                                            <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:#065F46;margin-bottom:4px;">
+                                                <i class="fas fa-user-shield me-1"></i>Avis du Major
+                                            </div>
+                                            <div style="font-size:12px;color:#047857;">{{ $demande->avis_major }}</div>
+                                            @if($demande->avis_major_at)
+                                                <div style="font-size:10px;color:#6EE7B7;margin-top:4px;">
+                                                    {{ $demande->avis_major_at->format('d/m à H:i') }}
+                                                </div>
+                                            @endif
+                                        </div>
+                                    @else
+                                        <div style="background:#F9FAFB;border:1px dashed #D1D5DB;border-radius:8px;padding:8px 12px;text-align:center;">
+                                            <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:#9CA3AF;margin-bottom:2px;">
+                                                <i class="fas fa-user-shield me-1"></i>Avis du Major
+                                            </div>
+                                            <div style="font-size:11px;color:#9CA3AF;">En attente</div>
+                                        </div>
+                                    @endif
+                                </div>
+
                                 {{-- Actions --}}
-                                <div class="col-lg-4 d-flex gap-2 justify-content-lg-end flex-wrap">
+                                <div class="col-lg-2 d-flex gap-2 justify-content-lg-end flex-wrap">
                                     {{-- Valider --}}
                                     <button type="button" class="btn btn-sm d-flex align-items-center gap-2"
                                         style="background:#10B981;color:#fff;border:none;border-radius:8px;padding:8px 16px;font-size:12px;"
@@ -158,7 +182,7 @@
                         </div>
                         <div class="flex-grow-1">
                             <div class="fw-600 small" style="color:var(--theme-text);">{{ $agent->nom_complet }}</div>
-                            <div class="text-muted" style="font-size:11px;">{{ $conge->typeConge->libelle ?? '—' }} — {{ $conge->nbres_jours }} j</div>
+                            <div class="text-muted" style="font-size:11px;">{{ $conge->typeConge->libelle ?? '-' }} - {{ $conge->nbres_jours }} j</div>
                         </div>
                         <span class="badge-statut {{ $demande->statut_demande === 'Validé' ? 'badge-valide' : 'badge-rejete' }}">
                             <i class="fas {{ $demande->statut_demande === 'Validé' ? 'fa-check' : 'fa-times' }}" style="font-size:9px;"></i>

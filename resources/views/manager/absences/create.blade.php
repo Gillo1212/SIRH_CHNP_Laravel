@@ -33,7 +33,7 @@
             <div class="mb-3">
                 <label class="form-label fw-600 small">Agent <span class="text-danger">*</span></label>
                 <select name="id_agent" class="form-select @error('id_agent') is-invalid @enderror" style="border-radius:8px;">
-                    <option value="">— Sélectionner un agent —</option>
+                    <option value="">- Sélectionner un agent -</option>
                     @foreach($agents as $agent)
                         <option value="{{ $agent->id_agent }}" {{ old('id_agent') == $agent->id_agent ? 'selected' : '' }}>
                             {{ $agent->nom_complet }} ({{ $agent->matricule }})
@@ -55,7 +55,7 @@
                 <div class="col-12 col-md-6">
                     <label class="form-label fw-600 small">Type d'absence <span class="text-danger">*</span></label>
                     <select name="type_absence" class="form-select @error('type_absence') is-invalid @enderror" style="border-radius:8px;">
-                        <option value="">— Choisir —</option>
+                        <option value="">- Choisir -</option>
                         @foreach(['Maladie', 'Personnelle', 'Professionnelle', 'Injustifiée'] as $t)
                             <option value="{{ $t }}" {{ old('type_absence') == $t ? 'selected' : '' }}>{{ $t }}</option>
                         @endforeach

@@ -16,7 +16,7 @@
             @foreach([
                 ['icon' => 'envelope', 'color' => '#1565C0', 'bg' => '#EFF6FF', 'title' => 'Email support', 'value' => 'support@chnp.sn', 'sub' => 'Réponse sous 24-48h ouvrées'],
                 ['icon' => 'clock', 'color' => '#059669', 'bg' => '#ECFDF5', 'title' => 'Horaires', 'value' => 'Lun–Ven : 8h–17h', 'sub' => 'Hors heures : laisser un ticket'],
-                ['icon' => 'map-marker-alt', 'color' => '#D97706', 'bg' => '#FFFBEB', 'title' => 'Localisation', 'value' => 'Service Informatique', 'sub' => 'Bâtiment administratif — CHNP'],
+                ['icon' => 'map-marker-alt', 'color' => '#D97706', 'bg' => '#FFFBEB', 'title' => 'Localisation', 'value' => 'Service Informatique', 'sub' => 'Bâtiment administratif - CHNP'],
             ] as $card)
             <div class="col-md-4">
                 <div style="padding:16px 20px;border-radius:10px;background:{{ $card['bg'] }};border:1px solid {{ $card['color'] }}22;display:flex;align-items:center;gap:14px;">

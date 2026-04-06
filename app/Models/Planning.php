@@ -98,9 +98,19 @@ class Planning extends Model
         return $this->statut_planning === 'Validé';
     }
 
+    public function getEstDiffuseAttribute()
+    {
+        return $this->statut_planning === 'Diffusé';
+    }
+
     public function getEstModifiableAttribute()
     {
         return in_array($this->statut_planning, ['Brouillon', 'Rejeté']);
+    }
+
+    public function getEstDiffusableAttribute()
+    {
+        return $this->statut_planning === 'Validé';
     }
 
     public function getDureeJoursAttribute()
@@ -121,7 +131,7 @@ class Planning extends Model
     }
 
     /**
-     * Valider le planning (par RH)
+     * Valider le planning (par Manager)
      */
     public function valider()
     {
@@ -129,7 +139,7 @@ class Planning extends Model
     }
 
     /**
-     * Rejeter le planning (par RH)
+     * Rejeter le planning (par Manager)
      */
     public function rejeter($motif)
     {
@@ -137,5 +147,13 @@ class Planning extends Model
             'statut_planning' => 'Rejeté',
             'motif_rejet' => $motif,
         ]);
+    }
+
+    /**
+     * Diffuser le planning au service RH (à titre informatif)
+     */
+    public function diffuser()
+    {
+        $this->update(['statut_planning' => 'Diffusé']);
     }
 }

@@ -1,6 +1,6 @@
 @extends('layouts.master')
 
-@section('title', 'Plannings — ' . $service->nom_service)
+@section('title', 'Plannings - ' . $service->nom_service)
 @section('page-title', 'Gestion des Plannings')
 
 @section('breadcrumb')
@@ -40,6 +40,13 @@
 .action-btn-primary:hover { background:#1565C0;color:white;box-shadow:0 4px 12px rgba(10,77,140,.3);transform:translateY(-1px); }
 .action-btn-outline { background:white;color:#374151;border:1px solid #E5E7EB; }
 .action-btn-outline:hover { background:#F9FAFB;color:#111827; }
+.action-btn-success { background:#059669;color:white;border:none; }
+.action-btn-success:hover { background:#047857;color:white;box-shadow:0 4px 12px rgba(5,150,105,.3);transform:translateY(-1px); }
+.action-btn-danger { background:#DC2626;color:white;border:none; }
+.action-btn-danger:hover { background:#B91C1C;color:white;box-shadow:0 4px 12px rgba(220,38,38,.3);transform:translateY(-1px); }
+.action-btn-info { background:#1D4ED8;color:white;border:none; }
+.action-btn-info:hover { background:#1E40AF;color:white;box-shadow:0 4px 12px rgba(29,78,216,.3);transform:translateY(-1px); }
+.modal-actions { display:flex;align-items:center;justify-content:flex-end;gap:10px;padding:12px 24px 24px; }
 
 /* ── Planning cards ────────────────────────────── */
 .planning-card { background:white;border-radius:14px;border:1px solid #F3F4F6;box-shadow:0 1px 4px rgba(0,0,0,.04);transition:box-shadow 200ms,transform 200ms; padding:20px; }
@@ -105,7 +112,7 @@
     {{-- ── En-tête ──────────────────────────────────────────────── --}}
     <div class="d-flex align-items-center justify-content-between mb-4 flex-wrap gap-3">
         <div>
-            <h4 class="fw-bold mb-0" style="color:#111827;">Plannings — {{ $service->nom_service }}</h4>
+            <h4 class="fw-bold mb-0" style="color:#111827;">Plannings - {{ $service->nom_service }}</h4>
             <p class="mb-0 text-muted" style="font-size:13.5px;">
                 {{ now()->isoFormat('dddd D MMMM YYYY') }} ·
                 <span style="color:#0A4D8C;font-weight:500;">{{ $agents->count() }} agent(s) actif(s)</span>
@@ -130,7 +137,7 @@
             <div class="kpi-card" style="background:#FFFBEB;border:1px solid #FDE68A;">
                 <div class="kpi-icon" style="background:#FEF3C7;"><i class="fas fa-paper-plane" style="color:#D97706;"></i></div>
                 <div class="kpi-value" style="color:#D97706;">{{ $stats['transmis'] }}</div>
-                <div class="kpi-label">En attente RH</div>
+                <div class="kpi-label">À valider</div>
             </div>
         </div>
         <div class="col-6 col-lg-3">
@@ -166,7 +173,7 @@
         <div class="panel">
             <div class="d-flex align-items-start justify-content-between mb-4 flex-wrap gap-3">
                 <div>
-                    <div class="fw-600" style="color:#111827;font-size:14px;">Calendrier des postes — {{ $service->nom_service }}</div>
+                    <div class="fw-600" style="color:#111827;font-size:14px;">Calendrier des postes - {{ $service->nom_service }}</div>
                     <div style="font-size:12px;color:#9CA3AF;">Visualisation de tous les postes planifiés</div>
                 </div>
                 <div class="d-flex align-items-center gap-3 flex-wrap">
@@ -208,6 +215,7 @@
                             'Transmis'  => ['bg'=>'#FFFBEB','c'=>'#D97706','ic'=>'fa-paper-plane'],
                             'Validé'    => ['bg'=>'#ECFDF5','c'=>'#059669','ic'=>'fa-check-double'],
                             'Rejeté'    => ['bg'=>'#FEF2F2','c'=>'#DC2626','ic'=>'fa-times-circle'],
+                            'Diffusé'   => ['bg'=>'#EFF6FF','c'=>'#1D4ED8','ic'=>'fa-share-square'],
                             default     => ['bg'=>'#F3F4F6','c'=>'#6B7280','ic'=>'fa-circle'],
                         };
                     @endphp
@@ -217,7 +225,7 @@
                                 <div>
                                     <div class="fw-bold mb-1" style="color:#111827;font-size:14px;">
                                         <i class="fas fa-calendar-week me-1" style="color:#0A4D8C;font-size:12px;"></i>
-                                        {{ $planning->periode_debut->isoFormat('D MMM') }} — {{ $planning->periode_fin->isoFormat('D MMM YYYY') }}
+                                        {{ $planning->periode_debut->isoFormat('D MMM') }} - {{ $planning->periode_fin->isoFormat('D MMM YYYY') }}
                                     </div>
                                     <div style="font-size:12px;color:#9CA3AF;">
                                         {{ $planning->duree_jours }} jour(s) ·
@@ -241,20 +249,24 @@
                                    class="action-btn action-btn-outline" style="font-size:12px;padding:6px 12px;">
                                     <i class="fas fa-eye"></i>Voir
                                 </a>
-                                @if($planning->est_modifiable)
-                                    <button type="button" class="action-btn action-btn-primary" style="font-size:12px;padding:6px 12px;"
-                                        onclick="openModalTransmettre(
-                                            {{ $planning->id_planning }},
-                                            '{{ $planning->periode_debut->format('d/m/Y') }}',
-                                            '{{ $planning->periode_fin->format('d/m/Y') }}',
-                                            {{ $planning->lignes_count }}
-                                        )">
-                                        <i class="fas fa-paper-plane"></i>Transmettre
+                                @if($planning->statut_planning === 'Transmis')
+                                    <button type="button" class="action-btn action-btn-success" style="font-size:12px;padding:6px 12px;"
+                                        onclick="openModalValider({{ $planning->id_planning }}, '{{ $planning->periode_debut->format('d/m/Y') }}', '{{ $planning->periode_fin->format('d/m/Y') }}', {{ $planning->lignes_count }})">
+                                        <i class="fas fa-check-double"></i>Valider
+                                    </button>
+                                    <button type="button" class="action-btn action-btn-danger" style="font-size:12px;padding:6px 12px;"
+                                        onclick="openModalRejeter({{ $planning->id_planning }}, '{{ $planning->periode_debut->format('d/m/Y') }}', '{{ $planning->periode_fin->format('d/m/Y') }}')">
+                                        <i class="fas fa-times-circle"></i>Rejeter
+                                    </button>
+                                @endif
+                                @if($planning->statut_planning === 'Validé')
+                                    <button type="button" class="action-btn action-btn-info" style="font-size:12px;padding:6px 12px;"
+                                        onclick="openModalDiffuser({{ $planning->id_planning }}, '{{ $planning->periode_debut->format('d/m/Y') }}', '{{ $planning->periode_fin->format('d/m/Y') }}')">
+                                        <i class="fas fa-share-square"></i>Transmettre à la RH
                                     </button>
                                 @endif
                                 @if($planning->est_brouillon)
-                                    <button type="button"
-                                        style="display:inline-flex;align-items:center;gap:6px;padding:6px 12px;border-radius:8px;font-size:12px;font-weight:500;background:#FEF2F2;color:#DC2626;border:1px solid #FECACA;cursor:pointer;transition:all 180ms;"
+                                    <button type="button" class="action-btn action-btn-danger" style="font-size:12px;padding:6px 12px;"
                                         onclick="openModalSupprimer({{ $planning->id_planning }})">
                                         <i class="fas fa-trash-alt"></i>
                                     </button>
@@ -330,7 +342,7 @@
                 </div>
 
                 {{-- Footer --}}
-                <div class="modal-footer border-0" style="padding:8px 24px 24px;">
+                <div class="modal-actions">
                     <button type="button" class="action-btn action-btn-outline" data-bs-dismiss="modal">Annuler</button>
                     <button type="submit" class="action-btn action-btn-primary">
                         <i class="fas fa-save"></i>Créer le planning
@@ -341,30 +353,96 @@
     </div>
 </div>
 
-{{-- ── Modal : Confirmer Transmission ──────────────────────────────── --}}
-<div class="modal fade" id="modalTransmettre" tabindex="-1" aria-hidden="true">
+{{-- ── Modal : Transmettre à la RH (Diffuser) ─────────────────────── --}}
+<div class="modal fade" id="modalDiffuser" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered modal-sm">
         <div class="modal-content" style="border-radius:16px;border:none;box-shadow:0 20px 60px rgba(0,0,0,.15);">
-            <form id="formTransmettre" method="POST">
+            <form id="formDiffuser" method="POST">
                 @csrf
                 <div class="modal-header border-0" style="padding:24px 24px 4px;">
                     <div class="d-flex align-items-center gap-2">
-                        <i class="fas fa-paper-plane" style="color:#D97706;font-size:18px;"></i>
+                        <i class="fas fa-share-square" style="color:#1D4ED8;font-size:18px;"></i>
                         <h5 class="modal-title fw-bold mb-0" style="color:#111827;">Transmettre à la RH ?</h5>
                     </div>
                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body" style="padding:16px 24px;">
-                    <div id="transmettreInfo" class="mb-3" style="font-size:13px;color:#374151;background:#F9FAFB;border-radius:8px;padding:10px 14px;"></div>
-                    <div style="background:#FFFBEB;border-left:3px solid #F59E0B;border-radius:6px;padding:10px 12px;font-size:12px;color:#92400E;">
+                    <div id="diffuserInfo" class="mb-3" style="font-size:13px;color:#374151;background:#F9FAFB;border-radius:8px;padding:10px 14px;"></div>
+                    <div style="background:#EFF6FF;border-left:3px solid #1D4ED8;border-radius:6px;padding:10px 12px;font-size:12px;color:#1E40AF;">
                         <i class="fas fa-info-circle me-1"></i>
-                        Une fois transmis, le planning ne peut plus être modifié tant que la RH ne l'a pas validé ou rejeté.
+                        Le planning sera transmis au service RH à titre informatif uniquement. Cette action est définitive.
                     </div>
                 </div>
-                <div class="modal-footer border-0" style="padding:4px 24px 24px;gap:8px;">
+                <div class="modal-actions">
                     <button type="button" class="action-btn action-btn-outline" data-bs-dismiss="modal">Annuler</button>
-                    <button type="submit" class="action-btn action-btn-primary">
-                        <i class="fas fa-paper-plane"></i>Transmettre
+                    <button type="submit" class="action-btn action-btn-info">
+                        <i class="fas fa-share-square"></i>Confirmer la transmission
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+{{-- ── Modal : Valider ────────────────────────────────────────────── --}}
+<div class="modal fade" id="modalValider" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-sm">
+        <div class="modal-content" style="border-radius:16px;border:none;box-shadow:0 20px 60px rgba(0,0,0,.15);">
+            <form id="formValider" method="POST">
+                @csrf
+                <div class="modal-header border-0" style="padding:24px 24px 4px;">
+                    <div class="d-flex align-items-center gap-2">
+                        <i class="fas fa-check-double" style="color:#059669;font-size:18px;"></i>
+                        <h5 class="modal-title fw-bold mb-0" style="color:#111827;">Valider ce planning ?</h5>
+                    </div>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body" style="padding:16px 24px;">
+                    <div id="validerInfo" class="mb-3" style="font-size:13px;color:#374151;background:#F9FAFB;border-radius:8px;padding:10px 14px;"></div>
+                    <div style="background:#ECFDF5;border-left:3px solid #059669;border-radius:6px;padding:10px 12px;font-size:12px;color:#065F46;">
+                        <i class="fas fa-info-circle me-1"></i>
+                        Le planning sera mis en vigueur et visible par les agents concernés.
+                    </div>
+                </div>
+                <div class="modal-actions">
+                    <button type="button" class="action-btn action-btn-outline" data-bs-dismiss="modal">Annuler</button>
+                    <button type="submit" class="action-btn action-btn-success">
+                        <i class="fas fa-check-double"></i>Confirmer la validation
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+{{-- ── Modal : Rejeter ─────────────────────────────────────────────── --}}
+<div class="modal fade" id="modalRejeter" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content" style="border-radius:16px;border:none;box-shadow:0 20px 60px rgba(0,0,0,.15);">
+            <form id="formRejeter" method="POST">
+                @csrf
+                <div class="modal-header border-0" style="padding:24px 24px 4px;">
+                    <div class="d-flex align-items-center gap-2">
+                        <i class="fas fa-times-circle" style="color:#DC2626;font-size:18px;"></i>
+                        <h5 class="modal-title fw-bold mb-0" style="color:#111827;">Rejeter ce planning</h5>
+                    </div>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body" style="padding:16px 24px;">
+                    <div id="rejeterInfo" class="mb-3" style="font-size:13px;color:#374151;background:#F9FAFB;border-radius:8px;padding:10px 14px;"></div>
+                    <label class="form-label fw-600" style="font-size:13px;">Motif du rejet <span class="text-danger">*</span></label>
+                    <textarea name="motif_rejet" id="motifRejetText" class="form-control" rows="4" required
+                              placeholder="Expliquez clairement pourquoi ce planning est rejeté..."
+                              style="border-radius:8px;font-size:13px;resize:vertical;"></textarea>
+                    <div class="d-flex justify-content-between mt-1">
+                        <div style="font-size:11px;color:#9CA3AF;">Minimum 10 caractères</div>
+                        <div id="charCount" style="font-size:11px;color:#9CA3AF;">0/500</div>
+                    </div>
+                </div>
+                <div class="modal-actions">
+                    <button type="button" class="action-btn action-btn-outline" data-bs-dismiss="modal">Annuler</button>
+                    <button type="submit" class="action-btn action-btn-danger">
+                        <i class="fas fa-times-circle"></i>Confirmer le rejet
                     </button>
                 </div>
             </form>
@@ -389,9 +467,9 @@
                 <div class="modal-body" style="padding:12px 24px 16px;">
                     <p class="text-muted mb-0" style="font-size:13px;">Cette action est irréversible. Toutes les lignes du planning seront définitivement supprimées.</p>
                 </div>
-                <div class="modal-footer border-0" style="padding:4px 24px 24px;gap:8px;">
+                <div class="modal-actions">
                     <button type="button" class="action-btn action-btn-outline" data-bs-dismiss="modal">Annuler</button>
-                    <button type="submit" style="display:inline-flex;align-items:center;gap:7px;padding:9px 16px;border-radius:8px;font-size:13px;font-weight:500;background:#DC2626;color:white;border:none;cursor:pointer;">
+                    <button type="submit" class="action-btn action-btn-danger">
                         <i class="fas fa-trash-alt"></i>Supprimer définitivement
                     </button>
                 </div>
@@ -475,14 +553,42 @@ function switchTab(tab) {
     }
 }
 
-// ── Modal : Transmettre ───────────────────────────────────────
-function openModalTransmettre(id, debut, fin, nbLignes) {
-    document.getElementById('formTransmettre').action = `/manager/planning/${id}/transmettre`;
-    document.getElementById('transmettreInfo').innerHTML =
+// ── Modal : Transmettre à la RH (Diffuser) ───────────────────
+function openModalDiffuser(id, debut, fin) {
+    document.getElementById('formDiffuser').action = `/manager/planning/${id}/diffuser`;
+    document.getElementById('diffuserInfo').innerHTML =
+        `<i class="fas fa-calendar-week me-2" style="color:#0A4D8C;"></i>
+         Planning du <strong>${debut}</strong> au <strong>${fin}</strong>`;
+    new bootstrap.Modal(document.getElementById('modalDiffuser')).show();
+}
+
+// ── Modal : Valider ───────────────────────────────────────────
+function openModalValider(id, debut, fin, nbLignes) {
+    document.getElementById('formValider').action = `/manager/planning/${id}/valider`;
+    document.getElementById('validerInfo').innerHTML =
         `<i class="fas fa-calendar-week me-2" style="color:#0A4D8C;"></i>
          Planning du <strong>${debut}</strong> au <strong>${fin}</strong> &nbsp;·&nbsp; <strong>${nbLignes}</strong> ligne(s)`;
-    new bootstrap.Modal(document.getElementById('modalTransmettre')).show();
+    new bootstrap.Modal(document.getElementById('modalValider')).show();
 }
+
+// ── Modal : Rejeter ───────────────────────────────────────────
+function openModalRejeter(id, debut, fin) {
+    document.getElementById('formRejeter').action = `/manager/planning/${id}/rejeter`;
+    document.getElementById('rejeterInfo').innerHTML =
+        `<i class="fas fa-calendar-week me-2" style="color:#0A4D8C;"></i>
+         Planning du <strong>${debut}</strong> au <strong>${fin}</strong>`;
+    document.getElementById('motifRejetText').value = '';
+    document.getElementById('charCount').textContent = '0/500';
+    new bootstrap.Modal(document.getElementById('modalRejeter')).show();
+}
+
+// Compteur caractères
+document.getElementById('motifRejetText')?.addEventListener('input', function() {
+    const n = this.value.length;
+    const el = document.getElementById('charCount');
+    el.textContent = n + '/500';
+    el.style.color = n < 10 ? '#DC2626' : n > 450 ? '#D97706' : '#9CA3AF';
+});
 
 // ── Modal : Supprimer ─────────────────────────────────────────
 function openModalSupprimer(id) {

@@ -1,5 +1,5 @@
 @extends('layouts.master')
-@section('title', 'Décisions RH — DRH')
+@section('title', 'Décisions RH - DRH')
 @section('page-title', 'Décisions RH')
 
 @section('breadcrumb')
@@ -74,7 +74,7 @@
     <div class="section-card">
         <div class="section-header">
             <div style="font-weight:600;color:var(--theme-text);font-size:15px;">
-                <i class="fas fa-clock me-2" style="color:#D97706;"></i>Étape 1 — Mouvements soumis par le RH
+                <i class="fas fa-clock me-2" style="color:#D97706;"></i>Étape 1 - Mouvements soumis par le RH
             </div>
             <span class="badge-d" style="background:#FEF3C7;color:#92400E;">{{ $stats['a_valider'] }}</span>
         </div>
@@ -83,7 +83,7 @@
         <div class="decision-row">
             <div>
                 <div style="font-weight:600;font-size:14px;color:var(--theme-text);">
-                    {{ $mouvement->agent?->nom_complet ?? '—' }}
+                    {{ $mouvement->agent?->nom_complet ?? '-' }}
                     <span style="font-size:12px;color:#9CA3AF;font-weight:400;margin-left:8px;">{{ $mouvement->agent?->matricule }}</span>
                 </div>
                 <div style="font-size:13px;color:#6B7280;margin-top:3px;">
@@ -91,7 +91,7 @@
                     @if($mouvement->serviceDestination)
                     → {{ $mouvement->serviceDestination->nom_service }}
                     @endif
-                    · Date effet : {{ $mouvement->date_mouvement?->format('d/m/Y') ?? '—' }}
+                    · Date effet : {{ $mouvement->date_mouvement?->format('d/m/Y') ?? '-' }}
                 </div>
                 @if($mouvement->motif)
                 <div style="font-size:12px;color:#9CA3AF;margin-top:2px;">{{ Str::limit($mouvement->motif, 90) }}</div>
@@ -126,7 +126,7 @@
     <div class="section-card">
         <div class="section-header">
             <div style="font-weight:600;color:var(--theme-text);font-size:15px;">
-                <i class="fas fa-signature me-2" style="color:#059669;"></i>Étape 2 — Décisions à signer
+                <i class="fas fa-signature me-2" style="color:#059669;"></i>Étape 2 - Décisions à signer
             </div>
             <span class="badge-d" style="background:#DBEAFE;color:#1E40AF;">{{ $stats['a_signer'] }}</span>
         </div>
@@ -135,7 +135,7 @@
         <div class="decision-row">
             <div>
                 <div style="font-weight:600;font-size:14px;color:var(--theme-text);">
-                    {{ $mouvement->agent?->nom_complet ?? '—' }}
+                    {{ $mouvement->agent?->nom_complet ?? '-' }}
                     <span style="font-size:12px;color:#9CA3AF;font-weight:400;margin-left:8px;">{{ $mouvement->agent?->matricule }}</span>
                 </div>
                 <div style="font-size:13px;color:#6B7280;margin-top:3px;">
@@ -143,7 +143,7 @@
                     @if($mouvement->serviceDestination)
                     → {{ $mouvement->serviceDestination->nom_service }}
                     @endif
-                    · Validé le {{ $mouvement->date_validation?->format('d/m/Y') ?? '—' }}
+                    · Validé le {{ $mouvement->date_validation?->format('d/m/Y') ?? '-' }}
                     @if($mouvement->validateur)
                     <span style="color:#9CA3AF;">par {{ $mouvement->validateur->name }}</span>
                     @endif
@@ -185,13 +185,13 @@
     <div class="section-card">
         <div class="section-header">
             <div style="font-weight:600;color:var(--theme-text);font-size:15px;">
-                <i class="fas fa-history me-2" style="color:#6B7280;"></i>Décisions signées — historique récent
+                <i class="fas fa-history me-2" style="color:#6B7280;"></i>Décisions signées - historique récent
             </div>
         </div>
         @forelse($mouvementsEffectues as $m)
         <div class="decision-row">
             <div>
-                <div style="font-weight:600;font-size:13px;color:var(--theme-text);">{{ $m->agent?->nom_complet ?? '—' }}</div>
+                <div style="font-weight:600;font-size:13px;color:var(--theme-text);">{{ $m->agent?->nom_complet ?? '-' }}</div>
                 <div style="font-size:12px;color:#6B7280;">
                     {{ $m->type_mouvement }}
                     · <span style="font-weight:700;color:#1565C0;">{{ $m->decision_generee }}</span>

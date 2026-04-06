@@ -1,5 +1,5 @@
 @extends('layouts.master')
-@section('title', 'Dossier — ' . $agent->nom_complet)
+@section('title', 'Dossier - ' . $agent->nom_complet)
 @section('page-title', 'Dossier agent')
 
 @section('breadcrumb')
@@ -27,7 +27,7 @@
             </div>
             <div>
                 <h4 class="mb-0 fw-bold" style="color:var(--theme-text);">{{ $agent->prenom }} {{ $agent->nom }}</h4>
-                <p class="mb-0 text-muted" style="font-size:13px;">{{ $agent->matricule }} · {{ str_replace('_', ' ', $agent->famille_d_emploi ?? '—') }}</p>
+                <p class="mb-0 text-muted" style="font-size:13px;">{{ $agent->matricule }} · {{ str_replace('_', ' ', $agent->famille_d_emploi ?? '-') }}</p>
             </div>
         </div>
         <a href="{{ route('manager.equipe.dossiers') }}" class="btn btn-outline-secondary btn-sm">
@@ -54,15 +54,15 @@
                     </div>
                     <div class="col-6 col-md-4">
                         <div class="info-label">Famille d'emploi</div>
-                        <div class="info-value">{{ str_replace('_', ' ', $agent->famille_d_emploi ?? '—') }}</div>
+                        <div class="info-value">{{ str_replace('_', ' ', $agent->famille_d_emploi ?? '-') }}</div>
                     </div>
                     <div class="col-6 col-md-4">
                         <div class="info-label">Catégorie</div>
-                        <div class="info-value">{{ str_replace('_', ' ', $agent->categorie_cp ?? '—') }}</div>
+                        <div class="info-value">{{ str_replace('_', ' ', $agent->categorie_cp ?? '-') }}</div>
                     </div>
                     <div class="col-6 col-md-4">
                         <div class="info-label">Service</div>
-                        <div class="info-value">{{ $agent->service->nom_service ?? '—' }}</div>
+                        <div class="info-value">{{ $agent->service->nom_service ?? '-' }}</div>
                     </div>
                     <div class="col-6 col-md-4">
                         <div class="info-label">Statut contrat</div>
@@ -141,7 +141,7 @@
                 </div>
                 <div class="mb-3">
                     <div class="info-label">Date de naissance</div>
-                    <div class="info-value">{{ $agent->date_naissance?->format('d/m/Y') ?? '—' }}</div>
+                    <div class="info-value">{{ $agent->date_naissance?->format('d/m/Y') ?? '-' }}</div>
                 </div>
                 @if($agent->enfants->isNotEmpty())
                 <div>

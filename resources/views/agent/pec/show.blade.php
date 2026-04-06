@@ -13,7 +13,7 @@
 
     <div class="d-flex align-items-center justify-content-between mb-4">
         <h4 class="mb-0 fw-bold" style="color:var(--theme-text);">
-            <i class="fas fa-hospital me-2" style="color:#0A4D8C;"></i>Prise en charge — {{ $pec->type_prise ?? 'Médicale' }}
+            <i class="fas fa-hospital me-2" style="color:#0A4D8C;"></i>Prise en charge - {{ $pec->type_prise ?? 'Médicale' }}
         </h4>
         <a href="{{ route('agent.pec.index') }}" class="btn btn-outline-secondary btn-sm">
             <i class="fas fa-arrow-left me-1"></i>Retour
@@ -32,27 +32,28 @@
                 <div class="row g-3">
                     <div class="col-6">
                         <div style="font-size:11px;font-weight:700;text-transform:uppercase;color:#9CA3AF;margin-bottom:3px;">Type de soin</div>
-                        <div style="font-size:14px;font-weight:600;color:var(--theme-text);">{{ $pec->type_prise ?? '—' }}</div>
+                        <div style="font-size:14px;font-weight:600;color:var(--theme-text);">{{ $pec->type_prise ?? '-' }}</div>
                     </div>
                     <div class="col-6">
                         <div style="font-size:11px;font-weight:700;text-transform:uppercase;color:#9CA3AF;margin-bottom:3px;">Bénéficiaire</div>
-                        <div style="font-size:13px;color:var(--theme-text);">{{ ucfirst($pec->ayant_droit ?? '—') }}</div>
+                        <div style="font-size:13px;color:var(--theme-text);">{{ ucfirst($pec->ayant_droit ?? '-') }}</div>
                     </div>
                     <div class="col-6">
                         <div style="font-size:11px;font-weight:700;text-transform:uppercase;color:#9CA3AF;margin-bottom:3px;">Date de demande</div>
                         <div style="font-size:13px;color:var(--theme-text);">{{ $pec->created_at?->format('d/m/Y') }}</div>
                     </div>
-                    @if($pec->exceptionnelle)
-                    <div class="col-12">
-                        <span style="background:#FEF3C7;color:#92400E;padding:4px 12px;border-radius:20px;font-size:12px;font-weight:700;">
-                            <i class="fas fa-star me-1"></i>PEC Exceptionnelle
-                        </span>
-                    </div>
-                    @endif
                     <div class="col-12">
                         <div style="font-size:11px;font-weight:700;text-transform:uppercase;color:#9CA3AF;margin-bottom:3px;">Raison médicale</div>
-                        <div style="font-size:13px;color:var(--theme-text);background:#F9FAFB;border-radius:8px;padding:12px;">{{ $pec->raison_medical ?? '—' }}</div>
+                        <div style="font-size:13px;color:var(--theme-text);background:#F9FAFB;border-radius:8px;padding:12px;">{{ $pec->raison_medical ?? '-' }}</div>
                     </div>
+                    @if($pec->justificatif_path)
+                    <div class="col-12">
+                        <div style="font-size:11px;font-weight:700;text-transform:uppercase;color:#9CA3AF;margin-bottom:3px;">Justificatif joint</div>
+                        <a href="{{ route('agent.pec.justificatif', $pec->id_priseenche) }}" class="btn btn-outline-primary btn-sm" style="font-size:12px;">
+                            <i class="fas fa-download me-1"></i>Télécharger le certificat de mariage
+                        </a>
+                    </div>
+                    @endif
                     @if($pec->demande?->motif_refus)
                     <div class="col-12">
                         <div style="background:#FEF2F2;border:1px solid #FECACA;border-radius:8px;padding:12px 16px;">
