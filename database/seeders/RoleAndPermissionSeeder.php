@@ -53,9 +53,9 @@ class RoleAndPermissionSeeder extends Seeder
         Permission::create(['name' => 'voir_planning_service']);
         Permission::create(['name' => 'creer_planning']); // Manager
         Permission::create(['name' => 'modifier_planning']); // Manager
-        Permission::create(['name' => 'transmettre_planning']); // Manager
-        Permission::create(['name' => 'valider_planning']); // RH
-        Permission::create(['name' => 'rejeter_planning']); // RH
+        Permission::create(['name' => 'transmettre_planning']); // Major → Manager
+        Permission::create(['name' => 'valider_planning']); // Manager
+        Permission::create(['name' => 'rejeter_planning']); // Manager
         
         // Permissions GED
         Permission::create(['name' => 'voir_mes_documents']);
@@ -166,6 +166,8 @@ class RoleAndPermissionSeeder extends Seeder
             'creer_planning',
             'modifier_planning',
             'transmettre_planning',
+            'valider_planning',     // Validation des plannings transmis par le Major
+            'rejeter_planning',
             
             // Dashboard
             'voir_dashboard_manager',
@@ -203,9 +205,7 @@ class RoleAndPermissionSeeder extends Seeder
             
             // Planning
             'voir_mon_planning',
-            'voir_planning_service',
-            'valider_planning',
-            'rejeter_planning',
+            'voir_planning_service',   // Lecture seule (plannings diffusés par le Manager)
             
             // GED complète
             'voir_mes_documents',

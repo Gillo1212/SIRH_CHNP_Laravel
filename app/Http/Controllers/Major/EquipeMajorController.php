@@ -7,7 +7,7 @@ use App\Models\Agent;
 use App\Models\Service;
 
 /**
- * EquipeMajorController — Lecture seule (Confidentialité CID)
+ * EquipeMajorController-Lecture seule (Confidentialité CID)
  * Le Major consulte l'équipe de son service sans pouvoir modifier les dossiers.
  */
 class EquipeMajorController extends Controller

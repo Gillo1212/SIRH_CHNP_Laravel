@@ -380,8 +380,6 @@ function showToast(msg, type) {
     document.getElementById('toast-container').appendChild(el);
     setTimeout(() => el.remove(), 4500);
 }
-@if(session('success')) showToast('{{ session('success') }}', 'success'); @endif
-@if(session('error'))   showToast('{{ session('error') }}', 'error');   @endif
 </script>
 @endpush
 

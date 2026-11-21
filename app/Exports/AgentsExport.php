@@ -40,7 +40,7 @@ class AgentsExport
                 'Service', 'Division',
             ], ';');
 
-            // Données (sans les champs chiffrés — Confidentialité CID)
+            // Données (sans les champs chiffrés-Confidentialité CID)
             $query = Agent::with(['service:id_service,nom_service', 'division:id_division,nom_division'])
                 ->select('id_agent', 'matricule', 'nom', 'prenom', 'sexe',
                          'date_naissance', 'famille_d_emploi',

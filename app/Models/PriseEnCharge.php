@@ -19,6 +19,7 @@ class PriseEnCharge extends Model
         'ayant_droit',
         'type_prise',
         'justificatif_path',
+        'exceptionnelle',
         'validee_par',
         'date_edition',
     ];
@@ -27,6 +28,7 @@ class PriseEnCharge extends Model
     {
         return [
             'date_edition'   => 'date',
+            'exceptionnelle' => 'boolean',
         ];
     }
 
@@ -63,6 +65,41 @@ class PriseEnCharge extends Model
     public function getStatutDemAttribute(): string
     {
         return $this->demande?->statut_demande ?? 'En_attente';
+    }
+
+    /**
+     * L'attestation est disponible lorsque le workflow est terminé :
+     *  - PEC standard      : validée par le RH (statut « Validé »)
+     *  - PEC exceptionnelle: approuvée par le DRH (statut « Approuvé »)
+     */
+    public function getAttestationDisponibleAttribute(): bool
+    {
+        $statut = $this->demande?->statut_demande;
+
+        return $statut === 'Approuvé'
+            || ($statut === 'Validé' && !$this->exceptionnelle);
+    }
+
+    /**
+     * Vrai si la PEC exceptionnelle a été validée par le RH et attend le DRH.
+     */
+    public function getEnAttenteDrhAttribute(): bool
+    {
+        return $this->exceptionnelle && $this->demande?->statut_demande === 'Validé';
+    }
+
+    /**
+     * Scope : PEC dont l'attestation est disponible (même règle que l'accessor).
+     */
+    public function scopeAttestationDisponible($query)
+    {
+        return $query->where(function ($q) {
+            $q->whereHas('demande', fn($d) => $d->where('statut_demande', 'Approuvé'))
+              ->orWhere(function ($q2) {
+                  $q2->where('exceptionnelle', false)
+                     ->whereHas('demande', fn($d) => $d->where('statut_demande', 'Validé'));
+              });
+        });
     }
 
     public function getBeneficiaireLibelleAttribute(): string

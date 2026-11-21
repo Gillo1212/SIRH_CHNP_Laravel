@@ -27,3 +27,9 @@ Thumbs.db
 SIRH_0.zip
 SIRH_1.zip
 /Laravel-12-HR-System-Management
+
+# Données personnelles réelles (confidentialité CID — ne JAMAIS versionner)
+/SUIVI PERSONNEL*.xlsx
+/database/seeders/RealAgentsSeeder.php
+/SIRH_CHHP_Laravel.zip
+*.zip

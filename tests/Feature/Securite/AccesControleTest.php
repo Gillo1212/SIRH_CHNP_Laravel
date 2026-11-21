@@ -5,7 +5,7 @@ namespace Tests\Feature\Securite;
 use Tests\SirhTestCase;
 
 /**
- * Tests de sécurité — Contrôle d'accès RBAC (Section 4.2.1.2)
+ * Tests de sécurité-Contrôle d'accès RBAC (Section 4.2.1.2)
  *
  * Vérifie que le RBAC est correctement appliqué :
  * - Chaque rôle accède uniquement à ses routes autorisées

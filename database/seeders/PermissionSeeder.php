@@ -6,7 +6,7 @@ use Illuminate\Database\Seeder;
 use Spatie\Permission\Models\Permission;
 
 /**
- * PermissionSeeder — RBAC Complet SIRH CHNP
+ * PermissionSeeder-RBAC Complet SIRH CHNP
  * Crée toutes les permissions granulaires (163 au total)
  * Chaque permission correspond à une action précise → Confidentialité CID
  */

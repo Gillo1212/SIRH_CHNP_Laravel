@@ -4,7 +4,9 @@ namespace App\Http\Controllers\DRH;
 
 use App\Http\Controllers\Controller;
 use App\Models\Demande;
+use App\Http\Requests\DRH\DecisionPECRequest;
 use App\Models\Mouvement;
+use App\Models\PriseEnCharge;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
@@ -76,7 +78,7 @@ class ValidationDRHController extends Controller
                 ->causedBy(Auth::user())
                 ->on($mouvement)
                 ->withProperties(['reference' => $reference, 'note' => $request->note])
-                ->log("Signature DRH de la décision {$reference} — mouvement #{$mouvement->id_mouvement}");
+                ->log("Signature DRH de la décision {$reference}-mouvement #{$mouvement->id_mouvement}");
         });
 
         return redirect()->route('drh.validations.decisions')
@@ -156,4 +158,60 @@ class ValidationDRHController extends Controller
             ->with('success', 'Mouvement rejeté et annulé.');
     }
 
+    // ──────────────────────────────────────────────────
+    // PEC EXCEPTIONNELLES (validation DRH après le RH)
+    // ──────────────────────────────────────────────────
+    public function pecExceptionnelles()
+    {
+        $pecsEnAttente = PriseEnCharge::with(['demande.agent.service'])
+            ->where('exceptionnelle', true)
+            ->whereHas('demande', fn($q) => $q->where('statut_demande', 'Validé'))
+            ->latest()
+            ->paginate(10);
+
+        $base = fn() => PriseEnCharge::where('exceptionnelle', true);
+
+        $stats = [
+            'en_attente' => $pecsEnAttente->total(),
+            'approuvees' => $base()->whereHas('demande', fn($q) => $q->where('statut_demande', 'Approuvé'))->count(),
+            'rejetees'   => $base()->whereHas('demande', fn($q) => $q->where('statut_demande', 'Rejeté'))->count(),
+        ];
+
+        return view('drh.validations.pec-exceptionnelles', compact('pecsEnAttente', 'stats'));
+    }
+
+    public function deciderPEC(DecisionPECRequest $request, int $id)
+    {
+        // Seules les PEC exceptionnelles déjà validées par le RH sont concernées
+        $pec = PriseEnCharge::with('demande')
+            ->where('exceptionnelle', true)
+            ->whereHas('demande', fn($q) => $q->where('statut_demande', 'Validé'))
+            ->findOrFail($id);
+
+        if ($request->input('action') === 'approuver') {
+            DB::transaction(function () use ($pec) {
+                $pec->demande->update([
+                    'statut_demande'  => 'Approuvé',
+                    'date_traitement' => now(),
+                ]);
+                activity()->causedBy(Auth::user())->performedOn($pec)
+                    ->log('PEC exceptionnelle approuvée par le DRH');
+            });
+
+            return back()->with('success', 'Prise en charge exceptionnelle approuvée.');
+        }
+
+        DB::transaction(function () use ($pec, $request) {
+            $pec->demande->update([
+                'statut_demande'  => 'Rejeté',
+                'motif_refus'     => $request->input('motif_rejet'),
+                'date_traitement' => now(),
+            ]);
+            activity()->causedBy(Auth::user())->performedOn($pec)
+                ->withProperties(['motif' => $request->input('motif_rejet')])
+                ->log('PEC exceptionnelle rejetée par le DRH');
+        });
+
+        return back()->with('success', 'Prise en charge exceptionnelle rejetée.');
+    }
 }

@@ -9,7 +9,7 @@ use Illuminate\Console\Command;
 use Illuminate\Support\Facades\DB;
 
 /**
- * VerifierExpirationContrats — Disponibilité CID
+ * VerifierExpirationContrats-Disponibilité CID
  *
  * Commande artisan quotidienne qui :
  *  1. Détecte les contrats expirés → met à jour leur statut en base (Intégrité CID)
@@ -27,7 +27,7 @@ class VerifierExpirationContrats extends Command
     {
         $dryRun = $this->option('dry-run');
 
-        $this->info('=== Vérification expirations contrats — ' . now()->format('d/m/Y H:i') . ' ===');
+        $this->info('=== Vérification expirations contrats-' . now()->format('d/m/Y H:i') . ' ===');
 
         // ----------------------------------------------------------
         // 1. Marquer les contrats expirés (Intégrité : cohérence DB)

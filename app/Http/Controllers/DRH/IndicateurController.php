@@ -48,7 +48,7 @@ class IndicateurController extends Controller
             ->groupBy('famille_d_emploi')
             ->pluck('total', 'famille_d_emploi');
 
-        // Nouveaux agents (12 mois — basé sur date de création du dossier)
+        // Nouveaux agents (12 mois-basé sur date de création du dossier)
         $recrutementsParMois = [];
         $labelsParMois = [];
         for ($i = 11; $i >= 0; $i--) {

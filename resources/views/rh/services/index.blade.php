@@ -1021,13 +1021,6 @@ function showToast(message, type) {
 }
 
 document.addEventListener('DOMContentLoaded', () => {
-    @if(session('success'))
-        showToast(@json(session('success')), 'success');
-    @endif
-    @if(session('error'))
-        showToast(@json(session('error')), 'error');
-    @endif
-
     {{-- Ré-ouvrir le modal edit si erreurs de validation --}}
     @if($errors->any())
         const errServiceId = {{ session('edit_service_id', 0) }};

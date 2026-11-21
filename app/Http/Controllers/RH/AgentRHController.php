@@ -191,7 +191,7 @@ class AgentRHController extends Controller
     }
 
     /**
-     * Export Excel des agents (SpreadsheetML — sans dépendance externe)
+     * Export Excel des agents (SpreadsheetML-sans dépendance externe)
      * Confidentialité CID : sans champs sensibles
      */
     public function exportExcel(Request $request)

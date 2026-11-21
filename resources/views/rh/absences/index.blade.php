@@ -688,9 +688,6 @@ function showToast(message, type) {
 }
 
 /* ─── AUTO TOAST depuis session flash ───────────────────────── */
-@if(session('success')) showToast(@json(session('success')), 'success'); @endif
-@if(session('error'))   showToast(@json(session('error')),   'error');   @endif
-@if(session('warning')) showToast(@json(session('warning')), 'warning'); @endif
 
 /* ─── FILTRE SERVICE (modal create) ─────────────────────────── */
 document.getElementById('filterServiceCreate').addEventListener('change', function(){

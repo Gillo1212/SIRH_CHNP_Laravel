@@ -64,9 +64,7 @@
         </div>
     </div>
 
-    @if(session('success'))<div class="alert alert-success alert-dismissible fade show" style="border-radius:10px;"><i class="fas fa-check-circle me-2"></i>{{ session('success') }}<button type="button" class="btn-close" data-bs-dismiss="alert"></button></div>@endif
-    @if(session('info'))<div class="alert alert-info alert-dismissible fade show" style="border-radius:10px;"><i class="fas fa-info-circle me-2"></i>{{ session('info') }}<button type="button" class="btn-close" data-bs-dismiss="alert"></button></div>@endif
-
+        
     <div class="row g-4">
 
         {{-- Colonne gauche : infos + données soumises --}}

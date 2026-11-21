@@ -5,7 +5,7 @@ namespace App\Http\Requests\Agent;
 use Illuminate\Foundation\Http\FormRequest;
 
 /**
- * StorePECRequest — Validation demande de prise en charge médicale (Agent)
+ * StorePECRequest-Validation demande de prise en charge médicale (Agent)
  * Intégrité CID : toutes les entrées validées avant traitement.
  */
 class StorePECRequest extends FormRequest

@@ -110,9 +110,5 @@ class DRHDashboardController extends Controller
         return view('drh.kpis');
     }
 
-    public function budget()
-    {
-        return view('drh.budget');
-    }
 
 }

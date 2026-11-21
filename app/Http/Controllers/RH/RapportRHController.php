@@ -237,7 +237,7 @@ class RapportRHController extends Controller
     }
 
     /**
-     * API JSON — données pour le constructeur de graphiques
+     * API JSON-données pour le constructeur de graphiques
      * GET /rh/rapports/chart-data?source=effectifs_par_service
      * Réponses mises en cache 5 min (données agrégées, pas temps réel)
      */

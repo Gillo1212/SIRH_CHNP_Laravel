@@ -6,7 +6,7 @@ use App\Models\Mouvement;
 use Tests\SirhTestCase;
 
 /**
- * Tests fonctionnels — Module Mouvements (Section 4.2.1.1)
+ * Tests fonctionnels-Module Mouvements (Section 4.2.1.1)
  *
  * Vérifie le workflow :
  *   AgentRH (création) → DRH (validation) → Effectué
@@ -40,7 +40,7 @@ class MouvementTest extends SirhTestCase
     }
 
     // ─────────────────────────────────────────────
-    // ACCÈS PAR RÔLE — Confidentialité CID
+    // ACCÈS PAR RÔLE-Confidentialité CID
     // ─────────────────────────────────────────────
 
     #[\PHPUnit\Framework\Attributes\Test]
@@ -82,7 +82,7 @@ class MouvementTest extends SirhTestCase
     }
 
     // ─────────────────────────────────────────────
-    // CRÉATION MOUVEMENT — Intégrité CID
+    // CRÉATION MOUVEMENT-Intégrité CID
     // ─────────────────────────────────────────────
 
     #[\PHPUnit\Framework\Attributes\Test]

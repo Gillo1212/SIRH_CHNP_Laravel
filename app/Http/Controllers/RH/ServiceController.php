@@ -50,7 +50,7 @@ class ServiceController extends Controller
     }
 
     /**
-     * Création via modal dans index — redirection directe
+     * Création via modal dans index-redirection directe
      */
     public function create()
     {
@@ -98,7 +98,7 @@ class ServiceController extends Controller
     }
 
     /**
-     * Édition via modal dans index — redirection directe
+     * Édition via modal dans index-redirection directe
      */
     public function edit(int $id)
     {

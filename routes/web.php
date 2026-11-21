@@ -108,12 +108,12 @@ Route::middleware(['auth', 'check.account.locked'])->group(function () {
 
         Route::get('/dashboard', [AdminDashboardController::class, 'index'])->name('dashboard');
 
-        // Utilisateurs — workflow Agent existant → compte
+        // Utilisateurs-workflow Agent existant → compte
         Route::get('/users/agents-sans-compte', [AdminUserController::class, 'agentsSansCompte'])->name('users.agents-sans-compte');
         Route::get('/users/create-for-agent/{agent}', [AdminUserController::class, 'createForAgent'])->name('users.create-for-agent');
         Route::post('/users/store-for-agent/{agent}', [AdminUserController::class, 'storeForAgent'])->name('users.store-for-agent');
 
-        // Comptes utilisateurs — workflow Admin-first
+        // Comptes utilisateurs-workflow Admin-first
         Route::get('/accounts', [UserAccountController::class, 'index'])->name('accounts.index');
         Route::get('/accounts/agents-sans-compte', [UserAccountController::class, 'agentsSansCompte'])->name('accounts.agents-sans-compte');
         Route::post('/accounts', [UserAccountController::class, 'store'])->name('accounts.store');
@@ -167,7 +167,6 @@ Route::middleware(['auth', 'check.account.locked'])->group(function () {
 
         Route::get('/dashboard', [DRHDashboardController::class, 'index'])->name('dashboard');
         Route::get('/kpis', [DRHDashboardController::class, 'kpis'])->name('kpis');
-        Route::get('/budget', [DRHDashboardController::class, 'budget'])->name('budget');
         Route::get('/organigramme', [OrganigrammeController::class, 'index'])->name('organigramme');
         Route::post('/organigramme/sauvegarder', [OrganigrammeController::class, 'sauvegarder'])->name('organigramme.sauvegarder');
         Route::get('/organigramme/reinitialiser', [OrganigrammeController::class, 'reinitialiser'])->name('organigramme.reinitialiser');
@@ -187,6 +186,8 @@ Route::middleware(['auth', 'check.account.locked'])->group(function () {
             Route::get('/mouvements', [ValidationDRHController::class, 'mouvements'])->name('mouvements');
             Route::post('/mouvements/{id}/valider', [ValidationDRHController::class, 'validerMouvement'])->name('valider-mouvement');
             Route::post('/mouvements/{id}/rejeter', [ValidationDRHController::class, 'rejeterMouvement'])->name('rejeter-mouvement');
+            Route::get('/pec-exceptionnelles', [ValidationDRHController::class, 'pecExceptionnelles'])->name('pec');
+            Route::post('/pec/{id}/decider', [ValidationDRHController::class, 'deciderPEC'])->name('decider-pec')->whereNumber('id');
         });
 
         // Rapports direction
@@ -312,21 +313,21 @@ Route::middleware(['auth', 'check.account.locked'])->group(function () {
             Route::get('/{id}/justificatif', [PriseEnChargeController::class, 'downloadJustificatif'])->name('justificatif');
         });
 
-        // Plannings (lecture seule — validation par le Manager)
+        // Plannings (lecture seule-validation par le Manager)
         Route::prefix('plannings')->name('plannings.')->group(function () {
             Route::get('/',        [PlanningRHController::class, 'index'])->name('index');
             Route::get('/recus',   [PlanningRHController::class, 'pending'])->name('pending');
-            Route::get('/{id}',    [PlanningRHController::class, 'show'])->name('show');
+            Route::get('/{id}',    [PlanningRHController::class, 'show'])->name('show')->whereNumber('id');
         });
 
-        // Heures supplémentaires — vérification conformité (pas de validation)
+        // Heures supplémentaires-vérification conformité (pas de validation)
         Route::prefix('heures-sup')->name('heures-sup.')->group(function () {
             Route::get('/',                     [HeuresSupRHController::class, 'index'])->name('index');
             Route::post('/{id}/conforme',       [HeuresSupRHController::class, 'marquerConforme'])->name('conforme');
             Route::post('/{id}/anomalie',       [HeuresSupRHController::class, 'signalerAnomalie'])->name('anomalie');
         });
 
-        // GED — Gestion Électronique de Documents
+        // GED-Gestion Électronique de Documents
         Route::prefix('ged')->name('ged.')->group(function () {
             // Dashboard GED
             Route::get('/', [GEDController::class, 'index'])->name('index');

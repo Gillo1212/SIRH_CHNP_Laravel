@@ -50,23 +50,7 @@
 <div class="container-fluid px-4 py-4">
 
     {{-- Alertes --}}
-    @if(session('success'))
-        <div class="alert alert-dismissible d-flex align-items-center gap-2 mb-4"
-             style="border-radius:10px;border-left:4px solid #10B981;background:#ECFDF5;color:#065F46;border:1px solid #A7F3D0;">
-            <i class="fas fa-check-circle"></i>
-            <span>{{ session('success') }}</span>
-            <button type="button" class="btn-close ms-auto" data-bs-dismiss="alert"></button>
-        </div>
-    @endif
-    @if(session('error'))
-        <div class="alert alert-dismissible d-flex align-items-center gap-2 mb-4"
-             style="border-radius:10px;border-left:4px solid #EF4444;background:#FEF2F2;color:#991B1B;border:1px solid #FECACA;">
-            <i class="fas fa-exclamation-circle"></i>
-            <span>{{ session('error') }}</span>
-            <button type="button" class="btn-close ms-auto" data-bs-dismiss="alert"></button>
-        </div>
-    @endif
-
+        
     {{-- En-tête --}}
     <div class="d-flex align-items-center justify-content-between mb-4 flex-wrap gap-3">
         <div>

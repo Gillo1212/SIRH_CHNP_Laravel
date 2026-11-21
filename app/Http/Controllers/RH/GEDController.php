@@ -236,10 +236,10 @@ class GEDController extends Controller
 
         // Vérification accès confidentialité
         if (!$document->estVisiblePar(Auth::user())) {
-            abort(403, 'Accès refusé — niveau de confidentialité insuffisant.');
+            abort(403, 'Accès refusé-niveau de confidentialité insuffisant.');
         }
 
-        // Log de consultation (Audit — Disponibilité CID)
+        // Log de consultation (Audit-Disponibilité CID)
         activity('documents')
             ->causedBy(Auth::user())
             ->performedOn($document)

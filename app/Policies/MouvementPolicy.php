@@ -6,7 +6,7 @@ use App\Models\Mouvement;
 use App\Models\User;
 
 /**
- * MouvementPolicy — Confidentialité CID
+ * MouvementPolicy-Confidentialité CID
  * Contrôle d'accès granulaire sur les mouvements de personnel.
  */
 class MouvementPolicy

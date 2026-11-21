@@ -6,7 +6,7 @@ use App\Models\User;
 use Tests\SirhTestCase;
 
 /**
- * Tests unitaires — Sécurité du modèle User (Section 4.2.1.2)
+ * Tests unitaires-Sécurité du modèle User (Section 4.2.1.2)
  *
  * Vérifie les mécanismes de sécurité embarqués dans le modèle User :
  * - Complexité du mot de passe

@@ -45,8 +45,8 @@ class DocAdminAgentController extends Controller
             ],
             'decision_conge_administratif' => [
                 'duree_jours'       => ['label' => 'Nombre de jours demandés', 'type' => 'number', 'required' => true, 'default' => 30],
-                'periode_ref_debut' => ['label' => 'Période de référence — Début', 'type' => 'date', 'required' => false],
-                'periode_ref_fin'   => ['label' => 'Période de référence — Fin',   'type' => 'date', 'required' => false],
+                'periode_ref_debut' => ['label' => 'Période de référence-Début', 'type' => 'date', 'required' => false],
+                'periode_ref_fin'   => ['label' => 'Période de référence-Fin',   'type' => 'date', 'required' => false],
             ],
             'attestation_jouissance_conge' => [
                 'duree_totale'     => ['label' => 'Durée totale du congé (jours)', 'type' => 'number', 'required' => false, 'default' => 30],

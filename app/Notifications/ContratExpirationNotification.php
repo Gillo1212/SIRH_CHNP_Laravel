@@ -34,7 +34,7 @@ class ContratExpirationNotification extends Notification
             'expired'  => ['fa-exclamation-circle', '#FEE2E2', '#DC2626',
                             "Le contrat de {$nom} ({$this->contrat->type_contrat}) est expiré."],
             'critical' => ['fa-exclamation-triangle', '#FEE2E2', '#DC2626',
-                            "Contrat de {$nom} expire dans {$jours} jour(s) — ACTION URGENTE."],
+                            "Contrat de {$nom} expire dans {$jours} jour(s)-ACTION URGENTE."],
             'high'     => ['fa-clock', '#FEF3C7', '#D97706',
                             "Contrat de {$nom} expire dans {$jours} jour(s)."],
             'medium'   => ['fa-calendar-times', '#FEF3C7', '#F59E0B',

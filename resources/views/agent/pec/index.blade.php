@@ -31,13 +31,7 @@
         </a>
     </div>
 
-    @if(session('success'))
-    <div class="alert alert-success alert-dismissible fade show" style="border-radius:10px;">
-        <i class="fas fa-check-circle me-2"></i>{{ session('success') }}
-        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-    </div>
-    @endif
-
+    
     @if($pecs->isEmpty())
     <div class="text-center py-5" style="background:#fff;border:1px solid #E5E7EB;border-radius:12px;">
         <i class="fas fa-hospital" style="font-size:40px;color:#D1D5DB;margin-bottom:12px;display:block;"></i>
@@ -64,13 +58,13 @@
                 @php
                     $statut = $pec->demande?->statut_demande ?? 'En_attente';
                     $badgeClass = match($statut) {
-                        'Validé'   => 'badge-valide',
+                        'Validé'   => $pec->en_attente_drh ? 'badge-attente' : 'badge-valide',
                         'Approuvé' => 'badge-approuve',
                         'Rejeté'   => 'badge-rejete',
                         default    => 'badge-attente',
                     };
                     $statutLabel = match($statut) {
-                        'Validé'   => 'Validée',
+                        'Validé'   => $pec->en_attente_drh ? 'En attente DRH' : 'Validée',
                         'Approuvé' => 'Approuvée',
                         'Rejeté'   => 'Rejetée',
                         default    => 'En attente',

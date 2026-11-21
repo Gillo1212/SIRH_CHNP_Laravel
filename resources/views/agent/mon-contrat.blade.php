@@ -294,8 +294,5 @@ function showToast(message, type = 'success') {
     document.body.insertAdjacentHTML('beforeend', `<div id="${id}" style="position:fixed;top:22px;right:22px;z-index:10000;background:${c.bg};color:#fff;border-radius:12px;padding:14px 20px;display:flex;align-items:center;gap:12px;box-shadow:0 8px 28px rgba(0,0,0,.18);font-size:14px;font-weight:500;max-width:420px;animation:toastIn .3s ease;"><i class="fas ${c.icon}" style="font-size:18px;flex-shrink:0;"></i><span>${message}</span><button onclick="document.getElementById('${id}').remove()" style="background:none;border:none;color:#fff;font-size:20px;cursor:pointer;margin-left:auto;padding:0 0 0 8px;line-height:1;">×</button></div>`);
     setTimeout(() => document.getElementById(id)?.remove(), 5000);
 }
-@if(session('success'))
-    document.addEventListener('DOMContentLoaded', () => showToast(@json(session('success')), 'success'));
-@endif
 </script>
 @endpush

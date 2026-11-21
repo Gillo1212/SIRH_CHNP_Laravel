@@ -6,7 +6,7 @@ use App\Models\User;
 use Tests\SirhTestCase;
 
 /**
- * Tests fonctionnels — Authentification (Section 4.2.1.1)
+ * Tests fonctionnels-Authentification (Section 4.2.1.1)
  *
  * Vérifie le workflow complet de connexion/déconnexion
  * et les mécanismes de sécurité associés (verrouillage).
@@ -102,7 +102,7 @@ class AuthenticationFonctionnelTest extends SirhTestCase
         $user->refresh();
         $this->assertFalse($user->verouille, 'Le compte ne doit pas encore être verrouillé après 4 tentatives');
 
-        // 5ème tentative — verrouillage
+        // 5ème tentative-verrouillage
         $this->post('/login', ['login' => 'agent.brute', 'password' => 'mauvais']);
 
         $user->refresh();

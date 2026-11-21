@@ -283,7 +283,7 @@ main,
     color: var(--theme-text-secondary) !important;
 }
 
-/* === BUTTONS — CORRECTION CONTRASTE === */
+/* === BUTTONS-CORRECTION CONTRASTE === */
 .btn-primary {
     background-color: var(--theme-primary) !important;
     border-color: var(--theme-primary) !important;
@@ -588,7 +588,7 @@ label {
     color: var(--theme-text-primary) !important;
 }
 
-/* Custom badge classes — style pastel (usage dashboard) */
+/* Custom badge classes-style pastel (usage dashboard) */
 .badge-success { background-color: #D1FAE5 !important; color: #059669 !important; }
 .badge-warning { background-color: #FEF3C7 !important; color: #D97706 !important; }
 .badge-danger  { background-color: #FEE2E2 !important; color: #DC2626 !important; }
@@ -1433,7 +1433,7 @@ canvas {
 }
 
 /* ============================================================
-   CORRECTIONS HARMONIE THÈME CLAIR/SOMBRE — COMPLÉMENTS
+   CORRECTIONS HARMONIE THÈME CLAIR/SOMBRE-COMPLÉMENTS
    ============================================================ */
 
 /* === TEXTES DE BADGES INLINE SOMBRES (illisibles en dark mode) === */
@@ -1471,7 +1471,7 @@ canvas {
     background: rgba(88, 166, 255, 0.1) !important;
 }
 
-/* === ACTIONS RAPIDES — Classe CSS dédiée (alternative aux inline styles) === */
+/* === ACTIONS RAPIDES-Classe CSS dédiée (alternative aux inline styles) === */
 .quick-actions-panel {
     background: linear-gradient(135deg, #EFF6FF 0%, #E0F2FE 100%);
     border: 1px solid #BFDBFE;
@@ -1489,7 +1489,7 @@ canvas {
     color: #58a6ff !important;
 }
 
-/* === HEADER — TITRE PAGE ET BREADCRUMB === */
+/* === HEADER-TITRE PAGE ET BREADCRUMB === */
 [data-theme="dark"] header ol,
 [data-theme="dark"] .header ol {
     color: var(--theme-text-muted) !important;
@@ -1500,7 +1500,7 @@ canvas {
     color: var(--theme-text-muted) !important;
 }
 
-/* === KPI CARDS — Thème unifié (CSS variables) === */
+/* === KPI CARDS-Thème unifié (CSS variables) === */
 .kpi-card {
     background: var(--theme-card-bg) !important;
     border: 1px solid var(--theme-border) !important;
@@ -1518,26 +1518,26 @@ canvas {
 [data-theme="dark"] .kpi-card.red    .kpi-icon { background: rgba(248, 81, 73, 0.15) !important; }
 [data-theme="dark"] .kpi-card.purple .kpi-icon { background: rgba(196, 132, 252, 0.15) !important; }
 
-/* === PANEL — Thème unifié (CSS variables) === */
+/* === PANEL-Thème unifié (CSS variables) === */
 .panel {
     background: var(--theme-card-bg) !important;
     border: 1px solid var(--theme-border) !important;
     color: var(--theme-text-primary) !important;
 }
 
-/* === SECTION TITLE — Thème unifié === */
+/* === SECTION TITLE-Thème unifié === */
 .section-title,
 .section-title-drh {
     color: var(--theme-text-muted) !important;
     border-bottom: 1px solid var(--theme-border) !important;
 }
 
-/* === DATA ROW / ALERT ITEM / DECISION ROW — Thème unifié === */
+/* === DATA ROW / ALERT ITEM / DECISION ROW-Thème unifié === */
 .data-row, .alert-item, .decision-row {
     border-bottom: 1px solid var(--theme-border-muted) !important;
 }
 
-/* === SOLDE-BLOC / PLANNING-CELL — Base thème (border + bg via variables) === */
+/* === SOLDE-BLOC / PLANNING-CELL-Base thème (border + bg via variables) === */
 .solde-bloc {
     background: var(--theme-card-bg) !important;
     border: 1px solid var(--theme-border) !important;
@@ -1562,14 +1562,14 @@ canvas {
     transition: background 0.3s ease, border-color 0.3s ease !important;
 }
 
-/* === BADGE-STATUS (span inline dans dashboards) — Fond neutre dark === */
+/* === BADGE-STATUS (span inline dans dashboards)-Fond neutre dark === */
 [data-theme="dark"] span.badge-status[style*="background:#F3F4F6"],
 [data-theme="dark"] span.badge-status[style*="background: #F3F4F6"] {
     background: rgba(255,255,255,0.1) !important;
     color: #e6edf3 !important;
 }
 
-/* === CHART.JS — Fond canvas transparent === */
+/* === CHART.JS-Fond canvas transparent === */
 [data-theme="dark"] canvas { background: transparent !important; }
 
 /* === FOOTER (si présent) === */
@@ -1580,7 +1580,7 @@ canvas {
     color: var(--theme-text-muted) !important;
 }
 
-/* === KPI VALUE / LABEL — Override !important pour battre le CSS dashboard chargé après === */
+/* === KPI VALUE / LABEL-Override !important pour battre le CSS dashboard chargé après === */
 /* Les dashboards définissent .kpi-value { color:#111827 } APRÈS themes.css, donc on force */
 [data-theme="dark"] .kpi-card .kpi-value,
 [data-theme="dark"] .kpi-value {
@@ -1595,36 +1595,36 @@ canvas {
     color: var(--theme-text-muted) !important;
 }
 
-/* === BADGE-STATUS DARK — .badge-info classe locale des dashboards === */
+/* === BADGE-STATUS DARK-.badge-info classe locale des dashboards === */
 [data-theme="dark"] .badge-info {
     background: rgba(88, 166, 255, 0.2) !important;
     color: #58a6ff !important;
 }
 
-/* === PLANNING-CELL — kpi-card today couleur en dark mode === */
+/* === PLANNING-CELL-kpi-card today couleur en dark mode === */
 [data-theme="dark"] .planning-cell.today {
     border-color: #388bfd !important;
     background: rgba(56, 139, 253, 0.1) !important;
 }
 
-/* === SOLDE-BLOC — progress bar background === */
+/* === SOLDE-BLOC-progress bar background === */
 [data-theme="dark"] .progress-thin {
     background: #21262d !important;
 }
 
-/* === AVATAR-CERCLE — texte initial agent === */
+/* === AVATAR-CERCLE-texte initial agent === */
 [data-theme="dark"] .avatar-cercle {
     box-shadow: 0 4px 15px rgba(88, 166, 255, 0.2) !important;
 }
 
-/* === DATA-ROW / DECISION-ROW — texte thème sombre === */
+/* === DATA-ROW / DECISION-ROW-texte thème sombre === */
 [data-theme="dark"] .data-row,
 [data-theme="dark"] .decision-row,
 [data-theme="dark"] .alert-item {
     color: var(--theme-text-primary) !important;
 }
 
-/* === SECTION-TITLE-DRH — déjà couvert mais assurer !important === */
+/* === SECTION-TITLE-DRH-déjà couvert mais assurer !important === */
 [data-theme="dark"] .section-title-drh {
     color: var(--theme-text-muted) !important;
     border-bottom-color: var(--theme-border) !important;

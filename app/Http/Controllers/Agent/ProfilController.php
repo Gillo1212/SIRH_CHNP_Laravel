@@ -125,7 +125,7 @@ class ProfilController extends Controller
 
         $agent->update(['photo' => $filename]);
 
-        // Audit trail — Intégrité CID
+        // Audit trail-Intégrité CID
         activity()
             ->causedBy($request->user())
             ->performedOn($agent)
@@ -136,7 +136,7 @@ class ProfilController extends Controller
     }
 
     /**
-     * Changement de mot de passe (self-service sécurité — Confidentialité CID)
+     * Changement de mot de passe (self-service sécurité-Confidentialité CID)
      */
     public function updatePassword(Request $request)
     {

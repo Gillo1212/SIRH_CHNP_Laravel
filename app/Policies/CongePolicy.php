@@ -7,7 +7,7 @@ use App\Models\Service;
 use App\Models\User;
 
 /**
- * CongePolicy — Confidentialité CID
+ * CongePolicy-Confidentialité CID
  * Contrôle d'accès granulaire sur les congés.
  *
  * Workflow : Agent → (avis Major) → Manager (validation) → AgentRH (approbation finale)
@@ -92,7 +92,7 @@ class CongePolicy
     }
 
     /**
-     * Valider (1ère validation) — Manager uniquement.
+     * Valider (1ère validation)-Manager uniquement.
      */
     public function validerManager(User $user, Conge $conge): bool
     {
@@ -116,7 +116,7 @@ class CongePolicy
     }
 
     /**
-     * Approuver (validation finale) — AgentRH.
+     * Approuver (validation finale)-AgentRH.
      */
     public function approuverRH(User $user, Conge $conge): bool
     {
@@ -137,7 +137,7 @@ class CongePolicy
     }
 
     /**
-     * Annuler un congé — Agent (son propre) ou AgentRH.
+     * Annuler un congé-Agent (son propre) ou AgentRH.
      */
     public function annuler(User $user, Conge $conge): bool
     {

@@ -6,7 +6,7 @@ use App\Models\DemandeDocument;
 use Illuminate\Foundation\Http\FormRequest;
 
 /**
- * StoreDemandeDocumentRequest — Validation demande de document administratif (Agent)
+ * StoreDemandeDocumentRequest-Validation demande de document administratif (Agent)
  * Intégrité CID : toutes les entrées validées avant traitement.
  */
 class StoreDemandeDocumentRequest extends FormRequest

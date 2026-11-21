@@ -7,7 +7,7 @@ use Spatie\Activitylog\Models\Activity;
 use Tests\SirhTestCase;
 
 /**
- * Tests de sécurité — Audit Trail / Journalisation (Section 4.2.1.2)
+ * Tests de sécurité-Audit Trail / Journalisation (Section 4.2.1.2)
  *
  * Vérifie que toutes les actions critiques sont tracées
  * dans le journal d'audit Spatie Activity Log.

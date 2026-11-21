@@ -6,7 +6,7 @@ use App\Models\Agent;
 use App\Models\User;
 
 /**
- * AgentPolicy — Confidentialité CID
+ * AgentPolicy-Confidentialité CID
  * Contrôle d'accès granulaire au niveau modèle
  */
 class AgentPolicy

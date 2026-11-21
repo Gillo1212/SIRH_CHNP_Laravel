@@ -88,15 +88,26 @@ class PriseEnChargeController extends Controller
         $action = $request->input('action');
 
         if ($action === 'valider') {
-            DB::transaction(function () use ($prise) {
-                $prise->update(['validee_par' => Auth::id()]);
+            $request->validate(['exceptionnelle' => 'nullable|boolean']);
+            $exceptionnelle = $request->boolean('exceptionnelle');
+
+            DB::transaction(function () use ($prise, $exceptionnelle) {
+                $prise->update([
+                    'validee_par'    => Auth::id(),
+                    'exceptionnelle' => $exceptionnelle,
+                ]);
                 $prise->demande->update([
                     'statut_demande'  => 'Validé',
                     'date_traitement' => now(),
                 ]);
+                activity()->causedBy(Auth::user())->performedOn($prise)
+                    ->withProperties(['exceptionnelle' => $exceptionnelle])
+                    ->log($exceptionnelle ? 'PEC exceptionnelle validée par RH (transmise au DRH)' : 'PEC validée par RH');
             });
-            activity()->causedBy(Auth::user())->on($prise)->log('PEC validée par RH');
-            return back()->with('success', 'Prise en charge validée.');
+
+            return back()->with('success', $exceptionnelle
+                ? 'Prise en charge validée et transmise au DRH pour approbation.'
+                : 'Prise en charge validée.');
         }
 
         if ($action === 'rejeter') {

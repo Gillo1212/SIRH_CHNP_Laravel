@@ -4,10 +4,10 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Support\Facades\DB;
 
 /**
- * Migration de données — Restreindre les types de congés aux 3 types officiels CHNP :
- *   1. Congé Administratif   — 30 jours (déductible)
- *   2. Congé de Maternité    — 14 semaines / 98 jours (non déductible)
- *   3. Congé Rayon X         — 22 jours (non déductible, agents exposés aux rayonnements)
+ * Migration de données-Restreindre les types de congés aux 3 types officiels CHNP :
+ *   1. Congé Administratif  -30 jours (déductible)
+ *   2. Congé de Maternité   -14 semaines / 98 jours (non déductible)
+ *   3. Congé Rayon X        -22 jours (non déductible, agents exposés aux rayonnements)
  */
 return new class extends Migration
 {

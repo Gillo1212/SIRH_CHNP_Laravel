@@ -49,7 +49,7 @@ class PlanningRHController extends Controller
 
                 $events[] = [
                     'id'              => 'rh-' . $ligne->id_ligne,
-                    'title'           => $ligne->agent->prenom . ' ' . substr($ligne->agent->nom, 0, 1) . '. — ' . $ligne->typePoste->libelle,
+                    'title'           => $ligne->agent->prenom . ' ' . substr($ligne->agent->nom, 0, 1) . '.-' . $ligne->typePoste->libelle,
                     'start'           => $dateStr . 'T' . $heureDebut,
                     'end'             => $endDate . 'T' . $heureFin,
                     'backgroundColor' => $color,

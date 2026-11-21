@@ -853,12 +853,6 @@ function showToast(message, type = 'success') {
     `);
     setTimeout(() => document.getElementById(id)?.remove(), 5000);
 }
-@if(session('success'))
-    document.addEventListener('DOMContentLoaded', () => showToast(@json(session('success')), 'success'));
-@endif
-@if(session('error'))
-    document.addEventListener('DOMContentLoaded', () => showToast(@json(session('error')), 'error'));
-@endif
 
 // ═══════════════════════════════════════════════════════
 // MODAL VOIR (AJAX)

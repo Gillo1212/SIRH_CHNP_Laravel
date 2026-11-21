@@ -277,9 +277,6 @@ function updateSoldeInfo() {
     }
 }
 
-@if(session('error'))
-    document.addEventListener('DOMContentLoaded', () => showToast(@json(session('error')), 'error'));
-@endif
 function showToast(message, type) {
     const cfg = { success:{bg:'#10B981',icon:'fa-check-circle'}, error:{bg:'#EF4444',icon:'fa-exclamation-circle'} };
     const c = cfg[type] || cfg.success;

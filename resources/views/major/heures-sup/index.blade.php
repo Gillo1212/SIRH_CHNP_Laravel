@@ -548,8 +548,6 @@ function showToast(msg, type) {
     setTimeout(() => el.remove(), 4500);
 }
 
-@if(session('success')) showToast('{{ session('success') }}', 'success'); @endif
-@if(session('error'))   showToast('{{ session('error') }}', 'error');   @endif
 
 @if($errors->any())
     new bootstrap.Modal(document.getElementById('modal-declarer')).show();

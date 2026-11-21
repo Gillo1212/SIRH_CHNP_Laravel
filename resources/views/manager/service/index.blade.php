@@ -24,13 +24,7 @@
 @section('content')
 <div class="container-fluid px-4 py-4">
 
-    @if(session('success'))
-        <div class="alert alert-success alert-dismissible d-flex align-items-center gap-2 mb-4" style="border-radius:10px;border-left:4px solid #10B981;">
-            <i class="fas fa-check-circle"></i><span>{{ session('success') }}</span>
-            <button type="button" class="btn-close ms-auto" data-bs-dismiss="alert"></button>
-        </div>
-    @endif
-
+    
     {{-- En-tête service --}}
     <div class="card border-0 shadow-sm mb-4" style="border-radius:14px;background:linear-gradient(135deg,#0A4D8C 0%,#1565C0 100%);">
         <div class="card-body p-4">

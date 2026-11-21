@@ -12,7 +12,7 @@ use Illuminate\Support\Facades\Schema;
  *   - statut_hs : En_attente → Déclaré | Validé → Conforme | + Anomalie
  *   - note_verification : note laissée par la RH lors d'une anomalie
  *
- * La RH ne valide plus — elle vérifie la conformité.
+ * La RH ne valide plus-elle vérifie la conformité.
  * Le Major reste l'autorité de déclaration terrain.
  */
 return new class extends Migration

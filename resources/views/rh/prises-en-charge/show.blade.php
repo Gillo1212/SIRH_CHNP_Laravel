@@ -22,13 +22,7 @@
         </a>
     </div>
 
-    @if(session('success'))
-    <div class="alert alert-success alert-dismissible fade show" style="border-radius:10px;">
-        <i class="fas fa-check-circle me-2"></i>{{ session('success') }}
-        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-    </div>
-    @endif
-
+    
     <div class="row g-3">
         {{-- Informations --}}
         <div class="col-12 col-lg-8">
@@ -95,6 +89,11 @@
                         'Approuvé'   => ['bg'=>'#DBEAFE','color'=>'#1E40AF','label'=>'Approuvée DRH'],
                         'Rejeté'     => ['bg'=>'#FEE2E2','color'=>'#991B1B','label'=>'Rejetée'],
                     ];
+                    if ($prise->en_attente_drh) {
+                        $statusConfig['Validé']['label'] = 'Validée RH - en attente DRH';
+                        $statusConfig['Validé']['bg']    = '#FEF3C7';
+                        $statusConfig['Validé']['color'] = '#92400E';
+                    }
                     $sc = $statusConfig[$statut] ?? $statusConfig['En_attente'];
                 @endphp
                 <div style="background:{{ $sc['bg'] }};color:{{ $sc['color'] }};padding:12px 16px;border-radius:8px;text-align:center;font-weight:700;font-size:14px;margin-bottom:16px;">
@@ -147,12 +146,18 @@
                 <p style="font-size:12px;color:#6B7280;margin-bottom:0;">
                     Cette action est définitive. La demande passera au statut <strong>Validée RH</strong>.
                 </p>
+                <div class="form-check text-start mt-3 p-3" style="background:#FFFBEB;border:1px solid #FDE68A;border-radius:10px;padding-left:2.5rem !important;">
+                    <input class="form-check-input" type="checkbox" name="exceptionnelle" value="1" id="chkExceptionnelle" form="formValiderPec">
+                    <label class="form-check-label" for="chkExceptionnelle" style="font-size:13px;color:#92400E;">
+                        <strong>PEC exceptionnelle</strong> : nécessite l'approbation du DRH avant délivrance de l'attestation
+                    </label>
+                </div>
             </div>
             <div class="modal-footer" style="border-top:1px solid #F3F4F6;padding:16px 24px;gap:8px;">
                 <button type="button" class="btn btn-outline-secondary btn-sm" data-bs-dismiss="modal">
                     <i class="fas fa-times me-1"></i>Annuler
                 </button>
-                <form action="{{ route('pec.update', $prise->id_priseenche) }}" method="POST" style="display:inline;">
+                <form action="{{ route('pec.update', $prise->id_priseenche) }}" method="POST" id="formValiderPec" style="display:inline;">
                     @csrf @method('PATCH')
                     <input type="hidden" name="action" value="valider">
                     <button type="submit" class="btn btn-success btn-sm">

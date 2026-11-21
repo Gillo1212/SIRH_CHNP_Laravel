@@ -6,7 +6,7 @@ use App\Models\DemandeDocument;
 use App\Models\User;
 
 /**
- * DemandeDocumentPolicy — Confidentialité CID
+ * DemandeDocumentPolicy-Confidentialité CID
  * Contrôle d'accès granulaire sur les demandes de documents administratifs.
  *
  * Workflow :
@@ -53,7 +53,7 @@ class DemandeDocumentPolicy
     }
 
     /**
-     * Créer une demande de document — Agent (self-service).
+     * Créer une demande de document-Agent (self-service).
      * AgentRH peut créer au nom d'un agent.
      */
     public function create(User $user): bool
@@ -62,7 +62,7 @@ class DemandeDocumentPolicy
     }
 
     /**
-     * Traiter une demande (passer en "en_cours") — AgentRH.
+     * Traiter une demande (passer en "en_cours")-AgentRH.
      */
     public function traiter(User $user, DemandeDocument $demande): bool
     {
@@ -74,7 +74,7 @@ class DemandeDocumentPolicy
     }
 
     /**
-     * Générer le document — AgentRH.
+     * Générer le document-AgentRH.
      */
     public function generer(User $user, DemandeDocument $demande): bool
     {
@@ -83,7 +83,7 @@ class DemandeDocumentPolicy
     }
 
     /**
-     * Rejeter une demande — AgentRH.
+     * Rejeter une demande-AgentRH.
      */
     public function rejeter(User $user, DemandeDocument $demande): bool
     {
@@ -92,7 +92,7 @@ class DemandeDocumentPolicy
     }
 
     /**
-     * Signer un document officiel — DRH uniquement.
+     * Signer un document officiel-DRH uniquement.
      * Le document doit être prêt.
      */
     public function signer(User $user, DemandeDocument $demande): bool

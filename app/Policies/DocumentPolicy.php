@@ -6,7 +6,7 @@ use App\Models\Document;
 use App\Models\User;
 
 /**
- * DocumentPolicy — Confidentialité CID (GED)
+ * DocumentPolicy-Confidentialité CID (GED)
  * Contrôle d'accès basé sur le niveau de confidentialité du document.
  *
  * Niveaux de confidentialité :
@@ -52,7 +52,7 @@ class DocumentPolicy
     }
 
     /**
-     * Uploader / créer un document — AgentRH/DRH.
+     * Uploader / créer un document-AgentRH/DRH.
      */
     public function create(User $user): bool
     {
@@ -60,7 +60,7 @@ class DocumentPolicy
     }
 
     /**
-     * Modifier les métadonnées d'un document — AgentRH/DRH.
+     * Modifier les métadonnées d'un document-AgentRH/DRH.
      */
     public function update(User $user, Document $document): bool
     {
@@ -74,7 +74,7 @@ class DocumentPolicy
     }
 
     /**
-     * Supprimer un document — DRH uniquement (action irréversible).
+     * Supprimer un document-DRH uniquement (action irréversible).
      */
     public function delete(User $user, Document $document): bool
     {
@@ -90,7 +90,7 @@ class DocumentPolicy
     }
 
     /**
-     * Gérer les étagères (créer, modifier) — AgentRH/DRH.
+     * Gérer les étagères (créer, modifier)-AgentRH/DRH.
      */
     public function gererEtageres(User $user): bool
     {
@@ -98,7 +98,7 @@ class DocumentPolicy
     }
 
     /**
-     * Gérer les dossiers (créer, modifier) — AgentRH/DRH.
+     * Gérer les dossiers (créer, modifier)-AgentRH/DRH.
      */
     public function gererDossiers(User $user): bool
     {

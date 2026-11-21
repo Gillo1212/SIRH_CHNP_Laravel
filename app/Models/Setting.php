@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Cache;
 
 /**
- * Setting — Paramètres système persistants
+ * Setting-Paramètres système persistants
  * Disponibilité CID : configuration accessible sans modifier .env
  */
 class Setting extends Model

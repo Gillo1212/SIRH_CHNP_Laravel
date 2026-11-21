@@ -13,7 +13,7 @@ use Illuminate\Http\Request;
  * CongesMajorController
  *
  * Consultation (lecture seule) des congés de l'équipe du Major.
- * Le Major NE VALIDE PAS les congés — c'est le rôle du Manager/RH.
+ * Le Major NE VALIDE PAS les congés-c'est le rôle du Manager/RH.
  * Isolation stricte : seulement les agents du service assigné au Major.
  */
 class CongesMajorController extends Controller
@@ -97,7 +97,7 @@ class CongesMajorController extends Controller
 
     /**
      * Enregistrer l'avis du Major sur une demande de congé.
-     * Le Major ne change PAS le statut — il ajoute uniquement un commentaire.
+     * Le Major ne change PAS le statut-il ajoute uniquement un commentaire.
      */
     public function avis(Request $request, int $id)
     {

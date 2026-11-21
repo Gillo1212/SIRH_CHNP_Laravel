@@ -6,7 +6,7 @@ use App\Models\DemandeDocument;
 use Tests\SirhTestCase;
 
 /**
- * Tests fonctionnels — Module Documents Administratifs (Section 4.2.1.1)
+ * Tests fonctionnels-Module Documents Administratifs (Section 4.2.1.1)
  *
  * Vérifie le workflow :
  *   Agent (self-service) → AgentRH (traitement/génération) → DRH (signature)

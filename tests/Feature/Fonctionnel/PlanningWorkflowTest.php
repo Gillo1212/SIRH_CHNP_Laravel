@@ -7,10 +7,11 @@ use App\Models\Service;
 use Tests\SirhTestCase;
 
 /**
- * Tests fonctionnels — Module Plannings (Section 4.2.1.1)
+ * Tests fonctionnels-Module Plannings (Section 4.2.1.1)
  *
  * Vérifie le workflow :
- *   Manager/Major (création) → Transmission RH → Validation/Rejet RH
+ *   Major (création) → Transmission au Manager → Validation/Rejet Manager
+ *   → Diffusion au RH (lecture seule, à titre informatif)
  *
  * Triade CID :
  *  - Intégrité : transitions de statut contrôlées
@@ -42,7 +43,7 @@ class PlanningWorkflowTest extends SirhTestCase
     }
 
     // ─────────────────────────────────────────────
-    // ACCÈS PAR RÔLE — Confidentialité CID
+    // ACCÈS PAR RÔLE-Confidentialité CID
     // ─────────────────────────────────────────────
 
     #[\PHPUnit\Framework\Attributes\Test]
@@ -62,10 +63,10 @@ class PlanningWorkflowTest extends SirhTestCase
     }
 
     #[\PHPUnit\Framework\Attributes\Test]
-    public function le_rh_voit_les_plannings_en_attente(): void
+    public function le_rh_voit_les_plannings_recus(): void
     {
         $this->actingAs($this->userRH)
-            ->get('/rh/plannings/pending')
+            ->get('/rh/plannings/recus')
             ->assertStatus(200);
     }
 
@@ -78,7 +79,7 @@ class PlanningWorkflowTest extends SirhTestCase
     }
 
     // ─────────────────────────────────────────────
-    // CRÉATION PLANNING — Intégrité CID
+    // CRÉATION PLANNING-Intégrité CID
     // ─────────────────────────────────────────────
 
     #[\PHPUnit\Framework\Attributes\Test]
@@ -112,30 +113,13 @@ class PlanningWorkflowTest extends SirhTestCase
     // ─────────────────────────────────────────────
 
     #[\PHPUnit\Framework\Attributes\Test]
-    public function le_manager_peut_transmettre_un_planning_avec_lignes(): void
+    public function le_major_peut_transmettre_un_planning_avec_lignes(): void
     {
-        $planning = Planning::create([
-            'id_service'      => $this->service->id_service,
-            'periode_debut'   => now()->startOfMonth(),
-            'periode_fin'     => now()->endOfMonth(),
-            'statut_planning' => 'Brouillon',
-            'date_creation'   => now(),
-        ]);
+        $planning = $this->creerPlanning('Brouillon');
+        $this->ajouterLigne($planning);
 
-        // Ajouter une ligne (requis par la logique métier avant transmission)
-        $typePoste = \App\Models\TypePoste::create(['libelle' => 'Garde test', 'couleur' => '#000']);
-        $agentTest = $this->creerDossierAgent($this->creerAgent(), $this->service);
-        \App\Models\LignePlanning::create([
-            'id_planning'  => $planning->id_planning,
-            'id_agent'     => $agentTest->id_agent,
-            'id_typeposte' => $typePoste->id_typeposte,
-            'date_poste'   => now()->addDay(),
-            'heure_debut'  => '08:00',
-            'heure_fin'    => '16:00',
-        ]);
-
-        $this->actingAs($this->userManager)
-            ->post("/manager/planning/{$planning->id_planning}/transmettre")
+        $this->actingAs($this->userMajor)
+            ->post("/major/planning/{$planning->id_planning}/transmettre")
             ->assertRedirect();
 
         $this->assertDatabaseHas('plannings', [
@@ -145,18 +129,28 @@ class PlanningWorkflowTest extends SirhTestCase
     }
 
     #[\PHPUnit\Framework\Attributes\Test]
-    public function le_rh_peut_valider_un_planning_transmis(): void
+    public function le_major_ne_peut_pas_transmettre_un_planning_vide(): void
     {
-        $planning = Planning::create([
-            'id_service'      => $this->service->id_service,
-            'periode_debut'   => now()->startOfMonth(),
-            'periode_fin'     => now()->endOfMonth(),
-            'statut_planning' => 'Transmis',
-            'date_creation'   => now(),
-        ]);
+        $planning = $this->creerPlanning('Brouillon');
 
-        $this->actingAs($this->userRH)
-            ->post("/rh/plannings/{$planning->id_planning}/valider")
+        $this->actingAs($this->userMajor)
+            ->post("/major/planning/{$planning->id_planning}/transmettre")
+            ->assertSessionHas('error');
+
+        $this->assertDatabaseHas('plannings', [
+            'id_planning'     => $planning->id_planning,
+            'statut_planning' => 'Brouillon',
+        ]);
+    }
+
+    #[\PHPUnit\Framework\Attributes\Test]
+    public function le_manager_peut_valider_un_planning_transmis(): void
+    {
+        $planning = $this->creerPlanning('Transmis');
+        $this->ajouterLigne($planning);
+
+        $this->actingAs($this->userManager)
+            ->post("/manager/planning/{$planning->id_planning}/valider")
             ->assertRedirect();
 
         $this->assertDatabaseHas('plannings', [
@@ -166,18 +160,12 @@ class PlanningWorkflowTest extends SirhTestCase
     }
 
     #[\PHPUnit\Framework\Attributes\Test]
-    public function le_rh_peut_rejeter_un_planning_transmis(): void
+    public function le_manager_peut_rejeter_un_planning_transmis(): void
     {
-        $planning = Planning::create([
-            'id_service'      => $this->service->id_service,
-            'periode_debut'   => now()->startOfMonth(),
-            'periode_fin'     => now()->endOfMonth(),
-            'statut_planning' => 'Transmis',
-            'date_creation'   => now(),
-        ]);
+        $planning = $this->creerPlanning('Transmis');
 
-        $this->actingAs($this->userRH)
-            ->post("/rh/plannings/{$planning->id_planning}/rejeter", [
+        $this->actingAs($this->userManager)
+            ->post("/manager/planning/{$planning->id_planning}/rejeter", [
                 'motif_rejet' => 'Planning incomplet, manque les gardes de nuit',
             ])
             ->assertRedirect();
@@ -189,19 +177,72 @@ class PlanningWorkflowTest extends SirhTestCase
     }
 
     #[\PHPUnit\Framework\Attributes\Test]
+    public function le_manager_peut_diffuser_un_planning_valide_au_rh(): void
+    {
+        $planning = $this->creerPlanning('Validé');
+
+        $this->actingAs($this->userManager)
+            ->post("/manager/planning/{$planning->id_planning}/diffuser")
+            ->assertRedirect();
+
+        $this->assertDatabaseHas('plannings', [
+            'id_planning'     => $planning->id_planning,
+            'statut_planning' => 'Diffusé',
+        ]);
+    }
+
+    #[\PHPUnit\Framework\Attributes\Test]
     public function un_agent_ne_peut_pas_valider_un_planning(): void
     {
-        $planning = Planning::create([
+        $planning = $this->creerPlanning('Transmis');
+
+        $this->actingAs($this->userAgent)
+            ->post("/manager/planning/{$planning->id_planning}/valider")
+            ->assertStatus(403);
+
+        $this->assertDatabaseHas('plannings', [
+            'id_planning'     => $planning->id_planning,
+            'statut_planning' => 'Transmis',
+        ]);
+    }
+
+    #[\PHPUnit\Framework\Attributes\Test]
+    public function le_major_ne_peut_pas_valider_un_planning(): void
+    {
+        $planning = $this->creerPlanning('Transmis');
+
+        $this->actingAs($this->userMajor)
+            ->post("/manager/planning/{$planning->id_planning}/valider")
+            ->assertStatus(403);
+    }
+
+    // ─────────────────────────────────────────────
+    // HELPERS
+    // ─────────────────────────────────────────────
+
+    private function creerPlanning(string $statut): Planning
+    {
+        return Planning::create([
             'id_service'      => $this->service->id_service,
             'periode_debut'   => now()->startOfMonth(),
             'periode_fin'     => now()->endOfMonth(),
-            'statut_planning' => 'Transmis',
+            'statut_planning' => $statut,
             'date_creation'   => now(),
         ]);
+    }
 
-        $this->actingAs($this->userAgent)
-            ->post("/rh/plannings/{$planning->id_planning}/valider")
-            ->assertStatus(403);
+    private function ajouterLigne(Planning $planning): void
+    {
+        $typePoste = \App\Models\TypePoste::create(['libelle' => 'Garde test ' . uniqid(), 'couleur' => '#000']);
+        $agentTest = $this->creerDossierAgent($this->creerAgent(), $this->service);
+        \App\Models\LignePlanning::create([
+            'id_planning'  => $planning->id_planning,
+            'id_agent'     => $agentTest->id_agent,
+            'id_typeposte' => $typePoste->id_typeposte,
+            'date_poste'   => now()->addDay(),
+            'heure_debut'  => '08:00',
+            'heure_fin'    => '16:00',
+        ]);
     }
 
     // ─────────────────────────────────────────────

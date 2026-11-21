@@ -11,7 +11,7 @@ use App\Models\User;
 use App\Models\Agent;
 
 /**
- * MajorRoleSeeder — Patch idempotent pour l'ajout du rôle Major
+ * MajorRoleSeeder-Patch idempotent pour l'ajout du rôle Major
  *
  * À exécuter sur une DB existante :
  *   php artisan db:seed --class=MajorRoleSeeder
@@ -79,7 +79,7 @@ class MajorRoleSeeder extends Seeder
         $existingUser = User::where('login', 'rokhaya.mbaye')->first();
 
         if ($existingUser) {
-            $this->command->warn('  ⚠ Utilisateur rokhaya.mbaye existe déjà — ignoré.');
+            $this->command->warn('  ⚠ Utilisateur rokhaya.mbaye existe déjà-ignoré.');
             return;
         }
 
@@ -133,7 +133,7 @@ class MajorRoleSeeder extends Seeder
                 ['Login',    'rokhaya.mbaye'],
                 ['Password', 'Password123!'],
                 ['Rôle',     'Major'],
-                ['Service',  'Urgences (SAU) — id_service=5'],
+                ['Service',  'Urgences (SAU)-id_service=5'],
                 ['Matricule', $matricule],
             ]
         );

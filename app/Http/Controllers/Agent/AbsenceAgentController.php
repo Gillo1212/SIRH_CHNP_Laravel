@@ -11,7 +11,7 @@ use Illuminate\Support\Facades\DB;
 class AbsenceAgentController extends Controller
 {
     /**
-     * Mes absences — liste avec stats
+     * Mes absences-liste avec stats
      */
     public function index()
     {

@@ -239,7 +239,7 @@
                 <div class="mt-3 p-3" style="background:#EFF6FF;border-radius:10px;border:1px solid #DBEAFE;">
                     <div style="font-size:12px;color:#1D4ED8;">
                         <i class="ri-shield-check-line me-1"></i>
-                        <strong>Triade CID</strong> - Ce document sera stocké de façon sécurisée.
+                        <strong>Infos</strong> : Ce document sera stocké de façon sécurisée.
                         Choisissez le niveau de confidentialité approprié pour contrôler l'accès.
                     </div>
                 </div>

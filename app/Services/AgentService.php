@@ -75,11 +75,11 @@ class AgentService
                         ->causedBy(auth()->user())
                         ->performedOn($user)
                         ->withProperties(['matricule' => $agent->matricule])
-                        ->log("Dossier agent complété par la RH — matricule {$agent->matricule}");
+                        ->log("Dossier agent complété par la RH-matricule {$agent->matricule}");
                 }
             }
 
-            // 6. Audit trail (Intégrité CID) — dans la transaction pour garantir la cohérence
+            // 6. Audit trail (Intégrité CID)-dans la transaction pour garantir la cohérence
             activity()
                 ->causedBy(auth()->user())
                 ->performedOn($agent)
@@ -89,13 +89,13 @@ class AgentService
                 ])
                 ->log($userId
                     ? "Dossier agent créé et lié au compte utilisateur ID {$userId}"
-                    : 'Dossier agent créé — compte utilisateur en attente de création'
+                    : 'Dossier agent créé-compte utilisateur en attente de création'
                 );
 
             return $agent;
         });
 
-        // 7. Notifications HORS transaction (effet de bord — ne doit pas annuler la création)
+        // 7. Notifications HORS transaction (effet de bord-ne doit pas annuler la création)
         if (!$userId) {
             try {
                 User::role('AdminSystème')->each(function (User $admin) use ($agent) {

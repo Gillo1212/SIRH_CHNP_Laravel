@@ -27,7 +27,7 @@ class CongeValideManagerNotification extends Notification
 
         return [
             'title'     => 'Congé validé par le Manager',
-            'message'   => ($agent->nom_complet ?? 'Un agent') . ' — ' . ($conge->nbres_jours ?? '?') . ' jour(s) en attente d\'approbation RH.',
+            'message'   => ($agent->nom_complet ?? 'Un agent') . '-' . ($conge->nbres_jours ?? '?') . ' jour(s) en attente d\'approbation RH.',
             'icon'      => 'fa-calendar-check',
             'color'     => '#D1FAE5',
             'iconColor' => '#059669',

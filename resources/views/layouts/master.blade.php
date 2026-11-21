@@ -767,43 +767,6 @@
 
         {{-- Contenu Principal --}}
         <main class="content-wrapper">
-            {{-- Messages Flash --}}
-            @if(session('success'))
-                <div class="alert alert-success mb-4" role="alert">
-                    <div class="d-flex align-items-center gap-2">
-                        <i class="fas fa-check-circle"></i>
-                        <span>{{ session('success') }}</span>
-                    </div>
-                </div>
-            @endif
-
-            @if(session('error'))
-                <div class="alert alert-danger mb-4" role="alert">
-                    <div class="d-flex align-items-center gap-2">
-                        <i class="fas fa-exclamation-circle"></i>
-                        <span>{{ session('error') }}</span>
-                    </div>
-                </div>
-            @endif
-
-            @if(session('warning'))
-                <div class="alert alert-warning mb-4" role="alert">
-                    <div class="d-flex align-items-center gap-2">
-                        <i class="fas fa-exclamation-triangle"></i>
-                        <span>{{ session('warning') }}</span>
-                    </div>
-                </div>
-            @endif
-
-            @if(session('info'))
-                <div class="alert alert-info mb-4" role="alert">
-                    <div class="d-flex align-items-center gap-2">
-                        <i class="fas fa-info-circle"></i>
-                        <span>{{ session('info') }}</span>
-                    </div>
-                </div>
-            @endif
-
             {{-- Erreurs de Validation --}}
             @if($errors->any())
                 <div class="alert alert-danger mb-4" role="alert">

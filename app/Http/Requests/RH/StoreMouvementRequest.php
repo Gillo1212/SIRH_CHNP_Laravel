@@ -18,12 +18,12 @@ class StoreMouvementRequest extends FormRequest
             'date_mouvement'    => 'required|date',
             'motif'             => 'nullable|string|max:1000',
 
-            // Service destination — requis sauf pour Départ
+            // Service destination-requis sauf pour Départ
             'id_service'        => in_array($type, ['Affectation initiale', 'Mutation', 'Retour'])
                                     ? 'required|exists:services,id_service'
                                     : 'nullable|exists:services,id_service',
 
-            // Service origine — requis seulement pour Mutation et Retour
+            // Service origine-requis seulement pour Mutation et Retour
             'id_service_origine'=> in_array($type, ['Mutation', 'Retour'])
                                     ? 'required|exists:services,id_service|different:id_service'
                                     : 'nullable|exists:services,id_service',

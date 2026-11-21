@@ -11,7 +11,7 @@ use Database\Seeders\RoleAndPermissionSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 /**
- * SirhTestCase — Classe de base commune à tous les tests SIRH CHNP
+ * SirhTestCase-Classe de base commune à tous les tests SIRH CHNP
  *
  * Fournit les helpers pour créer des utilisateurs avec rôles,
  * des agents, des services et des données de référence.
@@ -37,7 +37,7 @@ abstract class SirhTestCase extends TestCase
     }
 
     // ══════════════════════════════════════════════════════
-    // HELPERS — CRÉATION D'UTILISATEURS PAR RÔLE
+    // HELPERS-CRÉATION D'UTILISATEURS PAR RÔLE
     // ══════════════════════════════════════════════════════
 
     protected function creerUtilisateur(string $role, array $attrs = []): User
@@ -66,7 +66,7 @@ abstract class SirhTestCase extends TestCase
     protected function creerAgent(): User     { return $this->creerUtilisateur('Agent'); }
 
     // ══════════════════════════════════════════════════════
-    // HELPERS — DONNÉES MÉTIER
+    // HELPERS-DONNÉES MÉTIER
     // ══════════════════════════════════════════════════════
 
     protected function creerService(array $attrs = []): Service

@@ -66,6 +66,6 @@ class Etagere extends Model
 
     public function getReferenceCompleteAttribute(): string
     {
-        return $this->numero ? "{$this->nom_etagere} — Étagère {$this->numero}" : $this->nom_etagere;
+        return $this->numero ? "{$this->nom_etagere}-Étagère {$this->numero}" : $this->nom_etagere;
     }
 }

@@ -23,13 +23,7 @@
         </a>
     </div>
 
-    @if(session('success'))
-    <div class="alert alert-success alert-dismissible fade show" style="border-radius:10px;">
-        <i class="fas fa-check-circle me-2"></i>{{ session('success') }}
-        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-    </div>
-    @endif
-
+    
     <div style="background:var(--theme-panel-bg);border:1px solid var(--theme-border);border-radius:12px;padding:24px;max-width:720px;">
 
         <form method="POST" action="{{ route('admin.settings.update') }}">

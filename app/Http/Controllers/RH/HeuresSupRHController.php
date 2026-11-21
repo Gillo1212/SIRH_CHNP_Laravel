@@ -79,7 +79,7 @@ class HeuresSupRHController extends Controller
 
     /**
      * Signaler une anomalie : écart détecté, le Major doit corriger.
-     * Ne supprime pas la déclaration — le Major garde la main.
+     * Ne supprime pas la déclaration-le Major garde la main.
      */
     public function signalerAnomalie(Request $request, int $id)
     {

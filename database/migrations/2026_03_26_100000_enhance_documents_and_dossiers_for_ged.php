@@ -16,7 +16,7 @@ return new class extends Migration
                   ->default('Actif')
                   ->after('type_document');
 
-            // Niveau de confidentialité (Triade CID — Confidentialité)
+            // Niveau de confidentialité (Triade CID-Confidentialité)
             $table->enum('niveau_confidentialite', ['Public', 'Interne', 'Confidentiel', 'Secret'])
                   ->default('Interne')
                   ->after('statut_document');

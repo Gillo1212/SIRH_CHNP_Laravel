@@ -298,8 +298,6 @@ function showToast(message, type) {
     document.getElementById('toast-container').appendChild(t);
     setTimeout(function(){ t.style.animation='toastOut .3s ease forwards'; setTimeout(function(){ t.remove(); }, 300); }, 4000);
 }
-@if(session('success')) showToast(@json(session('success')), 'success'); @endif
-@if(session('error'))   showToast(@json(session('error')),   'error');   @endif
 
 function rejeterMouvement(id) {
     document.getElementById('form-rejeter').action = '/drh/validations/mouvements/' + id + '/rejeter';

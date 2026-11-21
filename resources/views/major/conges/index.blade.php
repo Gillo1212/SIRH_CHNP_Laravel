@@ -343,12 +343,6 @@ document.getElementById('avis-textarea').addEventListener('input', function() {
     updateCharCount(this);
 });
 
-@if(session('success'))
-    showToast('{{ session('success') }}', 'success');
-@endif
-@if(session('error'))
-    showToast('{{ session('error') }}', 'error');
-@endif
 
 @if($errors->any())
     const modal = new bootstrap.Modal(document.getElementById('modal-avis'));

@@ -275,11 +275,11 @@
                  class="login-branding-logo" onerror="this.style.display='none'">
             <h1>SIRH Sécurisé</h1>
             <p>Système d'Information des Ressources Humaines<br>du Centre Hospitalier National de Pikine</p>
-            <div class="security-badges">
+            <!-- <div class="security-badges">
                 <div class="security-badge"><i class="fas fa-lock"></i><span>Chiffrement AES-256</span></div>
                 <div class="security-badge"><i class="fas fa-shield-alt"></i><span>TRIADE CID</span></div>
                 <div class="security-badge"><i class="fas fa-user-shield"></i><span>RBAC</span></div>
-            </div>
+            </div> -->
         </div>
     </div>
 
@@ -361,11 +361,11 @@
             {{-- Footer --}}
             <div class="login-footer">
                 <p>© {{ date('Y') }} SIRH CHNP - Centre Hospitalier National de Pikine</p>
-                <div class="login-footer-badges">
+                <!-- <div class="login-footer-badges">
                     <div class="footer-badge secure"><i class="fas fa-lock"></i><span>SSL/TLS</span></div>
                     <div class="footer-badge"><i class="fas fa-shield-alt"></i><span>RGPD</span></div>
                     <div class="footer-badge"><i class="fas fa-key"></i><span>AES-256</span></div>
-                </div>
+                </div> -->
             </div>
 
         </div>

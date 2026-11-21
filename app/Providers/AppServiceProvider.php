@@ -144,7 +144,7 @@ class AppServiceProvider extends ServiceProvider
     }
 
     // ──────────────────────────────────────────────────────
-    // OBSERVERS (Intégrité CID — audit automatique)
+    // OBSERVERS (Intégrité CID-audit automatique)
     // ──────────────────────────────────────────────────────
 
     private function registerObservers(): void

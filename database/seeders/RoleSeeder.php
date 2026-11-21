@@ -7,7 +7,7 @@ use Spatie\Permission\Models\Permission;
 use Spatie\Permission\Models\Role;
 
 /**
- * RoleSeeder — Matrice RBAC complète SIRH CHNP
+ * RoleSeeder-Matrice RBAC complète SIRH CHNP
  * Implémente la Confidentialité CID via séparation stricte des droits.
  *
  * Hiérarchie : Agent < Manager < AgentRH < DRH < AdminSystème
@@ -51,7 +51,7 @@ class RoleSeeder extends Seeder
         'heures-sup.view-own',
     ];
 
-    /** Permissions supplémentaires Major (s'ajoutent aux permissions communes) — responsable paramédical */
+    /** Permissions supplémentaires Major (s'ajoutent aux permissions communes)-responsable paramédical */
     private const PERMISSIONS_MAJOR = [
         'agents.view-service',
         'agents.search',

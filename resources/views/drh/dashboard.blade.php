@@ -413,9 +413,7 @@
         <a href="{{ route('drh.kpis') }}" class="action-btn action-btn-outline">
             <i class="fas fa-tachometer-alt"></i> KPIs détaillés
         </a>
-        <!-- <a href="{{ route('drh.budget') }}" class="action-btn action-btn-outline">
-            <i class="fas fa-coins"></i> Suivi budgétaire
-        </a> -->  <!--A implémenter dans la version 2 du projet -->
+          <!--A implémenter dans la version 2 du projet -->
     </div>
 </div>
 

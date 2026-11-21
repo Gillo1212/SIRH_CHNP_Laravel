@@ -8,7 +8,7 @@ use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
 
 /**
- * EnsureManagerService — Confidentialité CID
+ * EnsureManagerService-Confidentialité CID
  * Vérifie que le manager accède uniquement aux ressources de son service.
  */
 class EnsureManagerService

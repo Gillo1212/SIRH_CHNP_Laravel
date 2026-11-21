@@ -836,6 +836,21 @@
                 <span class="sb-tooltip">Mouvements stratégiques</span>
             </a>
 
+            <a href="{{ route('drh.validations.pec') }}" class="sb-item {{ request()->routeIs('drh.validations.pec') ? 'active' : '' }}">
+                <span class="sb-icon"><i class="fas fa-hospital"></i></span>
+                <span class="sb-label">PEC exceptionnelles</span>
+                @php
+                    try {
+                        $pecDrhEnAttente = \App\Models\PriseEnCharge::where('exceptionnelle', true)
+                            ->whereHas('demande', fn($q) => $q->where('statut_demande', 'Validé'))->count();
+                    } catch (\Exception $e) { $pecDrhEnAttente = 0; }
+                @endphp
+                @if($pecDrhEnAttente > 0)
+                    <span class="sb-badge">{{ $pecDrhEnAttente }}</span>
+                @endif
+                <span class="sb-tooltip">PEC exceptionnelles</span>
+            </a>
+
             <div class="sb-section-title">Gestion du Personnel</div>
 
             {{-- Personnel (DRH) --}}

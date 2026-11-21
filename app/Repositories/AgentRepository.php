@@ -83,7 +83,7 @@ class AgentRepository implements AgentRepositoryInterface
     }
 
     /**
-     * Créer un agent (sans la logique métier — dans le Service)
+     * Créer un agent (sans la logique métier-dans le Service)
      */
     public function create(array $data): Agent
     {

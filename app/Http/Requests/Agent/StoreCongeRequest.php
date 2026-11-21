@@ -5,7 +5,7 @@ namespace App\Http\Requests\Agent;
 use Illuminate\Foundation\Http\FormRequest;
 
 /**
- * StoreCongeRequest — Validation demande de congé (Agent)
+ * StoreCongeRequest-Validation demande de congé (Agent)
  * Intégrité CID : toutes les entrées validées avant traitement.
  */
 class StoreCongeRequest extends FormRequest

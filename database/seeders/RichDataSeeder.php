@@ -116,7 +116,7 @@ class RichDataSeeder extends Seeder
             }
         }
 
-        $this->command->info('RichDataSeeder terminé — ' . ($this->matriculeCounter - 12) . ' nouvelles entrées créées.');
+        $this->command->info('RichDataSeeder terminé-' . ($this->matriculeCounter - 12) . ' nouvelles entrées créées.');
     }
 
     // ─────────────────────────────────────────────────────────────────────────
@@ -141,19 +141,23 @@ class RichDataSeeder extends Seeder
         $famille = self::SERVICE_FAMILLES[$svc->nom_service] ?? 'Corps_Administratif';
 
         Agent::create([
-            'user_id'           => $user->id,
-            'matricule'         => $this->nextMatricule(),
-            'nom'               => strtoupper($nom),
-            'prenom'            => $prenom,
-            'date_naissance'    => $this->randomDate('1970-01-01', '1980-12-31'),
-            'sexe'              => 'M',
-            'telephone'         => null,
-            'cni'               => null,
-            'religion'          => null,
-            'categorie_cp'      => 'Cadre_Superieur',
-            'famille_d_emploi'  => $famille,
-            'statut_agent'    => 'Actif',
-            'id_service'        => $svc->id_service,
+            'user_id'            => $user->id,
+            'matricule'          => $this->nextMatricule(),
+            'nom'                => strtoupper($nom),
+            'prenom'             => $prenom,
+            'date_naissance'     => $this->randomDate('1970-01-01', '1980-12-31'),
+            'lieu_naissance'     => 'Dakar',
+            'sexe'               => 'M',
+            'situation_familiale'=> 'Célibataire',
+            'nationalite'        => 'Sénégalaise',
+            'date_prise_service' => $this->randomDate('2005-01-01', '2015-12-31'),
+            'telephone'          => null,
+            'cni'                => null,
+            'religion'           => null,
+            'categorie_cp'       => 'Cadre_Superieur',
+            'famille_d_emploi'   => $famille,
+            'statut_agent'       => 'Actif',
+            'id_service'         => $svc->id_service,
         ]);
 
         // Assigner comme manager du service
@@ -194,19 +198,23 @@ class RichDataSeeder extends Seeder
         }
 
         Agent::create([
-            'user_id'           => $userId,
-            'matricule'         => $this->nextMatricule(),
-            'nom'               => strtoupper($nom),
-            'prenom'            => $prenom,
-            'date_naissance'    => $this->randomDate('1975-01-01', '1998-12-31'),
-            'sexe'              => $sexe,
-            'telephone'         => null,
-            'cni'               => null,
-            'religion'          => null,
-            'categorie_cp'      => $categorie,
-            'famille_d_emploi'  => $famille,
-            'statut_agent'    => $this->randomStatut(),
-            'id_service'        => $svc->id_service,
+            'user_id'            => $userId,
+            'matricule'          => $this->nextMatricule(),
+            'nom'                => strtoupper($nom),
+            'prenom'             => $prenom,
+            'date_naissance'     => $this->randomDate('1975-01-01', '1998-12-31'),
+            'lieu_naissance'     => 'Dakar',
+            'sexe'               => $sexe,
+            'situation_familiale'=> 'Célibataire',
+            'nationalite'        => 'Sénégalaise',
+            'date_prise_service' => $this->randomDate('2010-01-01', '2022-12-31'),
+            'telephone'          => null,
+            'cni'                => null,
+            'religion'           => null,
+            'categorie_cp'       => $categorie,
+            'famille_d_emploi'   => $famille,
+            'statut_agent'       => $this->randomStatut(),
+            'id_service'         => $svc->id_service,
         ]);
     }
 

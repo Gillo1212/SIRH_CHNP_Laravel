@@ -29,7 +29,7 @@ class HeuresSupDeclareeNotification extends Notification
         return [
             'title'     => 'Heures supplémentaires à valider',
             'message'   => ($agent?->nom_complet ?? 'Un agent')
-                . ' — ' . number_format($this->heureSup->nb_heures, 1) . 'h sup'
+                . '-' . number_format($this->heureSup->nb_heures, 1) . 'h sup'
                 . ' (' . ($service?->nom_service ?? 'service inconnu') . ')',
             'icon'      => 'fa-business-time',
             'color'     => '#EDE9FE',

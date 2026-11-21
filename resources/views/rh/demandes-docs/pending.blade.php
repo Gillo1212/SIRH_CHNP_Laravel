@@ -23,13 +23,7 @@
         </a>
     </div>
 
-    @if(session('success'))
-    <div class="alert alert-success alert-dismissible fade show" style="border-radius:10px;">
-        <i class="fas fa-check-circle me-2"></i>{{ session('success') }}
-        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-    </div>
-    @endif
-
+    
     @if($demandes->isEmpty())
     <div style="background:#ECFDF5;border:1px solid #A7F3D0;border-radius:12px;padding:40px 24px;text-align:center;">
         <i class="fas fa-check-double" style="font-size:40px;color:#059669;margin-bottom:12px;display:block;"></i>

@@ -23,7 +23,7 @@ class NouveauCompteARHNotification extends Notification
     public function toMail($notifiable): MailMessage
     {
         return (new MailMessage)
-            ->subject('SIRH CHNP — Nouveau compte à compléter')
+            ->subject('SIRH CHNP-Nouveau compte à compléter')
             ->greeting('Bonjour,')
             ->line('Un nouveau compte utilisateur a été créé par l\'administrateur système.')
             ->line('**Login :** ' . $this->newUser->login)

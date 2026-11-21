@@ -311,9 +311,9 @@ class CongeRHController extends Controller
 
         $headers = ['Matricule', 'Nom', 'Prénom', 'Service'];
         foreach ($typesConge as $t) {
-            $headers[] = $t->libelle . ' — Initial';
-            $headers[] = $t->libelle . ' — Pris';
-            $headers[] = $t->libelle . ' — Reliquat';
+            $headers[] = $t->libelle . '-Initial';
+            $headers[] = $t->libelle . '-Pris';
+            $headers[] = $t->libelle . '-Reliquat';
         }
 
         $export = (new ExcelExport('Soldes Congés ' . $annee))->setHeaders($headers);

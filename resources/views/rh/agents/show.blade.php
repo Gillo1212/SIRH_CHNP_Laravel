@@ -504,12 +504,6 @@
 
 @section('content')
 
-@if(session('success'))
-<div class="alert alert-success alert-dismissible fade show mb-4" style="border-radius:12px;font-size:14px;padding:16px 20px;">
-    <i class="fas fa-check-circle me-2"></i>{{ session('success') }}
-    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-</div>
-@endif
 
 {{-- ═══════════════════════════════════════════════════════════
      HERO PROFIL

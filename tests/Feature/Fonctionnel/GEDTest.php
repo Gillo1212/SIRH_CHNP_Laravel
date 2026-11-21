@@ -8,7 +8,7 @@ use App\Models\Etagere;
 use Tests\SirhTestCase;
 
 /**
- * Tests fonctionnels — Module GED (Section 4.2.1.1)
+ * Tests fonctionnels-Module GED (Section 4.2.1.1)
  *
  * Vérifie :
  *   - Accès selon rôle (Confidentialité CID)
@@ -60,7 +60,7 @@ class GEDTest extends SirhTestCase
     }
 
     // ─────────────────────────────────────────────
-    // ACCÈS PAR RÔLE — Confidentialité CID
+    // ACCÈS PAR RÔLE-Confidentialité CID
     // ─────────────────────────────────────────────
 
     #[\PHPUnit\Framework\Attributes\Test]
@@ -182,7 +182,7 @@ class GEDTest extends SirhTestCase
     }
 
     // ─────────────────────────────────────────────
-    // NIVEAUX DE CONFIDENTIALITÉ — Confidentialité CID
+    // NIVEAUX DE CONFIDENTIALITÉ-Confidentialité CID
     // ─────────────────────────────────────────────
 
     #[\PHPUnit\Framework\Attributes\Test]

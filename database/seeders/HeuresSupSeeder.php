@@ -105,8 +105,8 @@ class HeuresSupSeeder extends Seeder
             $lignes[] = $ligne;
 
             $this->command->line(
-                "     Ligne #{$ligne->id_ligne} — {$agent->prenom} {$agent->nom}"
-                . " — poste {$typeposteId} — {$date} {$hDeb}→{$hFin}"
+                "     Ligne #{$ligne->id_ligne}-{$agent->prenom} {$agent->nom}"
+                . "-poste {$typeposteId}-{$date} {$hDeb}→{$hFin}"
             );
         }
 
@@ -117,11 +117,11 @@ class HeuresSupSeeder extends Seeder
         // On crée des HS avec statuts variés pour illustrer tout le workflow
         $hsData = [
             // [ligne_index, nb_heures, periode, statut]
-            [0, 4.0, 'Trimestre', 'Validé'],     // Nuit +4h — déjà validé par RH
-            [1, 4.0, 'Trimestre', 'En_attente'],  // Garde +4h — en attente
-            [2, 5.0, 'Semestre',  'En_attente'],  // Permanence +5h — en attente
-            [3, 1.0, 'Trimestre', 'En_attente'],  // Nuit +1h — en attente
-            [6, 4.0, 'Trimestre', 'Validé'],     // Garde +4h — déjà validé
+            [0, 4.0, 'Trimestre', 'Validé'],     // Nuit +4h-déjà validé par RH
+            [1, 4.0, 'Trimestre', 'En_attente'],  // Garde +4h-en attente
+            [2, 5.0, 'Semestre',  'En_attente'],  // Permanence +5h-en attente
+            [3, 1.0, 'Trimestre', 'En_attente'],  // Nuit +1h-en attente
+            [6, 4.0, 'Trimestre', 'Validé'],     // Garde +4h-déjà validé
         ];
 
         $hsCreees = 0;
@@ -131,7 +131,7 @@ class HeuresSupSeeder extends Seeder
 
             // Ne pas recréer si déjà existant
             if ($ligne->heureSup()->exists()) {
-                $this->command->line("     ⚠ HeureSup déjà existante pour ligne #{$ligne->id_ligne} — ignorée");
+                $this->command->line("     ⚠ HeureSup déjà existante pour ligne #{$ligne->id_ligne}-ignorée");
                 continue;
             }
 
@@ -148,7 +148,7 @@ class HeuresSupSeeder extends Seeder
             $agent = $agents->get($ligneIdx);
             $this->command->line(
                 "     HeureSup : {$agent->prenom} {$agent->nom}"
-                . " — {$nbH}h — {$periode} — {$statut}"
+                . "-{$nbH}h-{$periode}-{$statut}"
             );
         }
 
@@ -163,7 +163,7 @@ class HeuresSupSeeder extends Seeder
 
         $avisExemples = [
             "Agent disponible, aucun impact sur la permanence du service. Avis favorable.",
-            "Période chargée aux urgences — préférable de décaler d'une semaine si possible.",
+            "Période chargée aux urgences-préférable de décaler d'une semaine si possible.",
             "Congé justifié, remplacé par l'agent de garde. Avis favorable.",
         ];
 
@@ -183,7 +183,7 @@ class HeuresSupSeeder extends Seeder
         $this->command->table(
             ['Donnée', 'Valeur'],
             [
-                ['Planning créé',          "#{$planning->id_planning} — mars 2026 ({$service->nom_service})"],
+                ['Planning créé',          "#{$planning->id_planning}-mars 2026 ({$service->nom_service})"],
                 ['Lignes de planning',     count($lignes)],
                 ['Déclarations HS',        $hsCreees . ' (dont ' . collect($hsData)->where(3, 'En_attente')->count() . ' en attente)'],
                 ['Avis Major sur congés',  $avisCount],

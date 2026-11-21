@@ -5,7 +5,7 @@ namespace Tests\Feature\Securite;
 use Tests\SirhTestCase;
 
 /**
- * Tests de sécurité — Validation des formulaires et Protection CSRF (Section 4.2.1.2)
+ * Tests de sécurité-Validation des formulaires et Protection CSRF (Section 4.2.1.2)
  *
  * Vérifie les mécanismes d'intégrité CID :
  * - Validation stricte des données en entrée (Form Requests)
@@ -24,7 +24,7 @@ class ValidationFormulaireTest extends SirhTestCase
     #[\PHPUnit\Framework\Attributes\Test]
     public function le_middleware_csrf_est_enregistre_dans_l_application(): void
     {
-        // Laravel désactive CSRF en tests (runningUnitTests()) — on vérifie
+        // Laravel désactive CSRF en tests (runningUnitTests())-on vérifie
         // que le middleware est bien déclaré dans la configuration de l'app.
         // En production, toute requête POST sans token valide retourne 419.
         $kernel = $this->app->make(\Illuminate\Contracts\Http\Kernel::class);
@@ -157,7 +157,7 @@ class ValidationFormulaireTest extends SirhTestCase
     }
 
     // ──────────────────────────────────────────────────────
-    // PROTECTION XSS — REJET DES SCRIPTS MALVEILLANTS
+    // PROTECTION XSS-REJET DES SCRIPTS MALVEILLANTS
     // ──────────────────────────────────────────────────────
 
     #[\PHPUnit\Framework\Attributes\Test]

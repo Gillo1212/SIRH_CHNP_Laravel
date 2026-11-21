@@ -7,7 +7,7 @@ use App\Models\Demande;
 use Tests\SirhTestCase;
 
 /**
- * Tests fonctionnels — Gestion des Absences (Section 4.2.1.1)
+ * Tests fonctionnels-Gestion des Absences (Section 4.2.1.1)
  *
  * Vérifie l'enregistrement des absences par Manager/Major
  * et la validation des justificatifs par AgentRH.

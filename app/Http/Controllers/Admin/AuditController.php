@@ -7,7 +7,7 @@ use Illuminate\Http\Request;
 use Spatie\Activitylog\Models\Activity;
 
 /**
- * AuditController — Traçabilité complète (Intégrité CID)
+ * AuditController-Traçabilité complète (Intégrité CID)
  * Consultation, filtrage et export des journaux d'audit.
  */
 class AuditController extends Controller

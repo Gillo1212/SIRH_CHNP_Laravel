@@ -45,7 +45,7 @@ class UpdateAgentRequest extends FormRequest
             'id_service'         => ['nullable', 'integer', 'exists:services,id_service'],
             'id_division'        => ['nullable', 'integer', 'exists:divisions,id_division'],
 
-            // Famille (tableaux dynamiques — conservés)
+            // Famille (tableaux dynamiques-conservés)
             'enfants'                          => ['nullable', 'array', 'max:15'],
             'enfants.*.prenom_complet'         => ['required_with:enfants.*.date_naissance_enfant', 'string', 'max:100'],
             'enfants.*.date_naissance_enfant'  => ['required_with:enfants.*.prenom_complet', 'date'],

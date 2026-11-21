@@ -17,7 +17,7 @@ use Spatie\Permission\Models\Role;
 class UserAccountController extends Controller
 {
     // =========================================================
-    // LISTE — Tous les comptes
+    // LISTE-Tous les comptes
     // =========================================================
 
     public function index(Request $request)
@@ -59,7 +59,7 @@ class UserAccountController extends Controller
     }
 
     // =========================================================
-    // PAGE COMBINÉE — Agents sans compte
+    // PAGE COMBINÉE-Agents sans compte
     // =========================================================
 
     public function agentsSansCompte()
@@ -82,7 +82,7 @@ class UserAccountController extends Controller
     }
 
     // =========================================================
-    // ENDPOINT JSON — Données d'un compte pour le modal édition
+    // ENDPOINT JSON-Données d'un compte pour le modal édition
     // =========================================================
 
     public function getData(int $id)
@@ -137,7 +137,7 @@ class UserAccountController extends Controller
     }
 
     // =========================================================
-    // AFFICHER — Détail compte
+    // AFFICHER-Détail compte
     // =========================================================
 
     public function show(int $id)

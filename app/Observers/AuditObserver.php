@@ -7,7 +7,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Request;
 
 /**
- * AuditObserver — Intégrité CID
+ * AuditObserver-Intégrité CID
  * Enregistre automatiquement toutes les créations, modifications
  * et suppressions sur les modèles sensibles via Spatie Activity Log.
  *

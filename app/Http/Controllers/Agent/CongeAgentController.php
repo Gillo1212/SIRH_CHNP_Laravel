@@ -19,7 +19,7 @@ use Illuminate\Support\Facades\Storage;
 class CongeAgentController extends Controller
 {
     /**
-     * Mes congés — solde + historique
+     * Mes congés-solde + historique
      */
     public function index()
     {

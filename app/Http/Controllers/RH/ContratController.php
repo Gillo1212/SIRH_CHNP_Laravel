@@ -292,7 +292,7 @@ class ContratController extends Controller
             activity()
                 ->causedBy(auth()->user())
                 ->on($contrat)
-                ->log("Clôture contrat #{$contrat->id_contrat} — agent {$contrat->agent->nom_complet}");
+                ->log("Clôture contrat #{$contrat->id_contrat}-agent {$contrat->agent->nom_complet}");
         });
 
         return redirect()->back()

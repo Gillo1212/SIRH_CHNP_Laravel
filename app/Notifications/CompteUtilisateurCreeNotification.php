@@ -20,7 +20,7 @@ class CompteUtilisateurCreeNotification extends Notification
     public function toMail($notifiable): MailMessage
     {
         return (new MailMessage)
-            ->subject('SIRH CHNP — Vos identifiants de connexion')
+            ->subject('SIRH CHNP-Vos identifiants de connexion')
             ->greeting("Bonjour {$notifiable->prenom},")
             ->line('Votre compte sur le Système d\'Information RH du CHNP a été créé.')
             ->line('**Identifiant :** ' . $this->login)

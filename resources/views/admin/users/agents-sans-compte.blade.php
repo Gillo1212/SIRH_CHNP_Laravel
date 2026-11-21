@@ -82,25 +82,5 @@
     @endif
 </div>
 
-@if(session('success'))
-<div class="position-fixed top-0 end-0 p-3" style="z-index: 1100;">
-    <div id="toastSuccess" class="toast align-items-center text-white bg-success border-0" role="alert">
-        <div class="d-flex">
-            <div class="toast-body" style="font-size:13px;">
-                <i class="fas fa-check-circle me-2"></i>{{ session('success') }}
-            </div>
-            <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
-        </div>
-    </div>
-</div>
-@push('scripts')
-<script>
-document.addEventListener('DOMContentLoaded', function () {
-    var t = new bootstrap.Toast(document.getElementById('toastSuccess'), { delay: 5000 });
-    t.show();
-});
-</script>
-@endpush
-@endif
 
 @endsection

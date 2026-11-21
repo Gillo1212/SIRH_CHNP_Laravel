@@ -62,7 +62,7 @@ class ResetToAdminSeeder extends Seeder
             DB::table('conjoints')->truncate();
         }
 
-        // Agents (sauf admin) — forceDelete pour ignorer soft deletes
+        // Agents (sauf admin)-forceDelete pour ignorer soft deletes
         Agent::withTrashed()->where('id_agent', '!=', $adminAgentId)->forceDelete();
 
         // Users (sauf admin)

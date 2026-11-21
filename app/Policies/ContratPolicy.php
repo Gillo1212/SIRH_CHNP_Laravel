@@ -6,7 +6,7 @@ use App\Models\Contrat;
 use App\Models\User;
 
 /**
- * ContratPolicy — Confidentialité CID
+ * ContratPolicy-Confidentialité CID
  * Couche d'autorisation granulaire sur les contrats.
  * Complète la protection middleware role:AgentRH|DRH (défense en profondeur).
  */

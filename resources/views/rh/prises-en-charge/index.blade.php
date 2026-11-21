@@ -32,13 +32,7 @@
         </button>
     </div>
 
-    @if(session('success'))
-    <div class="alert alert-success alert-dismissible fade show" style="border-radius:10px;">
-        <i class="fas fa-check-circle me-2"></i>{{ session('success') }}
-        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-    </div>
-    @endif
-
+    
     {{-- Stats rapides --}}
     <div class="row g-3 mb-4">
         <div class="col-6 col-xl-3">

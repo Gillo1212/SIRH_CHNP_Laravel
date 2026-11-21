@@ -48,7 +48,6 @@ return new class extends Migration
                 'Ouvrier',
                 'Sans_Diplome',
             ])->nullable();
-            $table->string('numero_assurance', 50)->nullable();
             $table->enum('statut', ['Actif', 'En_congé', 'Suspendu', 'Retraité'])->default('Actif');
             $table->string('photo', 255)->nullable();
 

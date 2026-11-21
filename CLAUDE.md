@@ -17,7 +17,8 @@
 1. **Chiffrement des données CRITIQUES en base** :
    - adresse (AES-256)
    - telephone (AES-256)
-   - numero_assurance (AES-256)
+   - cni (AES-256)
+   - *(numero_assurance supprimé — migration 2026_04_06_000002)*
 
 2. **RBAC strict** (6 rôles + permissions granulaires)
 3. **Policies Laravel** : Vérification autorisation AVANT chaque action
@@ -84,7 +85,7 @@ Schema::create('agents', function (Blueprint $table) {
     $table->text('adresse')->nullable();
     $table->string('telephone')->nullable();
     $table->string('email')->nullable();
-    $table->string('numero_assurance')->nullable();
+    $table->text('cni')->nullable();              // chiffré (numero_assurance supprimé)
     
     // Données professionnelles
     $table->date('date_recrutement');
@@ -150,7 +151,7 @@ voir_mes_demandes
 ---
 
 ### **2. Major** ⭐ RÔLE TERRAIN
-**Contexte** : Rôle spécifique milieu hospitalier — chef de salle/major infirmier. Gère son équipe opérationnellement (plannings, absences, heures sup) sans pouvoir valider les congés.
+**Contexte** : Rôle spécifique milieu hospitalier-chef de salle/major infirmier. Gère son équipe opérationnellement (plannings, absences, heures sup) sans pouvoir valider les congés.
 
 **Permissions** :
 ```
@@ -176,7 +177,7 @@ enregistrer_absence          // Enregistre les absences de son équipe
 voir_planning_service
 creer_planning
 modifier_planning
-transmettre_planning         // Transmet au RH pour validation
+transmettre_planning         // Transmet au Manager pour validation
 
 // Heures supplémentaires
 gerer_heures_sup             // Saisie et suivi des heures sup de l'équipe
@@ -209,6 +210,8 @@ voir_planning_service
 creer_planning
 modifier_planning
 transmettre_planning
+valider_planning             // Valide les plannings transmis par le Major
+rejeter_planning
 
 // Dashboard
 voir_dashboard_manager
@@ -236,8 +239,7 @@ gerer_soldes_conges
 valider_justificatif_absence
 
 // Plannings
-valider_planning
-rejeter_planning
+voir_planning_service        // Lecture seule (plannings diffusés par le Manager)
 
 // GED
 gerer_documents
@@ -375,8 +377,8 @@ impersonner_utilisateur      // Pour support/debug
 ### **MODULE 5 : GESTION PLANNINGS**
 - Création planning mensuel (Manager **ou Major**)
 - Types postes : Jour, Nuit, Garde, Repos, Astreinte
-- Transmission à RH
-- Validation/Rejet RH
+- Workflow : Brouillon → Transmis (Major) → Validé/Rejeté (Manager) → Diffusé au RH
+- RH : consultation seule des plannings diffusés
 - Export PDF
 - **Heures supplémentaires** : Saisie et suivi par le Major
 

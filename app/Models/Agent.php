@@ -39,7 +39,7 @@ class Agent extends Model
         'adresse',            // AES-256
         'telephone',          // AES-256
         'email',
-        'cni',                // AES-256 — Carte Nationale d'Identité
+        'cni',                // AES-256-Carte Nationale d'Identité
         'religion',
         'date_prise_service',
         'fonction',
@@ -58,7 +58,7 @@ class Agent extends Model
         return [
             'adresse'           => 'encrypted', // Confidentialité CID
             'telephone'         => 'encrypted', // Confidentialité CID
-            'cni'               => 'encrypted', // Confidentialité CID — CNI sensible
+            'cni'               => 'encrypted', // Confidentialité CID-CNI sensible
             'date_naissance'    => 'date',
             'date_prise_service'=> 'date',
             'account_pending'   => 'boolean',

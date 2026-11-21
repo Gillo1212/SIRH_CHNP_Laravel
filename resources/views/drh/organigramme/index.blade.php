@@ -931,9 +931,6 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     renderTree();
 
-    @if(session('success'))
-        showToast(@json(session('success')), 'success');
-    @endif
 });
 </script>
 @endpush

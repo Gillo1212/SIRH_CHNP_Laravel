@@ -195,13 +195,7 @@
 @section('content')
 <div class="container-fluid px-4 py-3">
 
-    @if(session('success'))
-        <div class="alert alert-success alert-dismissible fade show border-0 mb-3" style="border-radius:10px;background:#ECFDF5;color:#065F46;">
-            {{ session('success') }}
-            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-        </div>
-    @endif
-
+    
     {{-- TOOLBAR --}}
     <div class="d-flex align-items-center justify-content-between mb-4 flex-wrap gap-3">
         <div>

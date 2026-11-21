@@ -7,7 +7,7 @@ use App\Models\Service;
 use App\Models\User;
 
 /**
- * PlanningPolicy — Confidentialité CID
+ * PlanningPolicy-Confidentialité CID
  * Contrôle d'accès granulaire sur les plannings de service.
  *
  * Cycle de vie : Brouillon → Transmis → Validé|Rejeté
@@ -136,7 +136,7 @@ class PlanningPolicy
     }
 
     /**
-     * Valider un planning — AgentRH/DRH.
+     * Valider un planning-AgentRH/DRH.
      * Le planning doit être en statut Transmis.
      */
     public function valider(User $user, Planning $planning): bool
@@ -146,7 +146,7 @@ class PlanningPolicy
     }
 
     /**
-     * Rejeter un planning — AgentRH/DRH.
+     * Rejeter un planning-AgentRH/DRH.
      * Le planning doit être en statut Transmis.
      */
     public function rejeter(User $user, Planning $planning): bool
@@ -155,7 +155,7 @@ class PlanningPolicy
     }
 
     /**
-     * Supprimer un planning — AgentRH/DRH.
+     * Supprimer un planning-AgentRH/DRH.
      * Uniquement s'il est en Brouillon.
      */
     public function delete(User $user, Planning $planning): bool

@@ -65,7 +65,7 @@ class PlanningMajorController extends Controller
 
                 $events[] = [
                     'id'    => 'ligne-' . $ligne->id_ligne,
-                    'title' => $ligne->agent->prenom . ' ' . substr($ligne->agent->nom, 0, 1) . '. — ' . $ligne->typePoste->libelle,
+                    'title' => $ligne->agent->prenom . ' ' . substr($ligne->agent->nom, 0, 1) . '.-' . $ligne->typePoste->libelle,
                     'start' => $dateStr . 'T' . $heureDebut,
                     'end'   => $endDate . 'T' . $heureFin,
                     'backgroundColor' => $color,
@@ -336,9 +336,9 @@ class PlanningMajorController extends Controller
         DB::transaction(function () use ($planning) {
             $planning->transmettre();
             activity()->causedBy(auth()->user())->performedOn($planning)
-                ->log('Planning transmis à la RH par le major');
+                ->log('Planning transmis au Manager par le major');
         });
 
-        return back()->with('success', 'Planning transmis au service RH pour validation.');
+        return back()->with('success', 'Planning transmis au Manager pour validation.');
     }
 }

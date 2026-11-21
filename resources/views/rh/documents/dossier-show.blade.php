@@ -212,13 +212,7 @@
 @section('content')
 <div class="container-fluid px-4 py-3">
 
-    @if(session('success'))
-        <div class="alert alert-success alert-dismissible fade show border-0 mb-3" style="border-radius:10px;background:#ECFDF5;color:#065F46;">
-            {{ session('success') }}
-            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-        </div>
-    @endif
-
+    
     {{-- ── HERO (inchangé) ──────────────────────────────────────── --}}
     @php $agent = $dossier->agent; @endphp
     <div class="dossier-hero">

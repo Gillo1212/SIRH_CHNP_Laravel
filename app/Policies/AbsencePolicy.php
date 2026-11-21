@@ -8,7 +8,7 @@ use App\Models\Service;
 use App\Models\User;
 
 /**
- * AbsencePolicy — Confidentialité CID
+ * AbsencePolicy-Confidentialité CID
  * Contrôle d'accès granulaire sur les absences.
  *
  * Enregistrement : Manager ou Major → Validation justificatif : AgentRH
@@ -112,7 +112,7 @@ class AbsencePolicy
     }
 
     /**
-     * Supprimer une absence — AgentRH/DRH uniquement.
+     * Supprimer une absence-AgentRH/DRH uniquement.
      */
     public function delete(User $user, Absence $absence): bool
     {
@@ -120,7 +120,7 @@ class AbsencePolicy
     }
 
     /**
-     * Valider le justificatif d'une absence — AgentRH uniquement.
+     * Valider le justificatif d'une absence-AgentRH uniquement.
      */
     public function validerJustificatif(User $user, Absence $absence): bool
     {
@@ -128,7 +128,7 @@ class AbsencePolicy
     }
 
     /**
-     * Justifier une absence — Agent (sa propre absence).
+     * Justifier une absence-Agent (sa propre absence).
      */
     public function justifier(User $user, Absence $absence): bool
     {

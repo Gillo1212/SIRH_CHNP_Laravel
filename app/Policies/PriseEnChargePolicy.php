@@ -6,7 +6,7 @@ use App\Models\PriseEnCharge;
 use App\Models\User;
 
 /**
- * PriseEnChargePolicy — Confidentialité CID
+ * PriseEnChargePolicy-Confidentialité CID
  * Contrôle d'accès granulaire sur les prises en charge médicales.
  *
  * Workflow :
@@ -64,7 +64,7 @@ class PriseEnChargePolicy
     }
 
     /**
-     * Valider une PEC standard — AgentRH.
+     * Valider une PEC standard-AgentRH.
      * La demande doit être en attente.
      */
     public function valider(User $user, PriseEnCharge $priseEnCharge): bool
@@ -78,7 +78,7 @@ class PriseEnChargePolicy
     }
 
     /**
-     * Rejeter une PEC — AgentRH ou DRH.
+     * Rejeter une PEC-AgentRH ou DRH.
      */
     public function rejeter(User $user, PriseEnCharge $priseEnCharge): bool
     {
@@ -92,7 +92,8 @@ class PriseEnChargePolicy
 
     /**
      * Télécharger l'attestation de prise en charge.
-     * - Agent : sa propre attestation (statut Approuvé)
+     * - Agent : sa propre attestation, une fois le workflow terminé
+     *   (PEC standard validée RH, ou PEC exceptionnelle approuvée DRH)
      * - AgentRH/DRH : toutes les attestations générées
      */
     public function telechargerAttestation(User $user, PriseEnCharge $priseEnCharge): bool
@@ -102,9 +103,8 @@ class PriseEnChargePolicy
         }
 
         $agentId = $priseEnCharge->demande?->id_agent;
-        $statut  = $priseEnCharge->demande?->statut_demande;
 
         return $user->agent?->id_agent === $agentId
-            && $statut === 'Approuvé';
+            && $priseEnCharge->attestation_disponible;
     }
 }

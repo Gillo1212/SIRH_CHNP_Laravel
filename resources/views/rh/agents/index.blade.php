@@ -1143,35 +1143,6 @@ body.modal-open { padding-right:0 !important; }
     </div>
 </div>
 
-{{-- ═══════════════════════════════════════════════════════════════════════
-     TOASTS
-     ═══════════════════════════════════════════════════════════════════════ --}}
-@if(session('success') || session('error') || session('warning'))
-<div class="position-fixed bottom-0 end-0 p-3" style="z-index:1200;">
-    @if(session('success'))
-    <div id="toastSuccess" class="toast align-items-center text-white border-0" role="alert"
-         style="background:linear-gradient(135deg,#059669,#10B981);border-radius:12px;min-width:280px;box-shadow:0 8px 24px rgba(5,150,105,.35);">
-        <div class="d-flex">
-            <div class="toast-body" style="font-size:13px;font-weight:500;">
-                <i class="fas fa-circle-check me-2"></i>{{ session('success') }}
-            </div>
-            <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
-        </div>
-    </div>
-    @endif
-    @if(session('error'))
-    <div id="toastError" class="toast align-items-center text-white border-0" role="alert"
-         style="background:linear-gradient(135deg,#DC2626,#EF4444);border-radius:12px;min-width:280px;box-shadow:0 8px 24px rgba(220,38,38,.35);">
-        <div class="d-flex">
-            <div class="toast-body" style="font-size:13px;font-weight:500;">
-                <i class="fas fa-circle-xmark me-2"></i>{{ session('error') }}
-            </div>
-            <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
-        </div>
-    </div>
-    @endif
-</div>
-@endif
 
 @push('scripts')
 <script>

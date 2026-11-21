@@ -8,7 +8,7 @@ use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
 
 /**
- * EnsureMajorService — Confidentialité CID
+ * EnsureMajorService-Confidentialité CID
  * Vérifie que le major accède uniquement aux ressources de son service.
  */
 class EnsureMajorService

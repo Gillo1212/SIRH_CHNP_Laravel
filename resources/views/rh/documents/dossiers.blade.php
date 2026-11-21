@@ -137,13 +137,7 @@
 @section('content')
 <div class="container-fluid px-4 py-3">
 
-    @if(session('success'))
-        <div class="alert alert-success alert-dismissible fade show border-0 mb-3" style="border-radius:10px;background:#ECFDF5;color:#065F46;">
-            <i class="ri-checkbox-circle-line me-2"></i>{{ session('success') }}
-            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-        </div>
-    @endif
-
+    
     {{-- ── TOOLBAR ─────────────────────────────────────────────── --}}
     <div class="bg-white rounded shadow-sm p-3 mb-4">
         <div class="d-flex align-items-center gap-2 flex-wrap justify-content-between">

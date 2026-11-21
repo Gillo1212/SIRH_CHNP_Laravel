@@ -12,7 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('mouvements', function (Blueprint $table) {
-            // Traçabilité signature DRH — distinct de la validation (Intégrité CID)
+            // Traçabilité signature DRH-distinct de la validation (Intégrité CID)
             $table->unsignedBigInteger('signe_par')->nullable()->after('decision_generee');
             $table->foreign('signe_par')->references('id')->on('users')->nullOnDelete();
             $table->timestamp('date_signature')->nullable()->after('signe_par');

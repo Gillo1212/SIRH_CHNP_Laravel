@@ -6,7 +6,7 @@ use App\Models\Service;
 use App\Models\User;
 
 /**
- * ServicePolicy — Confidentialité CID
+ * ServicePolicy-Confidentialité CID
  * Contrôle d'accès granulaire sur les services hospitaliers.
  */
 class ServicePolicy
@@ -51,7 +51,7 @@ class ServicePolicy
     }
 
     /**
-     * Créer un service — AgentRH et DRH uniquement
+     * Créer un service-AgentRH et DRH uniquement
      */
     public function create(User $user): bool
     {
@@ -59,7 +59,7 @@ class ServicePolicy
     }
 
     /**
-     * Modifier un service — AgentRH et DRH uniquement
+     * Modifier un service-AgentRH et DRH uniquement
      */
     public function update(User $user, Service $service): bool
     {
@@ -67,7 +67,7 @@ class ServicePolicy
     }
 
     /**
-     * Supprimer un service — DRH uniquement (si aucun agent)
+     * Supprimer un service-DRH uniquement (si aucun agent)
      */
     public function delete(User $user, Service $service): bool
     {

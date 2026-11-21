@@ -7,7 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
 /**
- * BackupController — Sauvegardes BDD (Disponibilité CID)
+ * BackupController-Sauvegardes BDD (Disponibilité CID)
  * Création, liste, téléchargement et suppression des backups.
  */
 class BackupController extends Controller

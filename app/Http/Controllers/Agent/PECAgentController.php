@@ -89,7 +89,7 @@ class PECAgentController extends Controller
     {
         $pec = PriseEnCharge::with(['demande.agent'])
             ->whereHas('demande', fn($q) => $q->where('id_agent', $this->agentId()))
-            ->whereHas('demande', fn($q) => $q->where('statut_demande', 'Approuvé'))
+            ->attestationDisponible()
             ->findOrFail($id);
 
         return redirect()->route('agent.pec.show', $id)

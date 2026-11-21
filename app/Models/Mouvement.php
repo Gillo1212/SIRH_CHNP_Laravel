@@ -31,7 +31,7 @@ class Mouvement extends Model
     }
 
     // ──────────────────────────────────────────────────
-    // AUDIT — Intégrité CID
+    // AUDIT-Intégrité CID
     // ──────────────────────────────────────────────────
     public function getActivitylogOptions(): LogOptions
     {

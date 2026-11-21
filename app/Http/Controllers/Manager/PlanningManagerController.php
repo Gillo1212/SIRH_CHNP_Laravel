@@ -70,7 +70,7 @@ class PlanningManagerController extends Controller
 
                 $events[] = [
                     'id'    => 'ligne-' . $ligne->id_ligne,
-                    'title' => $ligne->agent->prenom . ' ' . substr($ligne->agent->nom, 0, 1) . '. — ' . $ligne->typePoste->libelle,
+                    'title' => $ligne->agent->prenom . ' ' . substr($ligne->agent->nom, 0, 1) . '.-' . $ligne->typePoste->libelle,
                     'start' => $dateStr . 'T' . $heureDebut,
                     'end'   => $endDate . 'T' . $heureFin,
                     'backgroundColor' => $color,
@@ -94,7 +94,7 @@ class PlanningManagerController extends Controller
     // ─────────────────────────────────────────────────────────────────────
 
     /**
-     * Créer — redirige vers index (la création se fait via modal)
+     * Créer-redirige vers index (la création se fait via modal)
      */
     public function create()
     {
@@ -213,7 +213,7 @@ class PlanningManagerController extends Controller
     }
 
     /**
-     * Créer un planning — POST depuis le modal
+     * Créer un planning-POST depuis le modal
      */
     public function store(StorePlanningRequest $request)
     {

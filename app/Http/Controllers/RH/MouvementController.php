@@ -212,7 +212,7 @@ class MouvementController extends Controller
             activity()
                 ->causedBy(auth()->user())
                 ->on($mouvement)
-                ->log("Mouvement #{$mouvement->id_mouvement} effectué — agent {$agent->nom_complet}");
+                ->log("Mouvement #{$mouvement->id_mouvement} effectué-agent {$agent->nom_complet}");
         });
 
         return redirect()->back()

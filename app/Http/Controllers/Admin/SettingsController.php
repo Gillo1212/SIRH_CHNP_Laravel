@@ -10,7 +10,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
 /**
- * SettingsController — Paramètres système (Disponibilité CID)
+ * SettingsController-Paramètres système (Disponibilité CID)
  * Gère la configuration persistante via la table settings.
  */
 class SettingsController extends Controller

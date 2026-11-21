@@ -23,7 +23,7 @@ return new class extends Migration
                   ->default('en_attente')
                   ->after('motif');
 
-            // Traçabilité — Intégrité CID
+            // Traçabilité-Intégrité CID
             $table->unsignedBigInteger('cree_par')->nullable()->after('statut');
             $table->foreign('cree_par')->references('id')->on('users')->nullOnDelete();
 

@@ -12,6 +12,20 @@ class UserSeeder extends Seeder
 {
     private const DEFAULT_PASSWORD = 'Password123!';
 
+    /** Champs obligatoires communs à tous les agents */
+    private function agentDefaults(): array
+    {
+        return [
+            'lieu_naissance'     => 'Dakar',
+            'situation_familiale'=> 'Célibataire',
+            'nationalite'        => 'Sénégalaise',
+            'date_prise_service' => '2010-01-01',
+            'telephone'          => null,
+            'cni'                => null,
+            'religion'           => null,
+        ];
+    }
+
     public function run(): void
     {
         // 1. ADMINISTRATEUR SYSTÈME
@@ -25,21 +39,18 @@ class UserSeeder extends Seeder
         ]);
         $admin->assignRole('AdminSystème');
 
-        Agent::create([
+        Agent::create(array_merge($this->agentDefaults(), [
             'user_id'          => $admin->id,
             'matricule'        => 'CHNP-00001',
             'nom'              => 'DIOP',
             'prenom'           => 'Amadou',
             'date_naissance'   => '1980-05-15',
             'sexe'             => 'M',
-            'telephone'        => null,
-            'cni'              => null,
-            'religion'         => null,
             'categorie_cp'     => 'Cadre_Superieur',
             'famille_d_emploi' => 'Corps_Administratif',
             'statut_agent'     => 'Actif',
             'id_service'       => 17,
-        ]);
+        ]));
 
         // 2. AGENT RH
         $rh = User::create([
@@ -52,21 +63,19 @@ class UserSeeder extends Seeder
         ]);
         $rh->assignRole('AgentRH');
 
-        Agent::create([
+        Agent::create(array_merge($this->agentDefaults(), [
             'user_id'          => $rh->id,
             'matricule'        => 'CHNP-00002',
             'nom'              => 'SARR',
             'prenom'           => 'Fatou',
             'date_naissance'   => '1985-03-20',
+            'lieu_naissance'   => 'Thiès',
             'sexe'             => 'F',
-            'telephone'        => null,
-            'cni'              => null,
-            'religion'         => null,
             'categorie_cp'     => 'Cadre_Superieur',
             'famille_d_emploi' => 'Corps_Administratif',
             'statut_agent'     => 'Actif',
             'id_service'       => 10,
-        ]);
+        ]));
 
         // 3. MANAGER (Pédiatrie)
         $manager = User::create([
@@ -79,27 +88,26 @@ class UserSeeder extends Seeder
         ]);
         $manager->assignRole('Manager');
 
-        Agent::create([
+        Agent::create(array_merge($this->agentDefaults(), [
             'user_id'          => $manager->id,
             'matricule'        => 'CHNP-00003',
             'nom'              => 'NDIAYE',
             'prenom'           => 'Moussa',
             'date_naissance'   => '1978-11-10',
+            'lieu_naissance'   => 'Saint-Louis',
             'sexe'             => 'M',
-            'telephone'        => null,
-            'cni'              => null,
-            'religion'         => null,
+            'date_prise_service'=> '2008-09-15',
             'categorie_cp'     => 'Cadre_Superieur',
             'famille_d_emploi' => 'Corps_Médical',
             'statut_agent'     => 'Actif',
             'id_service'       => 1,
-        ]);
+        ]));
 
         DB::table('services')->where('id_service', 1)->update([
             'id_agent_manager' => $manager->id,
         ]);
 
-        // 4. MAJOR DE SERVICE (Urgences - service paramédical)
+        // 4. MAJOR DE SERVICE (Urgences)
         $major = User::create([
             'name'                => 'Rokhaya MBAYE',
             'login'               => 'rokhaya.mbaye',
@@ -110,27 +118,25 @@ class UserSeeder extends Seeder
         ]);
         $major->assignRole('Major');
 
-        Agent::create([
+        Agent::create(array_merge($this->agentDefaults(), [
             'user_id'          => $major->id,
             'matricule'        => 'CHNP-00004B',
             'nom'              => 'MBAYE',
             'prenom'           => 'Rokhaya',
             'date_naissance'   => '1983-06-18',
             'sexe'             => 'F',
-            'telephone'        => null,
-            'cni'              => null,
-            'religion'         => null,
+            'date_prise_service'=> '2012-01-01',
             'categorie_cp'     => 'Cadre_Moyen',
             'famille_d_emploi' => 'Corps_Paramédical',
             'statut_agent'     => 'Actif',
-            'id_service'       => 5, // Urgences (SAU)
-        ]);
+            'id_service'       => 5,
+        ]));
 
         DB::table('services')->where('id_service', 5)->update([
             'id_agent_major' => $major->id,
         ]);
 
-        // 5. AGENT (Personnel de base — Pédiatrie)
+        // 5. AGENT (Pédiatrie)
         $agent = User::create([
             'name'                => 'Aïssatou FALL',
             'login'               => 'aissatou.fall',
@@ -141,23 +147,22 @@ class UserSeeder extends Seeder
         ]);
         $agent->assignRole('Agent');
 
-        Agent::create([
+        Agent::create(array_merge($this->agentDefaults(), [
             'user_id'          => $agent->id,
             'matricule'        => 'CHNP-00004',
             'nom'              => 'FALL',
             'prenom'           => 'Aïssatou',
             'date_naissance'   => '1992-07-25',
+            'lieu_naissance'   => 'Kaolack',
             'sexe'             => 'F',
-            'telephone'        => null,
-            'cni'              => null,
-            'religion'         => null,
+            'date_prise_service'=> '2018-03-01',
             'categorie_cp'     => 'Technicien_Superieur',
             'famille_d_emploi' => 'Corps_Paramédical',
             'statut_agent'     => 'Actif',
             'id_service'       => 1,
-        ]);
+        ]));
 
-        // 6. DRH (Directeur des Ressources Humaines)
+        // 6. DRH
         $drh = User::create([
             'name'                => 'Ibrahima DIALLO',
             'login'               => 'ibrahima.diallo',
@@ -168,23 +173,22 @@ class UserSeeder extends Seeder
         ]);
         $drh->assignRole('DRH');
 
-        Agent::create([
+        Agent::create(array_merge($this->agentDefaults(), [
             'user_id'          => $drh->id,
             'matricule'        => 'CHNP-00005',
             'nom'              => 'DIALLO',
             'prenom'           => 'Ibrahima',
             'date_naissance'   => '1975-09-12',
+            'lieu_naissance'   => 'Ziguinchor',
             'sexe'             => 'M',
-            'telephone'        => null,
-            'cni'              => null,
-            'religion'         => null,
+            'date_prise_service'=> '2005-04-01',
             'categorie_cp'     => 'Cadre_Superieur',
             'famille_d_emploi' => 'Corps_Administratif',
             'statut_agent'     => 'Actif',
             'id_service'       => 10,
-        ]);
+        ]));
 
-        // 6-11. Agents supplémentaires pour tests
+        // 7–12. Agents supplémentaires
         $agentsData = [
             ['nom' => 'SY',     'prenom' => 'Ousmane', 'sexe' => 'M', 'service' => 1,  'famille' => 'Corps_Médical'],
             ['nom' => 'CISSE',  'prenom' => 'Mariama', 'sexe' => 'F', 'service' => 2,  'famille' => 'Corps_Paramédical'],
@@ -205,21 +209,18 @@ class UserSeeder extends Seeder
             ]);
             $u->assignRole('Agent');
 
-            Agent::create([
+            Agent::create(array_merge($this->agentDefaults(), [
                 'user_id'          => $u->id,
                 'matricule'        => 'CHNP-' . str_pad(6 + $index, 5, '0', STR_PAD_LEFT),
                 'nom'              => $data['nom'],
                 'prenom'           => $data['prenom'],
                 'date_naissance'   => '1990-01-01',
                 'sexe'             => $data['sexe'],
-                'telephone'        => null,
-                'cni'              => null,
-                'religion'         => null,
                 'categorie_cp'     => 'Agent_Administratif',
                 'famille_d_emploi' => $data['famille'],
                 'statut_agent'     => 'Actif',
                 'id_service'       => $data['service'],
-            ]);
+            ]));
         }
     }
 }

@@ -20,9 +20,7 @@
         </a>
     </div>
 
-    @if(session('success'))<div class="alert alert-success alert-dismissible fade show" style="border-radius:10px;"><i class="fas fa-check-circle me-2"></i>{{ session('success') }}<button type="button" class="btn-close" data-bs-dismiss="alert"></button></div>@endif
-    @if(session('info'))<div class="alert alert-info alert-dismissible fade show" style="border-radius:10px;"><i class="fas fa-info-circle me-2"></i>{{ session('info') }}<button type="button" class="btn-close" data-bs-dismiss="alert"></button></div>@endif
-
+        
     <div class="row g-3">
         <div class="col-12 col-lg-7">
             <div style="background:#fff;border:1px solid #E5E7EB;border-radius:12px;padding:24px;">
@@ -76,6 +74,9 @@
                         'Approuvé'   => ['bg'=>'#DBEAFE','color'=>'#1E40AF','label'=>'Approuvée par DRH','icon'=>'fa-stamp','msg'=>'Votre prise en charge a été approuvée par le DRH.'],
                         'Rejeté'     => ['bg'=>'#FEE2E2','color'=>'#991B1B','label'=>'Rejetée','icon'=>'fa-times-circle','msg'=>'Votre demande a été rejetée.'],
                     ];
+                    if ($pec->en_attente_drh) {
+                        $statusConfig['Validé'] = ['bg'=>'#FEF3C7','color'=>'#92400E','label'=>'En attente DRH','icon'=>'fa-hourglass-half','msg'=>'Validée par le service RH. Cette prise en charge exceptionnelle attend l'approbation du DRH.'];
+                    }
                     $sc = $statusConfig[$statut] ?? $statusConfig['En_attente'];
                 @endphp
                 <div style="background:{{ $sc['bg'] }};color:{{ $sc['color'] }};padding:12px 16px;border-radius:8px;text-align:center;font-weight:700;font-size:14px;margin-bottom:12px;">

@@ -7,7 +7,7 @@ use Illuminate\Support\Facades\DB;
 use Tests\SirhTestCase;
 
 /**
- * Tests de sécurité — Chiffrement AES-256 (Section 4.2.1.2)
+ * Tests de sécurité-Chiffrement AES-256 (Section 4.2.1.2)
  *
  * Valide le mécanisme de confidentialité CID :
  * les données sensibles (adresse, téléphone, CNI) sont chiffrées
@@ -115,7 +115,7 @@ class ChiffrementDonneesTest extends SirhTestCase
     }
 
     // ──────────────────────────────────────────────────────
-    // MISE À JOUR — RECHIFFREMENT
+    // MISE À JOUR-RECHIFFREMENT
     // ──────────────────────────────────────────────────────
 
     #[\PHPUnit\Framework\Attributes\Test]
@@ -158,7 +158,7 @@ class ChiffrementDonneesTest extends SirhTestCase
     }
 
     // ──────────────────────────────────────────────────────
-    // MOTS DE PASSE — HACHAGE BCRYPT
+    // MOTS DE PASSE-HACHAGE BCRYPT
     // ──────────────────────────────────────────────────────
 
     #[\PHPUnit\Framework\Attributes\Test]

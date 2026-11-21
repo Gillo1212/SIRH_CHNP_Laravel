@@ -8,7 +8,7 @@ use App\Models\SoldeConge;
 use Tests\SirhTestCase;
 
 /**
- * Tests fonctionnels — Workflow Congés 3 niveaux (Section 4.2.1.1)
+ * Tests fonctionnels-Workflow Congés 3 niveaux (Section 4.2.1.1)
  *
  * Valide le workflow complet :
  *   Agent (demande) → Major (avis) → Manager (validation) → AgentRH (approbation)

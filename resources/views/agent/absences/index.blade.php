@@ -457,9 +457,6 @@ function showToast(message, type) {
     setTimeout(function(){ t.style.animation='toastOut .3s ease forwards'; setTimeout(function(){ t.remove(); }, 300); }, 5000);
 }
 
-@if(session('success')) showToast(@json(session('success')), 'success'); @endif
-@if(session('error'))   showToast(@json(session('error')),   'error');   @endif
-@if(session('warning')) showToast(@json(session('warning')), 'warning'); @endif
 
 /* ─── Auto-open modal si erreurs ─────────────────────────── */
 @if($errors->any())

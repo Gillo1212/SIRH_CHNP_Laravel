@@ -310,12 +310,6 @@ function showToast(message, type) {
 }
 
 /* ── AUTO-TOAST session flash ───────────────────────────────────────── */
-@if(session('success'))
-    document.addEventListener('DOMContentLoaded', () => showToast(@json(session('success')), 'success'));
-@endif
-@if(session('error'))
-    document.addEventListener('DOMContentLoaded', () => showToast(@json(session('error')), 'error'));
-@endif
 
 /* ── OUVRIR MODAL CRÉATION DEPUIS UN SERVICE ────────────────────────── */
 function openCreateForService(serviceId, serviceNom) {
