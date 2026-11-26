@@ -77,9 +77,9 @@ class ServiceStatisticsService
     public function getAgentsByStatut(int $serviceId): array
     {
         return Agent::where('id_service', $serviceId)
-            ->selectRaw('statut, COUNT(*) as total')
-            ->groupBy('statut')
-            ->pluck('total', 'statut')
+            ->selectRaw('statut_agent, COUNT(*) as total')
+            ->groupBy('statut_agent')
+            ->pluck('total', 'statut_agent')
             ->toArray();
     }
 

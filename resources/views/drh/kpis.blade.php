@@ -78,9 +78,9 @@
 <div class="kpi-section-title">Effectifs & Structure</div>
 <div class="row g-3 mb-4">
     @php
-        try { $effectifTotal   = \App\Models\Agent::where('statut', 'actif')->count(); }  catch(\Exception $e) { $effectifTotal = 0; }
-        try { $effectifFemmes  = \App\Models\Agent::where('statut', 'actif')->where('sexe','F')->count(); } catch(\Exception $e) { $effectifFemmes = 0; }
-        try { $effectifHommes  = \App\Models\Agent::where('statut', 'actif')->where('sexe','M')->count(); } catch(\Exception $e) { $effectifHommes = 0; }
+        try { $effectifTotal   = \App\Models\Agent::where('statut_agent', 'Actif')->count(); }  catch(\Exception $e) { $effectifTotal = 0; }
+        try { $effectifFemmes  = \App\Models\Agent::where('statut_agent', 'Actif')->where('sexe','F')->count(); } catch(\Exception $e) { $effectifFemmes = 0; }
+        try { $effectifHommes  = \App\Models\Agent::where('statut_agent', 'Actif')->where('sexe','M')->count(); } catch(\Exception $e) { $effectifHommes = 0; }
         $tauxFeminisation = $effectifTotal > 0 ? round(($effectifFemmes / $effectifTotal) * 100, 1) : 0;
     @endphp
 

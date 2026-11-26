@@ -154,18 +154,18 @@
 <div class="section-title-drh">KPIs Stratégiques</div>
 <div class="row g-3 mb-4">
 
-    {{-- Masse salariale mensuelle --}}
+    {{-- Agents en congé (indicateur d'effectifs — pas de données financières, hors MVP) --}}
     <div class="col-12 col-sm-6 col-xl-3">
         <div class="kpi-card blue">
             <div class="d-flex align-items-start justify-content-between">
                 <div class="kpi-icon" style="background: #EFF6FF;">
-                    <i class="fas fa-coins" style="color: #0A4D8C;"></i>
+                    <i class="fas fa-umbrella-beach" style="color: #0A4D8C;"></i>
                 </div>
-                <span class="badge-status badge-info">Mensuel</span>
+                <span class="badge-status badge-info">Actuel</span>
             </div>
-            <div class="kpi-value">- XOF</div>
-            <div class="kpi-label">Masse salariale</div>
-            <div class="kpi-trend neutral"><i class="fas fa-minus me-1"></i>Données à configurer</div>
+            <div class="kpi-value">{{ $agentsEnConge }}</div>
+            <div class="kpi-label">Agents en congé</div>
+            <div class="kpi-trend neutral"><i class="fas fa-user-clock me-1"></i>Absents pour congé</div>
         </div>
     </div>
 
@@ -199,18 +199,18 @@
         </div>
     </div>
 
-    {{-- Coût moyen par agent --}}
+    {{-- Mouvements stratégiques en attente de validation DRH --}}
     <div class="col-12 col-sm-6 col-xl-3">
         <div class="kpi-card purple">
             <div class="d-flex align-items-start justify-content-between">
                 <div class="kpi-icon" style="background: #F5F3FF;">
-                    <i class="fas fa-calculator" style="color: #7C3AED;"></i>
+                    <i class="fas fa-exchange-alt" style="color: #7C3AED;"></i>
                 </div>
-                <span class="badge-status" style="background:#F5F3FF; color:#4C1D95; font-size:11px; font-weight:600; padding:2px 10px; border-radius:20px;">Estimé</span>
+                <span class="badge-status" style="background:#F5F3FF; color:#4C1D95; font-size:11px; font-weight:600; padding:2px 10px; border-radius:20px;">À valider</span>
             </div>
-            <div class="kpi-value">- XOF</div>
-            <div class="kpi-label">Coût moyen / agent</div>
-            <div class="kpi-trend neutral"><i class="fas fa-info-circle me-1"></i>Données à configurer</div>
+            <div class="kpi-value">{{ $mouvementsEnAttenteCount }}</div>
+            <div class="kpi-label">Mouvements en attente</div>
+            <div class="kpi-trend neutral"><i class="fas fa-stamp me-1"></i>Validation DRH requise</div>
         </div>
     </div>
 </div>

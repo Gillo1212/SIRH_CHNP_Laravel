@@ -91,7 +91,7 @@
     </div>
 
 </div>
-@endpush
+@endsection
 
 @push('styles')
 <style>
@@ -101,4 +101,3 @@
 .badge-attente{background:#FEF3C7;color:#92400E;padding:3px 10px;border-radius:20px;font-size:10px;font-weight:700;}
 </style>
 @endpush
-@endsection

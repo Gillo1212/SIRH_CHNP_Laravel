@@ -271,6 +271,34 @@ class PriseEnChargeTest extends SirhTestCase
             ->assertStatus(404);
     }
 
+    #[\PHPUnit\Framework\Attributes\Test]
+    public function l_agent_voit_le_statut_en_attente_drh_sur_sa_fiche(): void
+    {
+        $pec = $this->creerPec('Validé', true);
+
+        $this->actingAs($this->userAgent)
+            ->get("/agent/pec/{$pec->id_priseenche}")
+            ->assertStatus(200)
+            ->assertSee('En attente DRH')
+            ->assertSee("attend l'approbation du DRH");
+    }
+
+    #[\PHPUnit\Framework\Attributes\Test]
+    public function le_rh_voit_la_case_exceptionnelle_et_le_statut_en_attente_drh(): void
+    {
+        $enAttente = $this->creerPec('En_attente', false);
+        $this->actingAs($this->userRH)
+            ->get("/rh/pec/{$enAttente->id_priseenche}")
+            ->assertStatus(200)
+            ->assertSee('name="exceptionnelle"', false);
+
+        $chezDrh = $this->creerPec('Validé', true);
+        $this->actingAs($this->userRH)
+            ->get("/rh/pec/{$chezDrh->id_priseenche}")
+            ->assertStatus(200)
+            ->assertSee('en attente DRH');
+    }
+
     private function creerPec(string $statut, bool $exceptionnelle): PriseEnCharge
     {
         $demande = Demande::create([

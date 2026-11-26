@@ -101,11 +101,11 @@
 
 @php
     $annee = now()->year;
-    try { $effectifTotal   = \App\Models\Agent::where('statut','actif')->count(); }     catch(\Exception $e) { $effectifTotal = 0; }
-    try { $effectifFemmes  = \App\Models\Agent::where('statut','actif')->where('sexe','F')->count(); } catch(\Exception $e) { $effectifFemmes = 0; }
-    try { $effectifHommes  = \App\Models\Agent::where('statut','actif')->where('sexe','M')->count(); } catch(\Exception $e) { $effectifHommes = 0; }
-    try { $effectifEnConge = \App\Models\Agent::where('statut','en_conge')->count(); }   catch(\Exception $e) { $effectifEnConge = 0; }
-    try { $effectifSuspendu= \App\Models\Agent::where('statut','suspendu')->count(); }  catch(\Exception $e) { $effectifSuspendu = 0; }
+    try { $effectifTotal   = \App\Models\Agent::where('statut_agent', 'Actif')->count(); }     catch(\Exception $e) { $effectifTotal = 0; }
+    try { $effectifFemmes  = \App\Models\Agent::where('statut_agent', 'Actif')->where('sexe','F')->count(); } catch(\Exception $e) { $effectifFemmes = 0; }
+    try { $effectifHommes  = \App\Models\Agent::where('statut_agent', 'Actif')->where('sexe','M')->count(); } catch(\Exception $e) { $effectifHommes = 0; }
+    try { $effectifEnConge = \App\Models\Agent::whereIn('statut_agent', ['En_congé', 'En_Conge'])->count(); }   catch(\Exception $e) { $effectifEnConge = 0; }
+    try { $effectifSuspendu= \App\Models\Agent::where('statut_agent', 'Suspendu')->count(); }  catch(\Exception $e) { $effectifSuspendu = 0; }
     try { $nServices       = \App\Models\Service::count(); }                             catch(\Exception $e) { $nServices = 0; }
     try { $nDivisions      = \App\Models\Division::count(); }                            catch(\Exception $e) { $nDivisions = 0; }
     try {
@@ -241,10 +241,6 @@
     <div class="bilan-row">
         <span style="color:#374151;">Total mouvements enregistrés ({{ $annee }})</span>
         <span class="bilan-value">{{ $mouvementsAn }}</span>
-    </div>
-    <div class="bilan-row">
-        <span style="color:#374151;">Masse salariale annuelle</span>
-        <span class="bilan-value" style="color:#9CA3AF;">- XOF (module paie requis)</span>
     </div>
 </div>
 

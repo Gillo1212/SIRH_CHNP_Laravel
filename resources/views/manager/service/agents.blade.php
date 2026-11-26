@@ -26,8 +26,8 @@
     {{-- Stats rapides --}}
     <div class="row g-3 mb-4">
         @php
-            $actifs   = $agents->where('statut', 'actif')->count();
-            $enConge  = $agents->where('statut', 'en_conge')->count();
+            $actifs   = $agents->where('statut_agent', 'Actif')->count();
+            $enConge  = $agents->whereIn('statut_agent', ['En_congé', 'En_Conge'])->count();
             $autres   = $agents->count() - $actifs - $enConge;
         @endphp
         <div class="col-4">

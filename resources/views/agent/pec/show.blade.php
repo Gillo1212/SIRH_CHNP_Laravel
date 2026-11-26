@@ -75,7 +75,7 @@
                         'Rejeté'     => ['bg'=>'#FEE2E2','color'=>'#991B1B','label'=>'Rejetée','icon'=>'fa-times-circle','msg'=>'Votre demande a été rejetée.'],
                     ];
                     if ($pec->en_attente_drh) {
-                        $statusConfig['Validé'] = ['bg'=>'#FEF3C7','color'=>'#92400E','label'=>'En attente DRH','icon'=>'fa-hourglass-half','msg'=>'Validée par le service RH. Cette prise en charge exceptionnelle attend l'approbation du DRH.'];
+                        $statusConfig['Validé'] = ['bg'=>'#FEF3C7','color'=>'#92400E','label'=>'En attente DRH','icon'=>'fa-hourglass-half','msg'=>"Validée par le service RH. Cette prise en charge exceptionnelle attend l'approbation du DRH."];
                     }
                     $sc = $statusConfig[$statut] ?? $statusConfig['En_attente'];
                 @endphp

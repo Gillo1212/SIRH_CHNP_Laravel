@@ -1302,8 +1302,9 @@
     </nav>
 </aside>
 
-{{-- Overlay mobile --}}
+{{-- Overlay mobile (masqué sur grand écran via .sidebar-overlay) --}}
 <div
+    class="sidebar-overlay"
     x-show="sidebarOpen"
     x-cloak
     @click="sidebarOpen = false"

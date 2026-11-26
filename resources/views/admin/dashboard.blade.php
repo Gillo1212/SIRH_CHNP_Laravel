@@ -68,7 +68,7 @@
 <div class="row g-3 mb-4">
     @php
         try { $totalUsers   = \App\Models\User::count(); }                         catch(\Exception $e) { $totalUsers   = 0; }
-        try { $totalAgents  = \App\Models\Agent::where('statut','actif')->count();} catch(\Exception $e) { $totalAgents  = 0; }
+        try { $totalAgents  = \App\Models\Agent::where('statut_agent', 'Actif')->count();} catch(\Exception $e) { $totalAgents  = 0; }
         try { $logsAujourdhui = \App\Models\LogAudit::whereDate('date_evenement', today())->count(); } catch(\Exception $e) { $logsAujourdhui = 0; }
         try { $tentativesEchouees = \App\Models\User::where('tentatives_connexion','>', 0)->count(); } catch(\Exception $e) { $tentativesEchouees = 0; }
     @endphp

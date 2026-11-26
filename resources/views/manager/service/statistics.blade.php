@@ -68,13 +68,13 @@
                     <canvas id="chartStatuts" style="max-height:200px;"></canvas>
                     <div class="mt-3">
                         @php
-                            $statutColors = ['actif' => '#059669', 'en_conge' => '#D97706', 'suspendu' => '#DC2626', 'retraite' => '#9CA3AF'];
+                            $statutColors = ['Actif' => '#059669', 'En_congé' => '#D97706', 'Suspendu' => '#DC2626', 'Retraité' => '#9CA3AF'];
                         @endphp
                         @foreach($agentsByStatut as $statut => $total)
                             <div class="d-flex align-items-center justify-content-between py-1">
                                 <div class="d-flex align-items-center gap-2">
                                     <div style="width:10px;height:10px;border-radius:2px;background:{{ $statutColors[$statut] ?? '#9CA3AF' }};flex-shrink:0;"></div>
-                                    <span class="small text-muted">{{ ucfirst($statut) }}</span>
+                                    <span class="small text-muted">{{ str_replace('_', ' ', $statut) }}</span>
                                 </div>
                                 <span class="fw-600 small">{{ $total }}</span>
                             </div>
@@ -137,12 +137,12 @@ new Chart(document.getElementById('chartAbsences'), {
 });
 
 const statuts = @json($agentsByStatut);
-const colors  = { actif: '#059669', en_conge: '#D97706', suspendu: '#DC2626', retraite: '#9CA3AF' };
+const colors  = { 'Actif': '#059669', 'En_congé': '#D97706', 'Suspendu': '#DC2626', 'Retraité': '#9CA3AF' };
 if (Object.keys(statuts).length > 0) {
     new Chart(document.getElementById('chartStatuts'), {
         type: 'doughnut',
         data: {
-            labels: Object.keys(statuts).map(s => s.charAt(0).toUpperCase() + s.slice(1)),
+            labels: Object.keys(statuts).map(s => s.replace('_', ' ')),
             datasets: [{
                 data: Object.values(statuts),
                 backgroundColor: Object.keys(statuts).map(s => colors[s] || '#9CA3AF'),

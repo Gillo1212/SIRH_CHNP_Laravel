@@ -534,6 +534,11 @@
             }
         }
 
+        /* Le voile de la sidebar ne concerne que l'affichage mobile/tablette */
+        @media (min-width: 1025px) {
+            .sidebar-overlay { display: none !important; }
+        }
+
         /* ═════════════════════════════════════════════════════════════════════
            BARRE DE CHARGEMENT (Page Progress)
            ═════════════════════════════════════════════════════════════════════ */
@@ -744,7 +749,7 @@
 
 <body
     x-data="{
-        sidebarOpen: true,
+        sidebarOpen: window.innerWidth > 1024,
         sidebarCollapsed: false,
         darkMode: false,
         notificationOpen: false,
